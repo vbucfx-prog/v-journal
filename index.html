@@ -903,6 +903,24 @@
         </div>
 
         <div class="section-head">
+          <div class="section-label">Goals</div>
+        </div>
+        <div id="goals-container">
+          <textarea id="goals-input" placeholder="Enter your trading goals..."></textarea>
+          <button onclick="saveGoals()">Save Goals</button>
+        </div>
+
+        <div class="section-head">
+          <div class="section-label">Forex Factory News</div>
+        </div>
+        <div id="forex-news-container">
+          <div class="empty-state">
+            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.5 1.18 5.59L12 16.77l-6.18 4.59L2 9.27l5.09-4.63L12 2z"/></svg></div>
+            <p>Forex factory news will appear here after implementation.</p>
+          </div>
+        </div>
+
+        <div class="section-head">
           <div class="section-label">Recent Entries</div>
         </div>
         <div id="dash-entries">
@@ -1262,13 +1280,13 @@
 console.log('Script loaded');
 const PASSWORD = 'apostles';
 let entries = [];
-try { const item = localStorage.getItem('tj_entries'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) entries = parsed; } } catch (e) {}
+try { const item = localStorage.getItem('tj_entries'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) entries = parsed; } } catch (e) {};
 let fundedAccounts = [];
-try { const item = localStorage.getItem('tj_funded'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) fundedAccounts = parsed; } } catch (e) {}
+try { const item = localStorage.getItem('tj_funded'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) fundedAccounts = parsed; } } catch (e) {};
 let payouts = [];
-try { const item = localStorage.getItem('tj_payouts'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) payouts = parsed; } } catch (e) {}
+try { const item = localStorage.getItem('tj_payouts'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) payouts = parsed; } } catch (e) {};
 let tdlTasks = [];
-try { const item = localStorage.getItem('tj_tdl'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) tdlTasks = parsed; } } catch (e) {}
+try { const item = localStorage.getItem('tj_tdl'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) tdlTasks = parsed; } } catch (e) {};
 let currentFilter = 'all';
 let activeTradeFilter = 'all';
 
@@ -1298,10 +1316,18 @@ function lockApp() {
   document.getElementById('pw-input').value = '';
 }
 
+function saveGoals() {
+  const goalsText = document.getElementById('goals-input').value.trim();
+  localStorage.setItem('tj_goals', goalsText);
+}
+
 function initApp() {
   const now = new Date();
   document.getElementById('topbar-date').textContent = now.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
   document.getElementById('entry-date').value = now.toISOString().split('T')[0];
+  // Load goals
+  const savedGoals = localStorage.getItem('tj_goals') || '';
+  document.getElementById('goals-input').value = savedGoals;
   renderAll();
 }
 
@@ -1321,6 +1347,12 @@ function showPage(name, el) {
     tdl: 'Personal TDL'
   };
   document.getElementById('page-title').textContent = titles[name] || name;
+  const newBtn = document.querySelector('.new-entry-btn');
+  if (name === 'dashboard') {
+    newBtn.style.display = 'none';
+  } else {
+    newBtn.style.display = 'inline-block';
+  }
 }
 
 function openModal() {
