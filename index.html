@@ -1021,13 +1021,13 @@
         <input type="date" class="form-input" id="entry-date" />
       </div>
       <div class="form-group">
-        <label class="form-label">Session</label
-          <select class="form-select" id="entry-session">
-            <option value="Asia">Asia</option>
-            <option value="London">London</option>
-            <option value="New York">New York</option
-            <option value="NY PM">NY PM</option>
-          </select>
+        <label class="form-label">Session</label>
+        <select class="form-select" id="entry-session">
+          <option value="Asia">Asia</option>
+          <option value="London">London</option>
+          <option value="New York">New York</option>
+          <option value="NY PM">NY PM</option>
+        </select>
       </div>
     </div>
 
@@ -1035,51 +1035,50 @@
     <div id="trade-fields">
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Instrument</label
+          <label class="form-label">Instrument</label>
           <input type="text" class="form-input" id="entry-instrument" placeholder="NQ, ES, GC..." />
         </div>
-      <div class="form-group">
-        <label class="form-label">Direction</label
+        <div class="form-group">
+          <label class="form-label">Direction</label>
           <select class="form-select" id="entry-direction">
-            <option value="Long">Long</option
-            <option value="Short">Short</option
+            <option value="Long">Long</option>
+            <option value="Short">Short</option>
             <option value="Missed">Missed</option>
           </select>
-      </div>
+        </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Result</label
+          <label class="form-label">Result</label>
           <select class="form-select" id="entry-result">
-            <option value="">— Select —</option
-            <option value="Win">Win</option
-            <option value="Loss">Loss</option
-            <option value="BE">Breakeven</option
+            <option value="">— Select —</option>
+            <option value="Win">Win</option>
+            <option value="Loss">Loss</option>
+            <option value="BE">Breakeven</option>
             <option value="Missed">Missed</option>
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">Points / R:R</label
+          <label class="form-label">Points / R:R</label>
           <input type="text" class="form-input" id="entry-rr" placeholder="e.g. +320pts / 3R" />
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Concepts Used</label
+        <label class="form-label">Concepts Used</label>
           <input type="text" class="form-input" id="entry-concepts" placeholder="SMT, HVB, Fibonacci, POI..." />
         </div>
-      </div>
       <div class="form-group">
-        <label class="form-label">Entry Reasoning</label
+        <label class="form-label">Entry Reasoning</label>
           <div class="form-textarea" id="entry-reasoning" contenteditable="true" placeholder="What confluence gave you the entry?"></div>
         <button class="paste-btn" onclick="pasteHtml('entry-reasoning')">Paste</button>
       </div>
       <div class="form-group">
-        <label class="form-label">What I Did Well</label
+        <label class="form-label">What I Did Well</label>
           <div class="form-textarea" id="entry-good" contenteditable="true" placeholder="Execution, patience, reads..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-good')">Paste</button>
       </div>
       <div class="form-group">
-        <label class="form-label">What To Improve</label
+        <label class="form-label">What To Improve</label>
           <div class="form-textarea" id="entry-improve" contenteditable="true" placeholder="Mistakes, missed signals..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-improve')">Paste</button>
       </div>
@@ -1088,30 +1087,30 @@
     <!-- LIVE OUTLOOK FIELDS -->
     <div id="live-fields" style="display:none;">
       <div class="form-group">
-        <label class="form-label">Bias</label
+        <label class="form-label">Bias</label>
           <select class="form-select" id="entry-bias">
-            <option value="Bullish">Bullish</option
-            <option value="Bearish">Bearish</option
+            <option value="Bullish">Bullish</option>
+            <option value="Bearish">Bearish</option>
             <option value="Neutral">Neutral</option>
           </select>
       </div>
-      <div class="form-group>
-        <label class="form-label">HTF Context</label
+      <div class="form-group">
+        <label class="form-label">HTF Context</label>
           <div class="form-textarea" id="entry-htf" contenteditable="true" placeholder="Higher timeframe structure, key levels..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-htf')">Paste</button>
       </div>
-      <div class="form-group>
-        <label class="form-label">Manipulation Expectation</label
+      <div class="form-group">
+        <label class="form-label">Manipulation Expectation</label>
           <div class="form-textarea" id="entry-manip" contenteditable="true" placeholder="Where do you expect manipulation? AMD levels..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-manip')">Paste</button>
       </div>
-      <div class="form-group>
-        <label class="form-label">Key POIs to Watch</label
+      <div class="form-group">
+        <label class="form-label">Key POIs to Watch</label>
           <div class="form-textarea" id="entry-pois" contenteditable="true" placeholder="POIs, SMTs, HVBs on watch..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-pois')">Paste</button>
       </div>
-      <div class="form-group>
-        <label class="form-label">General Thoughts</label
+      <div class="form-group">
+        <label class="form-label">General Thoughts</label>
           <div class="form-textarea" id="entry-live-thoughts" contenteditable="true" placeholder="Anything else on your mind pre-session..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-live-thoughts')">Paste</button>
       </div>
@@ -1119,38 +1118,38 @@
 
     <!-- POST MARKET FIELDS -->
     <div id="post-fields" style="display:none;">
-      <div class="form-group>
-        <label class="form-label">Day Rating</label
+      <div class="form-group">
+        <label class="form-label">Day Rating</label>
           <select class="form-select" id="entry-rating">
-            <option value="A">A — Executed the plan</option
-            <option value="B">B — Good but minor issues</option
-            <option value="C">C — Average, missed things</option
-            <option value="D">D — Poor execution</option
+            <option value="A">A — Executed the plan</option>
+            <option value="B">B — Good but minor issues</option>
+            <option value="C">C — Average, missed things</option>
+            <option value="D">D — Poor execution</option>
             <option value="X">X — Off charts / no trade</option>
           </select>
       </div>
-      <div class="form-group>
-        <label class="form-label">What Happened (Macro Breakdown)</label
+      <div class="form-group">
+        <label class="form-label">What Happened (Macro Breakdown)</label>
           <div class="form-textarea" id="entry-macro" contenteditable="true" placeholder="L1-L2, 2:30, AMD breakdown, what actually played out..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-macro')">Paste</button>
       </div>
-      <div class="form-group>
-        <label class="form-label">Setups That Presented</label
+      <div class="form-group">
+        <label class="form-label">Setups That Presented</label>
           <div class="form-textarea" id="entry-setups" contenteditable="true" placeholder="Describe the setups — caught or missed..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-setups')">Paste</button>
       </div>
-      <div class="form-group>
-        <label class="form-label">Key Lesson</label
+      <div class="form-group">
+        <label class="form-label">Key Lesson</label>
           <div class="form-textarea" id="entry-lesson" contenteditable="true" placeholder="The one thing you're taking away from today..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-lesson')">Paste</button>
       </div>
-      <div class="form-group>
-        <label class="form-label">Mistakes & Fixes</label
+      <div class="form-group">
+        <label class="form-label">Mistakes & Fixes</label>
           <div class="form-textarea" id="entry-mistakes" contenteditable="true" placeholder="What went wrong and how to fix it..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-mistakes')">Paste</button>
       </div>
-      <div class="form-group>
-        <label class="form-label">Bias Going Forward</label
+      <div class="form-group">
+        <label class="form-label">Bias Going Forward</label>
           <div class="form-textarea" id="entry-forward-bias" contenteditable="true" placeholder="What's your bias for tomorrow/next session?"></div>
         <button class="paste-btn" onclick="pasteHtml('entry-forward-bias')">Paste</button>
       </div>
@@ -1158,8 +1157,8 @@
 
     <!-- PRE-MARKET FIELDS -->
     <div id="premarket-fields" style="display:none;">
-      <div class="form-group>
-        <label class="form-label">Pre-Market Notes</label
+      <div class="form-group">
+        <label class="form-label">Pre-Market Notes</label>
           <div class="form-textarea" id="entry-premarket-notes" contenteditable="true" placeholder="Your pre-market analysis, thoughts, plans..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-premarket-notes')">Paste</button>
       </div>
@@ -1167,50 +1166,49 @@
 
     <!-- FUNDED ACCOUNT FIELDS -->
     <div id="funded-fields" style="display:none;">
-      <div class="form-group>
-        <label class="form-label">Account Name</label
+      <div class="form-group">
+        <label class="form-label">Account Name</label>
           <input type="text" class="form-input" id="entry-funded-name" placeholder="e.g., FTMO, MyForexFunds" />
         </div>
-      <div class="form-group>
+      <div class="form-group">
         <label class="form-label">Broker</label
           <input type="text" class="form-input" id="entry-funded-broker" placeholder="e.g., ICMarkets, Pepperstone" />
         </div>
-      <div class="form-group>
-        <label class="form-label">Account Size</label
+      <div class="form-group">
+        <label class="form-label">Account Size</label>
           <input type="number" class="form-input" id="entry-funded-size" placeholder="e.g., 10000" />
         </div>
-      <div class="form-group>
+      <div class="form-group">
         <label class="form-label">Current Balance</label
           <input type="number" class="form-input" id="entry-funded-balance" placeholder="e.g., 10500" />
         </div>
-      <div class="form-group>
+      <div class="form-group">
         <label class="form-label">Profit Target</label
           <input type="number" class="form-input" id="entry-funded-target" placeholder="e.g., 1000" />
         </div>
-      <div class="form-group>
+      <div class="form-group">
         <label class="form-label">Max Drawdown</label
           <input type="number" class="form-input" id="entry-funded-dd" placeholder="e.g., 1000" />
         </div>
-      <div class="form-group>
+      <div class="form-group">
         <label class="form-label">Status</label
           <select class="form-select" id="entry-funded-status">
-            <option value="Active">Active</option
-            <option value="Completed">Completed</option
-            <option value="Failed">Failed</option
-            <option value="Expired">Expired</option
+            <option value="Active">Active</option>
+            <option value="Completed">Completed</option>
+            <option value="Failed">Failed</option>
+            <option value="Expired">Expired</option>
             <option value="Paused">Paused</option>
           </select>
         </div>
-      </div>
-      <div class="form-group>
+      <div class="form-group">
         <label class="form-label">Notes</label
           <div class="form-textarea" id="entry-funded-notes" contenteditable="true" placeholder="Any additional notes..."></div>
         </div>
-      <div class="form-group>
+      <div class="form-group">
         <label class="form-label">Account Picture</label
           <input type="file" id="entry-funded-picture" accept="image/*" />
         </div>
-      <div class="form-group>
+      <div class="form-group">
         <label class="form-label">Use Picture as Icon</label
           <input type="checkbox" id="entry-funded-use-pic" />
         </div>
@@ -1361,22 +1359,22 @@ function saveEntry() {
     entry.thoughts = document.getElementById('entry-live-thoughts').innerHTML;
   } else if (type === 'post') {
     entry.rating = document.getElementById('entry-rating').value;
-    entry.macro = document.getElementById('entry-macro).innerHTML;
-    entry.setups = document.getElementById('entry-setups).innerHTML;
-    entry.lesson = document.getElementById('entry-lesson).innerHTML;
-    entry.mistakes = document.getElementById('entry-mistakes).innerHTML;
-    entry.forwardBias = document.getElementById('entry-forward-bias).innerHTML;
+    entry.macro = document.getElementById('entry-macro').innerHTML;
+    entry.setups = document.getElementById('entry-setups').innerHTML;
+    entry.lesson = document.getElementById('entry-lesson').innerHTML;
+    entry.mistakes = document.getElementById('entry-mistakes').innerHTML;
+    entry.forwardBias = document.getElementById('entry-forward-bias').innerHTML;
   } else if (type === 'premarket') {
-    entry.notes = document.getElementById('entry-premarket-notes).innerHTML;
+    entry.notes = document.getElementById('entry-premarket-notes').innerHTML;
   } else if (type === 'funded') {
     entry.name = document.getElementById('entry-funded-name').value;
-    entry.broker = document.getElementById('entry-funded-broker).value;
+    entry.broker = document.getElementById('entry-funded-broker').value;
     entry.size = parseFloat(document.getElementById('entry-funded-size').value) || 0;
-    entry.balance = parseFloat(document.getElementById('entry-funded-balance).value) || 0;
-    entry.target = parseFloat(document.getElementById('entry-funded-target).value) || 0;
-    entry.dd = parseFloat(document.getElementById('entry-funded-dd).value) || 0;
-    entry.status = document.getElementById('entry-funded-status).value;
-    entry.notes = document.getElementById('entry-funded-notes).innerHTML;
+    entry.balance = parseFloat(document.getElementById('entry-funded-balance').value) || 0;
+    entry.target = parseFloat(document.getElementById('entry-funded-target').value) || 0;
+    entry.dd = parseFloat(document.getElementById('entry-funded-dd').value) || 0;
+    entry.status = document.getElementById('entry-funded-status').value;
+    entry.notes = document.getElementById('entry-funded-notes').innerHTML;
 
     // Picture handling
     const picInput = document.getElementById('entry-funded-picture');
@@ -1413,10 +1411,10 @@ function saveEntry() {
   } else if (type === 'payout') {
     entry.date = document.getElementById('entry-payout-date').value;
     entry.amount = parseFloat(document.getElementById('entry-payout-amount').value) || 0;
-    entry.broker = document.getElementById('entry-payout-broker).value;
-    entry.type = document.getElementById('entry-payout-type).value;
-    entry.txid = document.getElementById('entry-payout-txid).value;
-    entry.notes = document.getElementById('entry-payout-notes).innerHTML;
+    entry.broker = document.getElementById('entry-payout-broker').value;
+    entry.type = document.getElementById('entry-payout-type').value;
+    entry.txid = document.getElementById('entry-payout-txid').value;
+    entry.notes = document.getElementById('entry-payout-notes').innerHTML;
     payouts.push(entry);
     localStorage.setItem('tj_payouts', JSON.stringify(payouts));
     renderPayouts();
@@ -1519,7 +1517,7 @@ function buildCard(e) {
     inner = `
       ${e.bias ? `<span class="entry-tag">${e.bias}</span>` : ''} ${e.session ? `<span class="entry-tag">${e.session}</span>` : ''}
       ${e.htf ? `<div class="entry-section-title">HTF Context</div><div>${e.htf}</div>` : ''}
-      {e.pois ? `<div class="entry-section-title">Key POIs</div><div>${e.pois}</div>` : ''}
+      ${e.pois ? `<div class="entry-section-title">Key POIs</div><div>${e.pois}</div>` : ''}
       ${e.thoughts ? `<div class="entry-section-title">Thoughts</div><div>${e.thoughts}</div>` : ''}
     `;
   } else if (e.type === 'post') {
@@ -1725,8 +1723,15 @@ function editTDL(id) {
   const task = tdlTasks.find(t => t.id === id);
   if (!task) return;
 
-  const newText === null ? task.text.trim(!newText) { deleteTDL(id); return }
+  const newText = prompt('Edit task:', task.text);
+  if (newText === null) return;
+
   task.text = newText.trim();
+  if (!task.text) {
+    deleteTDL(id);
+    return;
+  }
+
   localStorage.setItem('tj_tdl', JSON.stringify(tdlTasks));
   renderTDL();
 }
