@@ -549,8 +549,8 @@
 
   /* ── PASTE BUTTON ── */
   .paste-btn {
-    position: absolute;
-    top: 10px; right: 10px;
+    margin-left: 8px;
+    vertical-align: middle;
     background: var(--green);
     border: none;
     border-radius: 3px;
@@ -568,35 +568,15 @@
 
   .paste-btn:hover { opacity: 1; }
 
-  /* ── CHECKLIST ── */
-  .checklist-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
+  /* ── IMAGE STYLES ── */
+  .funded-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    margin-right: 8px;
   }
-
-  .checklist-item:last-child { border-bottom: none; }
-
-  .check-box {
-    width: 14px;
-    height: 14px;
-    border: 1px solid var(--border-green);
-    border-radius: 3px;
-    flex-shrink: 0;
-    margin-top: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .check-box.checked { background: var(--green); border-color: var(--green); }
-  .check-box.checked::after { content: '✓'; font-size: 9px; color: #080808; font-weight: 700; }
-
-  .check-text { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
 
   /* ── EMPTY STATE ── */
   .empty-state {
@@ -854,7 +834,7 @@
     </div>
 
     <div class="nav-item" onclick="showPage('premarket',this)">
-      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V5a2 2 0 0 1 2-2h11"/></svg>
       Pre-Market
     </div>
 
@@ -869,7 +849,7 @@
     </div>
 
     <div class="nav-item" onclick="showPage('tdl',this)">
-      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V5a2 2 0 0 1 2-2h11"/></svg>
       Personal TDL
     </div>
 
@@ -972,7 +952,7 @@
       <div class="page" id="page-premarket">
         <div id="premarket-entries">
           <div class="empty-state">
-            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
             <p>No pre-market entries yet</p>
           </div>
         </div>
@@ -1002,7 +982,7 @@
       <div class="page" id="page-tdl">
         <div id="tdl-entries">
           <div class="empty-state">
-            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
             <p>No tasks yet</p>
           </div>
         </div>
@@ -1041,13 +1021,13 @@
         <input type="date" class="form-input" id="entry-date" />
       </div>
       <div class="form-group">
-        <label class="form-label">Session</label>
-        <select class="form-select" id="entry-session">
-          <option value="Asia">Asia</option>
-          <option value="London">London</option>
-          <option value="New York">New York</option>
-          <option value="NY PM">NY PM</option>
-        </select>
+        <label class="form-label">Session</label
+          <select class="form-select" id="entry-session">
+            <option value="Asia">Asia</option>
+            <option value="London">London</option>
+            <option value="New York">New York</option
+            <option value="NY PM">NY PM</option>
+          </select>
       </div>
     </div>
 
@@ -1055,51 +1035,52 @@
     <div id="trade-fields">
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Instrument</label>
+          <label class="form-label">Instrument</label
           <input type="text" class="form-input" id="entry-instrument" placeholder="NQ, ES, GC..." />
         </div>
-        <div class="form-group">
-          <label class="form-label">Direction</label>
+      <div class="form-group">
+        <label class="form-label">Direction</label
           <select class="form-select" id="entry-direction">
-            <option value="Long">Long</option>
-            <option value="Short">Short</option>
+            <option value="Long">Long</option
+            <option value="Short">Short</option
             <option value="Missed">Missed</option>
           </select>
-        </div>
+      </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Result</label>
+          <label class="form-label">Result</label
           <select class="form-select" id="entry-result">
-            <option value="">— Select —</option>
-            <option value="Win">Win</option>
-            <option value="Loss">Loss</option>
-            <option value="BE">Breakeven</option>
+            <option value="">— Select —</option
+            <option value="Win">Win</option
+            <option value="Loss">Loss</option
+            <option value="BE">Breakeven</option
             <option value="Missed">Missed</option>
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">Points / R:R</label>
+          <label class="form-label">Points / R:R</label
           <input type="text" class="form-input" id="entry-rr" placeholder="e.g. +320pts / 3R" />
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Concepts Used</label>
-        <input type="text" class="form-input" id="entry-concepts" placeholder="SMT, HVB, Fibonacci, POI..." />
+        <label class="form-label">Concepts Used</label
+          <input type="text" class="form-input" id="entry-concepts" placeholder="SMT, HVB, Fibonacci, POI..." />
+        </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Entry Reasoning</label>
-        <div class="form-textarea" id="entry-reasoning" contenteditable="true" placeholder="What confluence gave you the entry?"></div>
+        <label class="form-label">Entry Reasoning</label
+          <div class="form-textarea" id="entry-reasoning" contenteditable="true" placeholder="What confluence gave you the entry?"></div>
         <button class="paste-btn" onclick="pasteHtml('entry-reasoning')">Paste</button>
       </div>
       <div class="form-group">
-        <label class="form-label">What I Did Well</label>
-        <div class="form-textarea" id="entry-good" contenteditable="true" placeholder="Execution, patience, reads..."></div>
+        <label class="form-label">What I Did Well</label
+          <div class="form-textarea" id="entry-good" contenteditable="true" placeholder="Execution, patience, reads..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-good')">Paste</button>
       </div>
       <div class="form-group">
-        <label class="form-label">What To Improve</label>
-        <div class="form-textarea" id="entry-improve" contenteditable="true" placeholder="Mistakes, missed signals..."></div>
+        <label class="form-label">What To Improve</label
+          <div class="form-textarea" id="entry-improve" contenteditable="true" placeholder="Mistakes, missed signals..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-improve')">Paste</button>
       </div>
     </div>
@@ -1107,161 +1088,170 @@
     <!-- LIVE OUTLOOK FIELDS -->
     <div id="live-fields" style="display:none;">
       <div class="form-group">
-        <label class="form-label">Bias</label>
-        <select class="form-select" id="entry-bias">
-          <option value="Bullish">Bullish</option>
-          <option value="Bearish">Bearish</option>
-          <option value="Neutral">Neutral</option>
-        </select>
+        <label class="form-label">Bias</label
+          <select class="form-select" id="entry-bias">
+            <option value="Bullish">Bullish</option
+            <option value="Bearish">Bearish</option
+            <option value="Neutral">Neutral</option>
+          </select>
       </div>
-      <div class="form-group">
-        <label class="form-label">HTF Context</label>
-        <div class="form-textarea" id="entry-htf" contenteditable="true" placeholder="Higher timeframe structure, key levels..."></div>
+      <div class="form-group>
+        <label class="form-label">HTF Context</label
+          <div class="form-textarea" id="entry-htf" contenteditable="true" placeholder="Higher timeframe structure, key levels..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-htf')">Paste</button>
       </div>
-      <div class="form-group">
-        <label class="form-label">Manipulation Expectation</label>
-        <div class="form-textarea" id="entry-manip" contenteditable="true" placeholder="Where do you expect manipulation? AMD levels..."></div>
+      <div class="form-group>
+        <label class="form-label">Manipulation Expectation</label
+          <div class="form-textarea" id="entry-manip" contenteditable="true" placeholder="Where do you expect manipulation? AMD levels..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-manip')">Paste</button>
       </div>
-      <div class="form-group">
+      <div class="form-group>
         <label class="form-label">Key POIs to Watch</label
-        <div class="form-textarea" id="entry-pois" contenteditable="true" placeholder="POIs, SMTs, HVBs on watch..."></div>
+          <div class="form-textarea" id="entry-pois" contenteditable="true" placeholder="POIs, SMTs, HVBs on watch..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-pois')">Paste</button>
       </div>
-      <div class="form-group">
-        <label class="form-label">General Thoughts</label>
-        <div class="form-textarea" id="entry-live-thoughts" contenteditable="true" placeholder="Anything else on your mind pre-session..."></div>
+      <div class="form-group>
+        <label class="form-label">General Thoughts</label
+          <div class="form-textarea" id="entry-live-thoughts" contenteditable="true" placeholder="Anything else on your mind pre-session..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-live-thoughts')">Paste</button>
       </div>
     </div>
 
     <!-- POST MARKET FIELDS -->
     <div id="post-fields" style="display:none;">
-      <div class="form-group">
-        <label class="form-label">Day Rating</label>
-        <select class="form-select" id="entry-rating">
-          <option value="A">A — Executed the plan</option>
-          <option value="B">B — Good but minor issues</option>
-          <option value="C">C — Average, missed things</option>
-          <option value="D">D — Poor execution</option>
-          <option value="X">X — Off charts / no trade</option>
-        </select>
+      <div class="form-group>
+        <label class="form-label">Day Rating</label
+          <select class="form-select" id="entry-rating">
+            <option value="A">A — Executed the plan</option
+            <option value="B">B — Good but minor issues</option
+            <option value="C">C — Average, missed things</option
+            <option value="D">D — Poor execution</option
+            <option value="X">X — Off charts / no trade</option>
+          </select>
       </div>
-      <div class="form-group">
-        {# FIXME: missing </div> close for form-group? We'll just keep as is for now #}
-        <div class="form-group">
-          <label class="form-label">What Happened (Macro Breakdown)</label>
+      <div class="form-group>
+        <label class="form-label">What Happened (Macro Breakdown)</label
           <div class="form-textarea" id="entry-macro" contenteditable="true" placeholder="L1-L2, 2:30, AMD breakdown, what actually played out..."></div>
-          <button class="paste-btn" onclick="pasteHtml('entry-macro')">Paste</button>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Setups That Presented</label>
+        <button class="paste-btn" onclick="pasteHtml('entry-macro')">Paste</button>
+      </div>
+      <div class="form-group>
+        <label class="form-label">Setups That Presented</label
           <div class="form-textarea" id="entry-setups" contenteditable="true" placeholder="Describe the setups — caught or missed..."></div>
-          <button class="paste-btn" onclick="pasteHtml('entry-setups')">Paste</button>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Key Lesson</label>
+        <button class="paste-btn" onclick="pasteHtml('entry-setups')">Paste</button>
+      </div>
+      <div class="form-group>
+        <label class="form-label">Key Lesson</label
           <div class="form-textarea" id="entry-lesson" contenteditable="true" placeholder="The one thing you're taking away from today..."></div>
-          <button class="paste-btn" onclick="pasteHtml('entry-lesson')">Paste</button>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Mistakes & Fixes</label>
+        <button class="paste-btn" onclick="pasteHtml('entry-lesson')">Paste</button>
+      </div>
+      <div class="form-group>
+        <label class="form-label">Mistakes & Fixes</label
           <div class="form-textarea" id="entry-mistakes" contenteditable="true" placeholder="What went wrong and how to fix it..."></div>
-          <button class="paste-btn" onclick="pasteHtml('entry-mistakes')">Paste</button>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Bias Going Forward</label>
+        <button class="paste-btn" onclick="pasteHtml('entry-mistakes')">Paste</button>
+      </div>
+      <div class="form-group>
+        <label class="form-label">Bias Going Forward</label
           <div class="form-textarea" id="entry-forward-bias" contenteditable="true" placeholder="What's your bias for tomorrow/next session?"></div>
-          <button class="paste-btn" onclick="pasteHtml('entry-forward-bias')">Paste</button>
-        </div>
+        <button class="paste-btn" onclick="pasteHtml('entry-forward-bias')">Paste</button>
       </div>
     </div>
 
     <!-- PRE-MARKET FIELDS -->
     <div id="premarket-fields" style="display:none;">
-      <div class="form-group">
-        <label class="form-label">Pre-Market Notes</label>
-        <div class="form-textarea" id="entry-premarket-notes" contenteditable="true" placeholder="Your pre-market analysis, thoughts, plans..."></div>
+      <div class="form-group>
+        <label class="form-label">Pre-Market Notes</label
+          <div class="form-textarea" id="entry-premarket-notes" contenteditable="true" placeholder="Your pre-market analysis, thoughts, plans..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-premarket-notes')">Paste</button>
       </div>
     </div>
 
     <!-- FUNDED ACCOUNT FIELDS -->
     <div id="funded-fields" style="display:none;">
-      <div class="form-group">
-        <label class="form-label">Account Name</label>
-        <input type="text" class="form-input" id="entry-funded-name" placeholder="e.g., FTMO, MyForexFunds" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Broker</label>
-        <input type="text" class="form-input" id="entry-funded-broker" placeholder="e.g., ICMarkets, Pepperstone" />
-      </div>
-      <div class="form-group">
-        {# FIXME: missing </div> close for form-group? We'll just keep as is for now #}
-        <div class="form-group">
-          <label class="form-label">Account Size</label>
+      <div class="form-group>
+        <label class="form-label">Account Name</label
+          <input type="text" class="form-input" id="entry-funded-name" placeholder="e.g., FTMO, MyForexFunds" />
+        </div>
+      <div class="form-group>
+        <label class="form-label">Broker</label
+          <input type="text" class="form-input" id="entry-funded-broker" placeholder="e.g., ICMarkets, Pepperstone" />
+        </div>
+      <div class="form-group>
+        <label class="form-label">Account Size</label
           <input type="number" class="form-input" id="entry-funded-size" placeholder="e.g., 10000" />
         </div>
-        <div class="form-group">
-          <label class="form-label">Current Balance</label>
+      <div class="form-group>
+        <label class="form-label">Current Balance</label
           <input type="number" class="form-input" id="entry-funded-balance" placeholder="e.g., 10500" />
         </div>
-        <div class="form-group">
-          <label class="form-label">Profit Target</label>
+      <div class="form-group>
+        <label class="form-label">Profit Target</label
           <input type="number" class="form-input" id="entry-funded-target" placeholder="e.g., 1000" />
         </div>
-        <div class="form-group">
-          <label class="form-label">Max Drawdown</label>
+      <div class="form-group>
+        <label class="form-label">Max Drawdown</label
           <input type="number" class="form-input" id="entry-funded-dd" placeholder="e.g., 1000" />
         </div>
-        <div class="form-group">
-          <label class="form-label">Status</label>
+      <div class="form-group>
+        <label class="form-label">Status</label
           <select class="form-select" id="entry-funded-status">
-            <option value="Active">Active</option>
-            <option value="Completed">Completed</option>
-            <option value="Failed">Failed</option>
-            <option value="Expired">Expired</option>
+            <option value="Active">Active</option
+            <option value="Completed">Completed</option
+            <option value="Failed">Failed</option
+            <option value="Expired">Expired</option
             <option value="Paused">Paused</option>
           </select>
         </div>
-        <div class="form-group">
-          <label class="form-label">Notes</label>
+      </div>
+      <div class="form-group>
+        <label class="form-label">Notes</label
           <div class="form-textarea" id="entry-funded-notes" contenteditable="true" placeholder="Any additional notes..."></div>
-          <button class="paste-btn" onclick="pasteHtml('entry-funded-notes')">Paste</button>
         </div>
+      <div class="form-group>
+        <label class="form-label">Account Picture</label
+          <input type="file" id="entry-funded-picture" accept="image/*" />
+        </div>
+      <div class="form-group>
+        <label class="form-label">Use Picture as Icon</label
+          <input type="checkbox" id="entry-funded-use-pic" />
+        </div>
+      <div class="form-group>
+        <button class="paste-btn" onclick="pasteHtml('entry-funded-notes')">Paste</button>
       </div>
     </div>
 
     <!-- PAYOUT FIELDS -->
     <div id="payout-fields" style="display:none;">
-      <div class="form-group">
-        <label class="form-label">Payout Date</label>
-        <input type="date" class="form-input" id="entry-payout-date" />
+      <div class="form-group>
+        <label class="form-label">Payout Date</label
+          <input type="date" class="form-input" id="entry-payout-date" />
+        </div>
+      <div class="form-group>
+        <label class="form-label">Amount</label
+          <input type="number" class="form-input" id="entry-payout-amount" placeholder="e.g., 500" />
+        </div>
+      <div class="form-group>
+        <label class="form-label">Broker</label
+          <input type="text" class="form-input" id="entry-payout-broker" placeholder="e.g., FTMO, MyForexFunds" />
+        </div>
+      <div class="form-group>
+        <label class="form-label">Account Type</label
+          <select class="form-select" id="entry-payout-type">
+            <option value="Evaluation">Evaluation</option
+            <option value="Funded">Funded</option
+            <option value="Scaling Plan">Scaling Plan</option>
+          </select>
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Amount</label>
-        <input type="number" class="form-input" id="entry-payout-amount" placeholder="e.g., 500" />
+      <div class="form-group>
+        <label class="form-label">Transaction ID</label
+          <input type="text" class="form-input" id="entry-payout-txid" placeholder="Transaction ID" />
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Broker</label>
-        <input type="text" class="form-input" id="entry-payout-broker" placeholder="e.g., FTMO, MyForexFunds" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Account Type</label>
-        <select class="form-select" id="entry-payout-type">
-          <option value="Evaluation">Evaluation</option>
-          <option value="Funded">Funded</option>
-          <option value="Scaling Plan">Scaling Plan</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Transaction ID</label>
-        <input type="text" class="form-input" id="entry-payout-txid" placeholder="Transaction ID" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Notes</label>
-        <div class="form-textarea" id="entry-payout-notes" contenteditable="true" placeholder="Any additional notes..."></div>
+      <div class="form-group>
+        <label class="form-label">Notes</label
+          <div class="form-textarea" id="entry-payout-notes" contenteditable="true" placeholder="Any additional notes..."></div>
+        </div>
+      <div class="form-group>
         <button class="paste-btn" onclick="pasteHtml('entry-payout-notes')">Paste</button>
       </div>
     </div>
@@ -1307,7 +1297,6 @@ function initApp() {
   document.getElementById('topbar-date').textContent = now.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
   document.getElementById('entry-date').value = now.toISOString().split('T')[0];
   renderAll();
-  initChecklists();
 }
 
 function showPage(name, el) {
@@ -1372,22 +1361,50 @@ function saveEntry() {
     entry.thoughts = document.getElementById('entry-live-thoughts').innerHTML;
   } else if (type === 'post') {
     entry.rating = document.getElementById('entry-rating').value;
-    entry.macro = document.getElementById('entry-macro').innerHTML;
-    entry.setups = document.getElementById('entry-setups').innerHTML;
-    entry.lesson = document.getElementById('entry-lesson').innerHTML;
-    entry.mistakes = document.getElementById('entry-mistakes').innerHTML;
-    entry.forwardBias = document.getElementById('entry-forward-bias').innerHTML;
+    entry.macro = document.getElementById('entry-macro).innerHTML;
+    entry.setups = document.getElementById('entry-setups).innerHTML;
+    entry.lesson = document.getElementById('entry-lesson).innerHTML;
+    entry.mistakes = document.getElementById('entry-mistakes).innerHTML;
+    entry.forwardBias = document.getElementById('entry-forward-bias).innerHTML;
   } else if (type === 'premarket') {
-    entry.notes = document.getElementById('entry-premarket-notes').innerHTML;
+    entry.notes = document.getElementById('entry-premarket-notes).innerHTML;
   } else if (type === 'funded') {
     entry.name = document.getElementById('entry-funded-name').value;
-    entry.broker = document.getElementById('entry-funded-broker').value;
+    entry.broker = document.getElementById('entry-funded-broker).value;
     entry.size = parseFloat(document.getElementById('entry-funded-size').value) || 0;
-    entry.balance = parseFloat(document.getElementById('entry-funded-balance').value) || 0;
-    entry.target = parseFloat(document.getElementById('entry-funded-target').value) || 0;
-    entry.dd = parseFloat(document.getElementById('entry-funded-dd').value) || 0;
-    entry.status = document.getElementById('entry-funded-status').value;
-    entry.notes = document.getElementById('entry-funded-notes').innerHTML;
+    entry.balance = parseFloat(document.getElementById('entry-funded-balance).value) || 0;
+    entry.target = parseFloat(document.getElementById('entry-funded-target).value) || 0;
+    entry.dd = parseFloat(document.getElementById('entry-funded-dd).value) || 0;
+    entry.status = document.getElementById('entry-funded-status).value;
+    entry.notes = document.getElementById('entry-funded-notes).innerHTML;
+
+    // Picture handling
+    const picInput = document.getElementById('entry-funded-picture');
+    const usePicCheckbox = document.getElementById('entry-funded-use-pic');
+    if (picInput.files && picInput.files[0] && usePicCheckbox.checked) {
+      const file = picInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        entry.picture = e.target.result; // base64 string
+        // Save the entry after picture is loaded
+        fundedAccounts.push(entry);
+        localStorage.setItem('tj_funded', JSON.stringify(fundedAccounts));
+        renderFunded();
+        closeModal();
+      };
+      reader.onerror = function(e) {
+        console.error('Error reading file:', e);
+        // Still save without picture if reading fails
+        fundedAccounts.push(entry);
+        localStorage.setItem('tj_funded', JSON.stringify(fundedAccounts));
+        renderFunded();
+        closeModal();
+      };
+      reader.readAsDataURL(file);
+      // Return early to prevent saving before picture is read
+      return;
+    }
+    // No picture or checkbox not checked, save normally
     fundedAccounts.push(entry);
     localStorage.setItem('tj_funded', JSON.stringify(fundedAccounts));
     renderFunded();
@@ -1396,10 +1413,10 @@ function saveEntry() {
   } else if (type === 'payout') {
     entry.date = document.getElementById('entry-payout-date').value;
     entry.amount = parseFloat(document.getElementById('entry-payout-amount').value) || 0;
-    entry.broker = document.getElementById('entry-payout-broker').value;
-    entry.type = document.getElementById('entry-payout-type').value;
-    entry.txid = document.getElementById('entry-payout-txid').value;
-    entry.notes = document.getElementById('entry-payout-notes').innerHTML;
+    entry.broker = document.getElementById('entry-payout-broker).value;
+    entry.type = document.getElementById('entry-payout-type).value;
+    entry.txid = document.getElementById('entry-payout-txid).value;
+    entry.notes = document.getElementById('entry-payout-notes).innerHTML;
     payouts.push(entry);
     localStorage.setItem('tj_payouts', JSON.stringify(payouts));
     renderPayouts();
@@ -1431,6 +1448,8 @@ function clearForm() {
   });
   document.getElementById('entry-result').value = '';
   document.getElementById('entry-type').value = 'trade';
+  document.getElementById('entry-funded-picture').value = '';
+  document.getElementById('entry-funded-use-pic').checked = false;
   toggleFields();
 }
 
@@ -1500,8 +1519,7 @@ function buildCard(e) {
     inner = `
       ${e.bias ? `<span class="entry-tag">${e.bias}</span>` : ''} ${e.session ? `<span class="entry-tag">${e.session}</span>` : ''}
       ${e.htf ? `<div class="entry-section-title">HTF Context</div><div>${e.htf}</div>` : ''}
-      ${e.manip ? `<div class="entry-section-title">Manipulation Expectation</div><div>${e.manip}</div>` : ''}
-      ${e.pois ? `<div class="entry-section-title">Key POIs</div><div>${e.pois}</div>` : ''}
+      {e.pois ? `<div class="entry-section-title">Key POIs</div><div>${e.pois}</div>` : ''}
       ${e.thoughts ? `<div class="entry-section-title">Thoughts</div><div>${e.thoughts}</div>` : ''}
     `;
   } else if (e.type === 'post') {
@@ -1513,7 +1531,7 @@ function buildCard(e) {
       ${e.macro ? `<div class="entry-section-title">Macro Breakdown</div><div>${e.macro}</div>` : ''}
       ${e.setups ? `<div class="entry-section-title">Setups Presented</div><div>${e.setups}</div>` : ''}
       ${e.lesson ? `<div class="entry-section-title">Key Lesson</div><div>${e.lesson}</div>` : ''}
-      ${e.mistakes ? `<div class="entry-section-title">Mistakes & Fixes</div><div=${e.mistakes}</div>` : ''}
+      ${e.mistakes ? `<div class="entry-section-title">Mistakes & Fixes</div><div>${e.mistakes}</div>` : ''}
       ${e.forwardBias ? `<div class="entry-section-title">Bias Going Forward</div><div>${e.forwardBias}</div>` : ''}
     `;
   } else if (e.type === 'premarket') {
@@ -1557,7 +1575,9 @@ function buildCard(e) {
     <div class="entry-card" onclick="this.classList.toggle('open')">
       <div class="entry-card-head">
         <div class="entry-card-left">
-          <span class="entry-type-badge ${badgeClass}">${badgeLabel}</span>
+          ${e.picture && e.type === 'funded' && document.getElementById('entry-funded-use-pic') && document.getElementById('entry-funded-use-pic').checked ?
+            `<img src="${e.picture}" class="funded-icon" alt="Funded Account Icon">` :
+            `<span class="entry-type-badge ${badgeClass}">${badgeLabel}</span>`}
           <span class="entry-title">${title}</span>
         </div>
         <span class="entry-date">${dateStr}</span>
@@ -1580,55 +1600,6 @@ function deleteEntry(event, id) {
   renderPayouts();
 }
 
-function initChecklists() {
-  const biasItems = [
-    'Identified HTF bias (daily/weekly)',
-    'Noted key SMT levels',
-    'Checked for unmitigated POIs',
-    'Asia high/low mapped',
-    'DXY correlation checked',
-    'AMD structure identified'
-  ];
-  const sessionItems = [
-    'News events checked (high impact)',
-    'Session open time noted',
-    'Expected manipulation level identified',
-    'Key HVB zones marked',
-    'Fibonacci levels drawn',
-    'Entry criteria defined'
-  ];
-  const riskItems = [
-    'Max loss for session set',
-    'Position size calculated',
-    'SL placement logical (not arbitrary)',
-    'R:R minimum 2:1 confirmed',
-    'No revenge trading rule active',
-    'Eval rules reviewed'
-  ];
-
-  renderChecklist('checklist-bias', biasItems);
-  renderChecklist('checklist-session', sessionItems);
-  renderChecklist('checklist-risk', riskItems);
-}
-
-function renderChecklist(id, items) {
-  const saved = JSON.parse(localStorage.getItem('tj_check_' + id) || '[]');
-  document.getElementById(id).innerHTML = items.map((item, i) => `
-    <div class="checklist-item">
-      <div class="check-box ${saved[i] ? 'checked' : ''}" onclick="toggleCheck('${id}',${i},this)"></div>
-      <div class="check-text">${item}</div>
-    </div>
-  `).join('');
-}
-
-function toggleCheck(id, index, el) {
-  el.classList.toggle('checked');
-  const key = 'tj_check_' + id;
-  const saved = JSON.parse(localStorage.getItem(key) || '[]');
-  saved[index] = el.classList.contains('checked');
-  localStorage.setItem(key, JSON.stringify(saved));
-}
-
 function renderFunded() {
   const container = document.getElementById('funded-entries');
   if (!fundedAccounts.length) {
@@ -1639,7 +1610,9 @@ function renderFunded() {
     <div class="asset-card" onclick="this.classList.toggle('open')">
       <div class="asset-card-head">
         <div class="asset-card-left">
-          <span class="asset-tag">Funded</span>
+          ${acc.picture && document.getElementById('entry-funded-use-pic') && document.getElementById('entry-funded-use-pic').checked ?
+            `<img src="${acc.picture}" class="funded-icon" alt="Funded Account Icon">` :
+            `<span class="asset-tag">Funded</span>`}
           <span class="asset-title">${acc.name || 'Unnamed Account'}</span>
         </div>
         <span class="asset-date">${acc.date ? new Date(acc.date).toLocaleDateString('en-GB') : 'N/A'}</span>
@@ -1752,21 +1725,14 @@ function editTDL(id) {
   const task = tdlTasks.find(t => t.id === id);
   if (!task) return;
 
-  const newText = prompt('Edit task:', task.text);
-  if (newText === null) return;
-
+  const newText === null ? task.text.trim(!newText) { deleteTDL(id); return }
   task.text = newText.trim();
-  if (!task.text) {
-    deleteTDL(id);
-    return;
-  }
-
   localStorage.setItem('tj_tdl', JSON.stringify(tdlTasks));
   renderTDL();
 }
 
 function deleteTDL(id) {
-  if (!confirm('Delete this task?')) return;
+  if(!confirm('Delete this task?')) return;
   tdlTasks = tdlTasks.filter(t => t.id !== id);
   localStorage.setItem('tj_tdl', JSON.stringify(tdlTasks));
   renderTDL();
@@ -1776,10 +1742,9 @@ function pasteHtml(fieldId) {
   navigator.clipboard.read().then(clipboardItems => {
     let html = '';
     let text = '';
-
-    for (const item of clipboardItems) {
-      for (const type of item.types) {
-        if (type === 'text/html') {
+    for(const item of clipboardItems) {
+      for(const type of item.types) {
+        if(type === 'text/html') {
           item.getType('text/html').then(blob => {
             blob.text().then(result => {
               html = result;
@@ -1790,8 +1755,7 @@ function pasteHtml(fieldId) {
         }
       }
     }
-
-    if (!html) {
+    if(!html) {
       navigator.clipboard.readText().then(result => {
         text = result;
         insertTextAtCursor(fieldId, text);
@@ -1807,32 +1771,25 @@ function pasteHtml(fieldId) {
 
 function insertHtmlAtCursor(fieldId, html) {
   const el = document.getElementById(fieldId);
-  if (!el) return;
-
+  if(!el) return;
   const sel = window.getSelection();
-  if (!sel.rangeCount) return;
-
+  if(!sel.rangeCount) return;
   const range = sel.getRangeAt(0);
   range.deleteContents();
-
   const div = document.createElement('div');
   div.innerHTML = html;
   const frag = document.createDocumentFragment();
-
-  while (div.firstChild) {
+  while(div.firstChild) {
     frag.appendChild(div.firstChild);
   }
-
   range.insertNode(frag);
 }
 
 function insertTextAtCursor(fieldId, text) {
   const el = document.getElementById(fieldId);
-  if (!el) return;
-
+  if(!el) return;
   const sel = window.getSelection();
-  if (!sel.rangeCount) return;
-
+  if(!sel.rangeCount) return;
   const range = sel.getRangeAt(0);
   range.deleteContents();
   range.insertNode(document.createTextNode(text));
