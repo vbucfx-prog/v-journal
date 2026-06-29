@@ -6,800 +6,903 @@
 <title>Trading Journal</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #080808;
-    --bg2: #0f0f0f;
-    --bg3: #141414;
-    --bg4: #1a1a1a;
-    --green: #b8ff3c;
-    --green-dim: #7aaa1e;
-    --green-glow: rgba(184,255,60,0.12);
-    --green-glow2: rgba(184,255,60,0.06);
-    --text: #e8e8e8;
-    --text-muted: #666;
-    --text-dim: #444;
-    --border: #1f1f1f;
-    --border-green: rgba(184,255,60,0.2);
-    --radius: 6px;
-    --font: 'Space Grotesk', sans-serif;
-    --mono: 'Space Mono', monospace;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── LOCK SCREEN ── */
-  #lock-screen {
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    gap: 0;
-  }
-
-  .lock-glyph {
-    width: 56px;
-    height: 56px;
-    border: 1.5px solid var(--green);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 28px;
-    box-shadow: 0 0 24px var(--green-glow), inset 0 0 24px var(--green-glow2);
-  }
-
-  .lock-glyph svg { width: 22px; height: 22px; stroke: var(--green); fill: none; stroke-width: 1.5; }
-
-  .lock-title {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    margin-bottom: 36px;
-  }
-
-  .lock-input-wrap {
-    position: relative;
-    width: 260px;
-    margin-bottom: 16px;
-  }
-
-  .lock-input-wrap input {
-    width: 100%;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--text);
-    outline: none;
-    letter-spacing: 0.15em;
-    text-align: center;
-    transition: border-color 0.2s;
-  }
-
-  .lock-input-wrap input:focus { border-color: var(--green); box-shadow: 0 0 0 1px var(--green-glow); }
-
-  .lock-btn {
-    width: 260px;
-    padding: 12px;
-    background: var(--green);
-    border: none;
-    border-radius: var(--radius);
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    color: #080808;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: opacity 0.15s, box-shadow 0.15s;
-  }
-
-  .lock-btn:hover { opacity: 0.9; box-shadow: 0 0 20px var(--green-glow); }
-
-  .lock-error {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: #ff4444;
-    margin-top: 12px;
-    letter-spacing: 0.1em;
-    height: 16px;
-    text-align: center;
-  }
-
-  /* ── APP ── */
-  #app { display: none; min-height: 100vh; }
-
-  /* ── SIDEBAR ── */
-  .sidebar {
-    position: fixed;
-    left: 0; top: 0; bottom: 0;
-    width: 220px;
-    background: var(--bg2);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
-    padding: 28px 0 24px;
-  }
-
-  .sidebar-logo {
-    padding: 0 24px 32px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 24px;
-  }
-
-  .sidebar-logo-mark {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    color: var(--green);
-    text-transform: uppercase;
-  }
-
-  .sidebar-logo-sub {
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 0.1em;
-    margin-top: 3px;
-    font-family: var(--mono);
-  }
-
-  .nav-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    padding: 0 24px;
-    margin-bottom: 8px;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 24px;
-    font-size: 13px;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: color 0.15s, background 0.15s;
-    border-left: 2px solid transparent;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-  }
-
-  .nav-item svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.5; flex-shrink: 0; }
-  .nav-item:hover { color: var(--text); background: var(--bg3); }
-  .nav-item.active { color: var(--green); border-left-color: var(--green); background: var(--green-glow2); }
-
-  .sidebar-bottom {
-    margin-top: auto;
-    padding: 16px 24px 0;
-    border-top: 1px solid var(--border);
-  }
-
-  .lock-out-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    color: var(--text-dim);
-    cursor: pointer;
-    text-transform: uppercase;
-    background: none;
-    border: none;
-    padding: 8px 0;
-    transition: color 0.15s;
-  }
-
-  .lock-out-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.5; }
-  .lock-out-btn:hover { color: var(--green); }
-
-  /* ── MAIN ── */
-  .main {
-    margin-left: 220px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .topbar {
-    padding: 22px 40px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--bg);
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
-  .topbar-title {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-
-  .topbar-date {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 0.1em;
-  }
-
-  .new-entry-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--green);
-    border: none;
-    border-radius: var(--radius);
-    padding: 9px 18px;
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: #080808;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: opacity 0.15s, box-shadow 0.15s;
-  }
-
-  .new-entry-btn:hover { opacity: 0.88; box-shadow: 0 0 16px var(--green-glow); }
-  .new-entry-btn svg { width: 13px; height: 13px; stroke: #080808; fill: none; stroke-width: 2; }
-
-  .content { padding: 36px 40px; flex: 1; }
-
-  /* ── PAGES ── */
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* ── DASHBOARD ── */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 32px;
-  }
-
-  .stat-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px 20px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--green-dim), transparent);
-    opacity: 0.4;
-  }
-
-  .stat-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .stat-value {
-    font-family: var(--mono);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--green);
-    line-height: 1;
-  }
-
-  .stat-sub {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
-
-  .section-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-
-  .section-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-  }
-
-  /* ── ENTRY CARD ── */
-  .entry-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 10px;
-    overflow: hidden;
-    transition: border-color 0.15s;
-    cursor: pointer;
-  }
-
-  .entry-card:hover { border-color: var(--border-green); }
-
-  .entry-card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-  }
-
-  .entry-card-left { display: flex; align-items: center; gap: 14px; }
-
-  .entry-type-badge {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 3px;
-    font-weight: 700;
-  }
-
-  .badge-trade { background: rgba(184,255,60,0.1); color: var(--green); border: 1px solid rgba(184,255,60,0.2); }
-  .badge-live { background: rgba(255,180,60,0.08); color: #ffb43c; border: 1px solid rgba(255,180,60,0.2); }
-  .badge-post { background: rgba(100,180,255,0.08); color: #64b4ff; border: 1px solid rgba(100,180,255,0.2); }
-  .badge-funded { background: rgba(255,100,100,0.1); color: #ff6464; border: 1px solid rgba(255,100,100,0.2); }
-  .badge-payout { background: rgba(100,255,100,0.1); color: #64ff64; border: 1px solid rgba(100,255,100,0.2); }
-  .badge-tdl { background: rgba(180,100,255,0.1); color: #b464ff; border: 1px solid rgba(180,100,255,0.2); }
-  .badge-premarket { background: rgba(200,200,200,0.1); color: #c8c8c8; border: 1px solid rgba(200,200,200,0.2); }
-
-  .entry-title { font-size: 14px; font-weight: 500; color: var(--text); }
-  .entry-date { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.08em; }
-
-  .entry-card-body {
-    padding: 0 20px 14px;
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.65;
-    border-top: 1px solid var(--border);
-    display: none;
-  }
-
-  .entry-card.open .entry-card-body { display: block; padding-top: 14px; }
-
-  .entry-tag {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 2px 7px;
-    border-radius: 3px;
-    background: var(--bg4);
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-    margin-right: 4px;
-    margin-bottom: 10px;
-  }
-
-  .entry-section-title {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--green-dim);
-    margin: 14px 0 6px;
-  }
-
-  .entry-section-title:first-of-type { margin-top: 0; }
-
-  /* ── MODAL ── */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(4px);
-    z-index: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    display: none;
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--bg2);
-    border: 1px solid var(--border-green);
-    border-radius: 10px;
-    width: 640px;
-    max-width: 95vw;
-    max-height: 88vh;
-    overflow-y: auto;
-    padding: 32px;
-    position: relative;
-  }
-
-  .modal-title {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--green);
-    margin-bottom: 24px;
-  }
-
-  .form-group { margin-bottom: 18px; }
-
-  .form-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    display: block;
-    margin-bottom: 7px;
-  }
-
-  .form-input, .form-textarea, .form-select {
-    width: 100%;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 10px 14px;
-    font-family: var(--font);
-    font-size: 13px;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .form-input:focus, .form-textarea:focus, .form-select:focus {
-    border-color: var(--green);
-    box-shadow: 0 0 0 1px var(--green-glow);
-  }
-
-  .form-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
-  .form-select option { background: var(--bg3); }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
-  .form-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-  }
-
-  .btn-cancel {
-    padding: 9px 18px;
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: border-color 0.15s, color 0.15s;
-  }
-
-  .btn-cancel:hover { border-color: var(--text-muted); color: var(--text); }
-
-  .btn-save {
-    padding: 9px 22px;
-    background: var(--green);
-    border: none;
-    border-radius: var(--radius);
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: #080808;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: opacity 0.15s;
-  }
-
-  .btn-save:hover { opacity: 0.88; }
-
-  .modal-close {
-    position: absolute;
-    top: 20px; right: 20px;
-    background: none;
-    border: none;
-    color: var(--text-dim);
-    cursor: pointer;
-    font-size: 20px;
-    line-height: 1;
-    transition: color 0.15s;
-    font-family: var(--mono);
-  }
-
-  .modal-close:hover { color: var(--text); }
-
-  /* ── PASTE BUTTON ── */
-  .paste-btn {
-    display: none;
-    margin-left: 8px;
-    vertical-align: middle;
-    background: var(--green);
-    border: none;
-    border-radius: 3px;
-    padding: 4px 8px;
-    font-family: var(--mono);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: #080808;
-    cursor: pointer;
-    text-transform: uppercase;
-    opacity: 0.8;
-    transition: opacity 0.15s;
-  }
-
-  .paste-btn:hover { opacity: 1; }
-
-  /* ── IMAGE STYLES ── */
-  .funded-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
-    object-fit: cover;
-    border: 1px solid var(--border);
-    margin-right: 8px;
-  }
-
-  /* ── EMPTY STATE ── */
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-dim);
-  }
-
-  .empty-state-icon {
-    width: 40px;
-    height: 40px;
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 16px;
-  }
-
-  .empty-state-icon svg { width: 18px; height: 18px; stroke: var(--text-dim); fill: none; stroke-width: 1.5; }
-  .empty-state p { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
-
-  /* ── PRE MARKET CHECKLIST PAGE ── */
-  .checklist-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    margin-bottom: 12px;
-  }
-
-  .checklist-card-title {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--green-dim);
-    margin-bottom: 14px;
-  }
-
-  /* scrollbar */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
-
-  .pnl-pos { color: var(--green); }
-  .pnl-neg { color: #ff4444; }
-
-  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
-
-  .view-btn {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
-  }
-
-  .view-btn:hover { color: var(--green); border-color: var(--border-green); }
-
-  .filter-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-  }
-
-  .filter-btn {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .filter-btn:hover, .filter-btn.active { color: var(--green); border-color: var(--border-green); background: var(--green-glow2); }
-
-  /* ── FUNDED ACCOUNTS & PAYOUTS & TDL ── */
-  .asset-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 10px;
-    overflow: hidden;
-    transition: border-color 0.15s;
-    cursor: pointer;
-  }
-
-  .asset-card:hover { border-color: var(--border-green); }
-
-  .asset-card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-  }
-
-  .asset-card-left { display: flex; align-items: center; gap: 14px; }
-
-  .asset-title { font-size: 14px; font-weight: 500; color: var(--text); }
-  .asset-date { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.08em; }
-
-  .asset-card-body {
-    padding: 0 20px 14px;
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.65;
-    border-top: 1px solid var(--border);
-    display: none;
-  }
-
-  .asset-card.open .asset-card-body { display: block; padding-top: 14px; }
-
-  .asset-tag {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 2px 7px;
-    border-radius: 3px;
-    background: var(--bg4);
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-    margin-right: 4px;
-    margin-bottom: 10px;
-  }
-
-  .asset-section-title {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--green-dim);
-    margin: 14px 0 6px;
-  }
-
-  .asset-section-title:first-of-type { margin-top: 0; }
-
-  /* ── TDL ITEM ── */
-  .tdl-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 15px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 8px;
-  }
-
-  .tdl-item.completed { opacity: 0.6; }
-
-  .tdl-text {
-    flex: 1;
-    font-size: 13px;
-    color: var(--text-muted);
-  }
-
-  .tdl-checkbox {
-    width: 16px;
-    height: 16px;
-    border: 1px solid var(--border-green);
-    border-radius: 3px;
-    margin-right: 10px;
-    cursor: pointer;
-  }
-
-  .tdl-checkbox.checked { background: var(--green); border-color: var(--green); }
-
-  .tdl-actions {
-    display: flex;
-    gap: 6px;
-  }
-
-  .tdl-btn {
-    width: 24px;
-    height: 24px;
-    border: none;
-    border-radius: 3px;
-    background: var(--bg3);
-    color: var(--text-muted);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    transition: background 0.15s, color 0.15s;
-  }
-
-  .tdl-btn:hover { background: var(--green); color: #080808; }
-
-  .tdl-btn.edit { background: var(--green-glow2); }
-  .tdl-btn.delete { background: rgba(255,0,0,0.1); color: #ff4444; }
-  .tdl-btn.delete:hover { background: rgba(255,0,0,0.2); }
+:root {
+  --bg: #080808;
+  --bg2: #0d0d0d;
+  --bg3: #131313;
+  --bg4: #181818;
+  --bg5: #1e1e1e;
+  --green: #b8ff3c;
+  --green-dim: #7aaa1e;
+  --green-glow: rgba(184,255,60,0.12);
+  --green-glow2: rgba(184,255,60,0.05);
+  --text: #e2e2e2;
+  --text-muted: #5a5a5a;
+  --text-dim: #3a3a3a;
+  --border: #1c1c1c;
+  --border-green: rgba(184,255,60,0.18);
+  --radius: 8px;
+  --radius-sm: 5px;
+  --font: 'Space Grotesk', sans-serif;
+  --mono: 'Space Mono', monospace;
+  --sidebar: 210px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg5); border-radius: 2px; }
+
+/* ─── LOCK SCREEN ─── */
+#lock-screen {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 1000;
+}
+
+.lock-ring {
+  width: 64px; height: 64px;
+  border: 1px solid var(--border-green);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 32px;
+  box-shadow: 0 0 32px var(--green-glow), 0 0 64px rgba(184,255,60,0.04);
+  position: relative;
+}
+
+.lock-ring::before {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(184,255,60,0.06);
+}
+
+.lock-ring svg { width: 24px; height: 24px; stroke: var(--green); fill: none; stroke-width: 1.5; }
+
+.lock-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 40px;
+}
+
+.lock-field {
+  width: 280px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  letter-spacing: 0.2em;
+  text-align: center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.lock-field:focus {
+  border-color: rgba(184,255,60,0.4);
+  box-shadow: 0 0 0 3px rgba(184,255,60,0.06);
+}
+
+.lock-submit {
+  width: 280px;
+  padding: 13px;
+  background: var(--green);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #060606;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: opacity 0.15s, box-shadow 0.2s;
+}
+
+.lock-submit:hover { opacity: 0.88; box-shadow: 0 4px 24px rgba(184,255,60,0.18); }
+
+.lock-err {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: #ff4a4a;
+  letter-spacing: 0.1em;
+  height: 14px;
+  text-align: center;
+  margin-top: 12px;
+}
+
+/* ─── APP SHELL ─── */
+#app { display: none; min-height: 100vh; }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: var(--sidebar);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  z-index: 100;
+  padding: 24px 0 20px;
+}
+
+.sb-brand {
+  padding: 0 20px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.sb-brand-name {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--green);
+  text-transform: uppercase;
+}
+
+.sb-brand-sub {
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.12em;
+  margin-top: 3px;
+  font-family: var(--mono);
+}
+
+.sb-section-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  padding: 0 20px;
+  margin-bottom: 6px;
+  margin-top: 14px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: color 0.12s, background 0.12s;
+  letter-spacing: 0.01em;
+  user-select: none;
+}
+
+.nav-item svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; flex-shrink: 0; }
+.nav-item:hover { color: var(--text); background: var(--bg3); }
+.nav-item.active { color: var(--green); border-left-color: var(--green); background: var(--green-glow2); }
+
+.sb-bottom {
+  margin-top: auto;
+  padding: 16px 20px 0;
+  border-top: 1px solid var(--border);
+}
+
+.lock-btn-sb {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-dim);
+  cursor: pointer;
+  text-transform: uppercase;
+  background: none; border: none;
+  padding: 8px 0;
+  transition: color 0.15s;
+}
+
+.lock-btn-sb svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.lock-btn-sb:hover { color: var(--green); }
+
+/* ─── MAIN ─── */
+.main { margin-left: var(--sidebar); min-height: 100vh; display: flex; flex-direction: column; }
+
+.topbar {
+  padding: 18px 36px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg);
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(8px);
+}
+
+.topbar-left { display: flex; flex-direction: column; gap: 2px; }
+
+.topbar-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.topbar-date {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+}
+
+.btn-new {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--green);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #060606;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: opacity 0.15s, box-shadow 0.15s;
+}
+
+.btn-new:hover { opacity: 0.88; box-shadow: 0 2px 16px rgba(184,255,60,0.2); }
+.btn-new svg { width: 12px; height: 12px; stroke: #060606; fill: none; stroke-width: 2.5; }
+
+.content { padding: 32px 36px; flex: 1; }
+
+/* ─── PAGES ─── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ─── STAT CARDS ─── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  position: relative; overflow: hidden;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184,255,60,0.3), transparent);
+}
+
+.stat-lbl {
+  font-family: var(--mono);
+  font-size: 8px; letter-spacing: 0.22em;
+  color: var(--text-dim); text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.stat-val {
+  font-family: var(--mono);
+  font-size: 24px; font-weight: 700;
+  color: var(--green); line-height: 1;
+}
+
+.stat-sub { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+
+/* ─── SECTION HEADER ─── */
+.sec-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.sec-label {
+  font-family: var(--mono);
+  font-size: 9px; letter-spacing: 0.22em;
+  color: var(--text-dim); text-transform: uppercase;
+}
+
+/* ─── GOALS ─── */
+.goals-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 28px;
+}
+
+.goals-add-row {
+  display: flex; gap: 8px; margin-bottom: 14px;
+}
+
+.goals-input {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 13px;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.goals-input:focus { border-color: rgba(184,255,60,0.3); }
+
+.goals-add-btn {
+  padding: 9px 16px;
+  background: var(--green);
+  border: none; border-radius: var(--radius-sm);
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; color: #060606;
+  cursor: pointer; text-transform: uppercase;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.goals-add-btn:hover { opacity: 0.88; }
+
+.goal-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.goal-item:last-child { border-bottom: none; }
+
+.goal-check {
+  width: 15px; height: 15px; flex-shrink: 0;
+  border: 1px solid var(--border-green);
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.goal-check.done { background: var(--green); border-color: var(--green); }
+.goal-check.done::after { content: '✓'; font-size: 9px; color: #060606; font-weight: 700; }
+
+.goal-text {
+  flex: 1; font-size: 13px; color: var(--text-muted);
+  line-height: 1.5; outline: none;
+  background: none; border: none;
+  font-family: var(--font);
+}
+
+.goal-text.done-text { text-decoration: line-through; opacity: 0.45; }
+
+.goal-text[contenteditable="true"]:focus {
+  color: var(--text);
+  border-bottom: 1px solid rgba(184,255,60,0.2);
+}
+
+.goal-del {
+  width: 22px; height: 22px;
+  background: none; border: none;
+  color: var(--text-dim); cursor: pointer;
+  border-radius: 3px;
+  font-size: 14px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.12s, background 0.12s;
+  flex-shrink: 0;
+}
+
+.goal-del:hover { color: #ff4a4a; background: rgba(255,74,74,0.08); }
+
+/* ─── FOREX FACTORY PLACEHOLDER ─── */
+.ff-placeholder {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 28px;
+  display: flex; align-items: center; gap: 14px;
+}
+
+.ff-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--text-dim); flex-shrink: 0;
+}
+
+.ff-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--text-dim); text-transform: uppercase; }
+.ff-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* ─── ENTRY CARDS ─── */
+.entry-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+  cursor: pointer;
+}
+
+.entry-card:hover { border-color: rgba(184,255,60,0.12); }
+
+.entry-card-head {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 13px 18px;
+  gap: 12px;
+}
+
+.entry-card-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+
+.badge {
+  font-family: var(--mono);
+  font-size: 8px; letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 3px 7px; border-radius: 3px;
+  font-weight: 700; flex-shrink: 0;
+}
+
+.badge-trade { background: rgba(184,255,60,0.08); color: var(--green); border: 1px solid rgba(184,255,60,0.18); }
+.badge-live { background: rgba(255,180,60,0.07); color: #ffb43c; border: 1px solid rgba(255,180,60,0.18); }
+.badge-post { background: rgba(100,180,255,0.07); color: #64b4ff; border: 1px solid rgba(100,180,255,0.18); }
+.badge-premarket { background: rgba(200,200,200,0.06); color: #aaa; border: 1px solid rgba(200,200,200,0.14); }
+.badge-funded { background: rgba(255,100,100,0.07); color: #ff7070; border: 1px solid rgba(255,100,100,0.18); }
+.badge-payout { background: rgba(100,255,140,0.07); color: #64ff8c; border: 1px solid rgba(100,255,140,0.18); }
+
+.entry-title {
+  font-size: 13px; font-weight: 500; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.entry-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+.entry-date {
+  font-family: var(--mono);
+  font-size: 9px; color: var(--text-dim);
+  letter-spacing: 0.08em;
+}
+
+.del-btn {
+  width: 22px; height: 22px;
+  background: none; border: none;
+  color: var(--text-dim); cursor: pointer;
+  border-radius: 3px; font-size: 13px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.12s, background 0.12s;
+}
+
+.del-btn:hover { color: #ff4a4a; background: rgba(255,74,74,0.08); }
+
+.entry-body {
+  padding: 0 18px 14px;
+  font-size: 12px; color: var(--text-muted);
+  line-height: 1.7;
+  border-top: 1px solid var(--border);
+  display: none;
+}
+
+.entry-card.open .entry-body { display: block; padding-top: 14px; }
+
+.e-tag {
+  display: inline-block;
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 3px;
+  background: var(--bg4); color: var(--text-dim);
+  border: 1px solid var(--border);
+  margin-right: 4px; margin-bottom: 10px;
+}
+
+.e-sec {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--green-dim);
+  margin: 12px 0 5px;
+}
+
+/* ─── IMAGE STRIP ─── */
+.img-strip {
+  display: flex; gap: 8px;
+  overflow-x: auto; padding-bottom: 4px;
+  margin-top: 10px;
+}
+
+.img-thumb {
+  width: 90px; height: 60px; flex-shrink: 0;
+  border-radius: 5px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.12s;
+}
+
+.img-thumb:hover { border-color: var(--border-green); transform: scale(1.03); }
+
+/* ─── IMAGE LIGHTBOX ─── */
+#lightbox {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 2000;
+  display: none;
+  align-items: center; justify-content: center;
+}
+
+#lightbox.open { display: flex; }
+#lightbox img { max-width: 90vw; max-height: 88vh; border-radius: var(--radius); border: 1px solid var(--border); }
+#lightbox-close {
+  position: absolute; top: 20px; right: 24px;
+  background: none; border: none; color: var(--text-muted);
+  font-size: 28px; cursor: pointer; line-height: 1;
+  font-family: var(--mono);
+}
+#lightbox-close:hover { color: var(--text); }
+
+/* ─── FILTER ROW ─── */
+.filter-row { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+
+.filter-btn {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px; cursor: pointer;
+  transition: all 0.12s;
+}
+
+.filter-btn:hover, .filter-btn.active {
+  color: var(--green);
+  border-color: var(--border-green);
+  background: var(--green-glow2);
+}
+
+/* ─── MODAL ─── */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 500;
+  display: none;
+  align-items: center; justify-content: center;
+}
+
+.overlay.open { display: flex; }
+
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border-green);
+  border-radius: 10px;
+  width: 660px; max-width: 96vw;
+  max-height: 90vh; overflow-y: auto;
+  padding: 30px;
+  position: relative;
+}
+
+.modal-hd {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 22px;
+}
+
+.m-close {
+  position: absolute; top: 18px; right: 18px;
+  background: none; border: none;
+  color: var(--text-dim); cursor: pointer;
+  font-size: 18px; line-height: 1;
+  font-family: var(--mono); transition: color 0.12s;
+}
+
+.m-close:hover { color: var(--text); }
+
+/* ─── FORM ─── */
+.fg { margin-bottom: 16px; }
+
+.fl {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-dim); display: block; margin-bottom: 6px;
+}
+
+.fi, .fta, .fsel {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 13px;
+  font-family: var(--font); font-size: 13px;
+  color: var(--text); outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.fi:focus, .fta:focus, .fsel:focus {
+  border-color: rgba(184,255,60,0.3);
+  box-shadow: 0 0 0 3px rgba(184,255,60,0.05);
+}
+
+.fsel option { background: var(--bg3); }
+.fta { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+.f2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.form-actions {
+  display: flex; gap: 8px; justify-content: flex-end;
+  margin-top: 22px; padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-cancel {
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.12em; color: var(--text-muted);
+  cursor: pointer; text-transform: uppercase;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.btn-cancel:hover { border-color: var(--text-muted); color: var(--text); }
+
+.btn-save {
+  padding: 8px 20px;
+  background: var(--green); border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; color: #060606;
+  cursor: pointer; text-transform: uppercase;
+  transition: opacity 0.15s;
+}
+
+.btn-save:hover { opacity: 0.88; }
+
+/* ─── SECTION DIVIDER IN MODAL ─── */
+.form-section-label {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--green-dim); margin: 20px 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ─── PRE-MARKET CHECKLIST ─── */
+.check-group {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px; margin-bottom: 10px;
+}
+
+.check-group-title {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--green-dim); margin-bottom: 12px;
+}
+
+.check-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.check-item:last-child { border-bottom: none; }
+
+.chk {
+  width: 14px; height: 14px; flex-shrink: 0;
+  border: 1px solid var(--border-green);
+  border-radius: 3px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px;
+  transition: background 0.12s;
+}
+
+.chk.on { background: var(--green); border-color: var(--green); }
+.chk.on::after { content: '✓'; font-size: 8px; color: #060606; font-weight: 700; }
+
+.chk-text { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+/* ─── TDL ─── */
+.tdl-add-row {
+  display: flex; gap: 8px; margin-bottom: 18px;
+}
+
+.tdl-inp {
+  flex: 1;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-family: var(--font); font-size: 13px;
+  color: var(--text); outline: none;
+  transition: border-color 0.15s;
+}
+
+.tdl-inp:focus { border-color: rgba(184,255,60,0.3); }
+
+.tdl-add-btn {
+  padding: 10px 18px;
+  background: var(--green); border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; color: #060606;
+  cursor: pointer; text-transform: uppercase;
+  transition: opacity 0.15s;
+}
+
+.tdl-add-btn:hover { opacity: 0.88; }
+
+.tdl-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  transition: border-color 0.12s;
+}
+
+.tdl-item:hover { border-color: rgba(184,255,60,0.1); }
+
+.tdl-chk {
+  width: 15px; height: 15px; flex-shrink: 0;
+  border: 1px solid var(--border-green);
+  border-radius: 3px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.12s;
+}
+
+.tdl-chk.on { background: var(--green); border-color: var(--green); }
+.tdl-chk.on::after { content: '✓'; font-size: 8px; color: #060606; font-weight: 700; }
+
+.tdl-txt {
+  flex: 1; font-size: 13px; color: var(--text-muted);
+  outline: none; background: none; border: none;
+  font-family: var(--font); padding: 0;
+  cursor: text;
+}
+
+.tdl-txt:focus { color: var(--text); }
+.tdl-txt.done { text-decoration: line-through; opacity: 0.4; }
+
+.tdl-del {
+  width: 22px; height: 22px;
+  background: none; border: none;
+  color: var(--text-dim); cursor: pointer;
+  border-radius: 3px; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.12s, background 0.12s;
+  flex-shrink: 0;
+}
+
+.tdl-del:hover { color: #ff4a4a; background: rgba(255,74,74,0.08); }
+
+/* ─── FUNDED / PAYOUTS ─── */
+.asset-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); margin-bottom: 8px;
+  overflow: hidden; transition: border-color 0.15s; cursor: pointer;
+}
+
+.asset-card:hover { border-color: rgba(184,255,60,0.12); }
+
+.asset-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 18px; gap: 12px;
+}
+
+.asset-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+.asset-title { font-size: 13px; font-weight: 500; color: var(--text); }
+.asset-date { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.08em; }
+
+.asset-body {
+  padding: 0 18px 14px; font-size: 12px;
+  color: var(--text-muted); line-height: 1.7;
+  border-top: 1px solid var(--border); display: none;
+}
+
+.asset-card.open .asset-body { display: block; padding-top: 14px; }
+
+.a-sec {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--green-dim); margin: 12px 0 4px;
+}
+
+/* ─── EMPTY STATE ─── */
+.empty {
+  text-align: center; padding: 56px 20px; color: var(--text-dim);
+}
+
+.empty-ico {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+}
+
+.empty-ico svg { width: 16px; height: 16px; stroke: var(--text-dim); fill: none; stroke-width: 1.5; }
+.empty p { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
+
+/* ─── MISC ─── */
+.pnl-pos { color: var(--green); }
+.pnl-neg { color: #ff4a4a; }
+
+/* ─── FILE INPUT ─── */
+.file-input-wrap {
+  position: relative;
+  background: var(--bg3);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.file-input-wrap:hover { border-color: rgba(184,255,60,0.3); }
+
+.file-input-wrap input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+
+.file-input-label {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.img-preview-strip {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.img-preview-item {
+  position: relative; width: 72px; height: 52px;
+}
+
+.img-preview-item img {
+  width: 100%; height: 100%;
+  object-fit: cover; border-radius: 5px;
+  border: 1px solid var(--border);
+}
+
+.img-preview-remove {
+  position: absolute; top: -5px; right: -5px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #ff4a4a; border: none;
+  color: #fff; font-size: 10px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
 </style>
 </head>
 <body>
 
-<!-- LOCK SCREEN -->
+<!-- LOCK -->
 <div id="lock-screen">
-  <div class="lock-glyph">
+  <div class="lock-ring">
     <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
   </div>
-  <div class="lock-title">Trading Journal</div>
-  <div class="lock-input-wrap">
-    <input type="password" id="pw-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')unlock()" />
-  </div>
-  <button class="lock-btn" onclick="unlock()">Unlock</button>
-  <div class="lock-error" id="pw-error"></div>
+  <div class="lock-label">Trading Journal</div>
+  <input class="lock-field" type="password" id="pw-input" placeholder="password" onkeydown="if(event.key==='Enter')unlock()">
+  <button class="lock-submit" onclick="unlock()">Unlock</button>
+  <div class="lock-err" id="pw-err"></div>
 </div>
 
 <!-- APP -->
@@ -807,57 +910,55 @@
 
   <!-- SIDEBAR -->
   <nav class="sidebar">
-    <div class="sidebar-logo">
-      <div class="sidebar-logo-mark">Journal</div>
-      <div class="sidebar-logo-sub">Trading · Private</div>
+    <div class="sb-brand">
+      <div class="sb-brand-name">Journal</div>
+      <div class="sb-brand-sub">Trading · Private</div>
     </div>
 
-    <div class="nav-label" style="margin-bottom:10px;">Navigation</div>
-
+    <div class="sb-section-label">Main</div>
     <div class="nav-item active" onclick="showPage('dashboard',this)">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       Overview
     </div>
 
+    <div class="sb-section-label">Journal</div>
     <div class="nav-item" onclick="showPage('trades',this)">
       <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
       Trades
     </div>
-
     <div class="nav-item" onclick="showPage('live',this)">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
       Live Outlook
     </div>
-
     <div class="nav-item" onclick="showPage('post',this)">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       Post Market
     </div>
-
     <div class="nav-item" onclick="showPage('premarket',this)">
-      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       Pre-Market
     </div>
 
+    <div class="sb-section-label">Accounts</div>
     <div class="nav-item" onclick="showPage('funded',this)">
-      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 16 14.5 18.18 20.09 12 16.77 5.82 20.09 8 14.5 2 9.27 6.91 8.26"/></svg>
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
       Funded Accounts
     </div>
-
     <div class="nav-item" onclick="showPage('payouts',this)">
-      <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 2 17"/><polyline points="17 6 15 10 15 22"/></svg>
+      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
       Payouts
     </div>
 
+    <div class="sb-section-label">Tasks</div>
     <div class="nav-item" onclick="showPage('tdl',this)">
-      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       Personal TDL
     </div>
 
-    <div class="sidebar-bottom">
-      <button class="lock-out-btn" onclick="lockApp()">
+    <div class="sb-bottom">
+      <button class="lock-btn-sb" onclick="lockApp()">
         <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Lock
+        Lock Journal
       </button>
     </div>
   </nav>
@@ -865,183 +966,160 @@
   <!-- MAIN -->
   <div class="main">
     <div class="topbar">
-      <div class="topbar-title" id="page-title">Overview</div>
-      <div style="display:flex;align-items:center;gap:16px;">
+      <div class="topbar-left">
+        <div class="topbar-title" id="page-title">Overview</div>
         <div class="topbar-date" id="topbar-date"></div>
-        <button class="new-entry-btn" onclick="openModal()">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          New Entry
-        </button>
       </div>
+      <button class="btn-new" id="btn-new" onclick="openModal()" style="display:none">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Entry
+      </button>
     </div>
 
     <div class="content">
 
-      <!-- DASHBOARD -->
+      <!-- OVERVIEW -->
       <div class="page active" id="page-dashboard">
-        <div class="stats-row">
+        <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-label">Total Entries</div>
-            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-lbl">Total Entries</div>
+            <div class="stat-val" id="stat-total">0</div>
             <div class="stat-sub">All time</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Trades Logged</div>
-            <div class="stat-value" id="stat-trades">0</div>
+            <div class="stat-lbl">Trades</div>
+            <div class="stat-val" id="stat-trades">0</div>
+            <div class="stat-sub">Logged</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-lbl">Live Outlooks</div>
+            <div class="stat-val" id="stat-live">0</div>
             <div class="stat-sub">Sessions</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Live Outlooks</div>
-            <div class="stat-value" id="stat-live">0</div>
-            <div class="stat-sub">Sessions</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Post Markets</div>
-            <div class="stat-value" id="stat-post">0</div>
-            <div class="stat-sub">Sessions</div>
+            <div class="stat-lbl">Post Markets</div>
+            <div class="stat-val" id="stat-post">0</div>
+            <div class="stat-sub">Reviews</div>
           </div>
         </div>
 
-        <div class="section-head">
-          <div class="section-label">Goals</div>
-        </div>
-        <div id="goals-container">
-          <textarea id="goals-input" placeholder="Enter your trading goals..."></textarea>
-          <button onclick="saveGoals()">Save Goals</button>
+        <!-- GOALS -->
+        <div class="sec-head"><div class="sec-label">Goals</div></div>
+        <div class="goals-card" id="goals-section">
+          <div class="goals-add-row">
+            <input class="goals-input" type="text" id="goal-input" placeholder="Add a goal..." onkeydown="if(event.key==='Enter')addGoal()">
+            <button class="goals-add-btn" onclick="addGoal()">Add</button>
+          </div>
+          <div id="goals-list"></div>
         </div>
 
-        <div class="section-head">
-          <div class="section-label">Forex Factory News</div>
-        </div>
-        <div id="forex-news-container">
-          <div class="empty-state">
-            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.5 1.18 5.59L12 16.77l-6.18 4.59L2 9.27l5.09-4.63L12 2z"/></svg></div>
-            <p>Forex factory news will appear here after implementation.</p>
+        <!-- FOREX FACTORY -->
+        <div class="sec-head"><div class="sec-label">Economic Calendar</div></div>
+        <div class="ff-placeholder">
+          <div class="ff-dot"></div>
+          <div>
+            <div class="ff-label">Forex Factory Sync</div>
+            <div class="ff-sub">Economic calendar integration — coming soon</div>
           </div>
         </div>
 
-        <div class="section-head">
-          <div class="section-label">Recent Entries</div>
-        </div>
-        <div id="dash-entries">
-          <div class="empty-state">
-            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-            <p>No entries yet</p>
-          </div>
-        </div>
+        <!-- RECENT -->
+        <div class="sec-head"><div class="sec-label">Recent Entries</div></div>
+        <div id="dash-entries"></div>
       </div>
 
       <!-- TRADES -->
       <div class="page" id="page-trades">
         <div class="filter-row">
-          <button class="filter-btn active" onclick="filterEntries('trade','all',this)">All</button>
-          <button class="filter-btn" onclick="filterEntries('trade','long',this)">Long</button>
-          <button class="filter-btn" onclick="filterEntries('trade','short',this)">Short</button>
-          <button class="filter-btn" onclick="filterEntries('trade','missed',this)">Missed</button>
+          <button class="filter-btn active" onclick="filterTrades('all',this)">All</button>
+          <button class="filter-btn" onclick="filterTrades('long',this)">Long</button>
+          <button class="filter-btn" onclick="filterTrades('short',this)">Short</button>
+          <button class="filter-btn" onclick="filterTrades('missed',this)">Missed</button>
+          <button class="filter-btn" onclick="filterTrades('win',this)">Wins</button>
+          <button class="filter-btn" onclick="filterTrades('loss',this)">Losses</button>
         </div>
-        <div id="trade-entries">
-          <div class="empty-state">
-            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg></div>
-            <p>No trade entries yet</p>
-          </div>
-        </div>
+        <div id="trade-entries"></div>
       </div>
 
-      <!-- LIVE OUTLOOK -->
+      <!-- LIVE -->
       <div class="page" id="page-live">
-        <div id="live-entries">
-          <div class="empty-state">
-            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49"/></svg></div>
-            <p>No live outlooks yet</p>
-          </div>
-        </div>
+        <div id="live-entries"></div>
       </div>
 
       <!-- POST MARKET -->
       <div class="page" id="page-post">
-        <div id="post-entries">
-          <div class="empty-state">
-            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-            <p>No post market entries yet</p>
-          </div>
-        </div>
+        <div id="post-entries"></div>
       </div>
 
       <!-- PRE-MARKET -->
       <div class="page" id="page-premarket">
-        <div id="premarket-entries">
-          <div class="empty-state">
-            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-            <p>No pre-market entries yet</p>
-          </div>
+        <div class="check-group">
+          <div class="check-group-title">Bias & Structure</div>
+          <div id="chk-bias"></div>
+        </div>
+        <div class="check-group">
+          <div class="check-group-title">Session Prep</div>
+          <div id="chk-session"></div>
+        </div>
+        <div class="check-group">
+          <div class="check-group-title">Risk Management</div>
+          <div id="chk-risk"></div>
+        </div>
+        <div style="margin-top:18px">
+          <div class="sec-head"><div class="sec-label">Pre-Market Notes</div></div>
+          <div id="premarket-entries"></div>
         </div>
       </div>
 
-      <!-- FUNDED ACCOUNTS -->
+      <!-- FUNDED -->
       <div class="page" id="page-funded">
-        <div id="funded-entries">
-          <div class="empty-state">
-            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 16 14.5 18.18 20.09 12 16.77 5.82 20.09 8 14.5 2 9.27 6.91 8.26"/></svg></div>
-            <p>No funded accounts yet</p>
-          </div>
-        </div>
+        <div id="funded-entries"></div>
       </div>
 
       <!-- PAYOUTS -->
       <div class="page" id="page-payouts">
-        <div id="payout-entries">
-          <div class="empty-state">
-            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 2 17"/><polyline points="17 6 15 10 15 22"/></svg></div>
-            <p>No payouts yet</p>
-          </div>
-        </div>
+        <div id="payout-entries"></div>
       </div>
 
-      <!-- PERSONAL TDL -->
+      <!-- TDL -->
       <div class="page" id="page-tdl">
-        <div id="tdl-entries">
-          <div class="empty-state">
-            <div class="empty-state-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-            <p>No tasks yet</p>
-          </div>
+        <div class="tdl-add-row">
+          <input class="tdl-inp" id="tdl-input" type="text" placeholder="Add a task..." onkeydown="if(event.key==='Enter')addTask()">
+          <button class="tdl-add-btn" onclick="addTask()">Add</button>
         </div>
-        <div class="tdl-add">
-          <input type="text" id="tdl-input" placeholder="Add a new task..." />
-          <button onclick="addTDL()">Add</button>
-        </div>
+        <div id="tdl-list"></div>
       </div>
 
     </div>
   </div>
-
 </div>
 
-<!-- NEW ENTRY MODAL -->
-<div class="modal-overlay" id="modal">
+<!-- MODAL -->
+<div class="overlay" id="modal">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">New Journal Entry</div>
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <div class="modal-hd" id="modal-title">New Journal Entry</div>
 
-    <div class="form-group">
-      <label class="form-label">Entry Type</label>
-      <select class="form-select" id="entry-type" onchange="toggleFields()">
+    <div class="fg">
+      <label class="fl">Entry Type</label>
+      <select class="fsel" id="entry-type" onchange="toggleFields()">
         <option value="trade">Trade</option>
         <option value="live">Live Outlook</option>
         <option value="post">Post Market</option>
-        <option value="premarket">Pre-Market</option>
+        <option value="premarket">Pre-Market Notes</option>
         <option value="funded">Funded Account</option>
         <option value="payout">Payout</option>
       </select>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Date</label>
-        <input type="date" class="form-input" id="entry-date" />
+    <div class="f2">
+      <div class="fg">
+        <label class="fl">Date</label>
+        <input class="fi" type="date" id="entry-date">
       </div>
-      <div class="form-group">
-        <label class="form-label">Session</label>
-        <select class="form-select" id="entry-session">
+      <div class="fg" id="session-group">
+        <label class="fl">Session</label>
+        <select class="fsel" id="entry-session">
           <option value="Asia">Asia</option>
           <option value="London">London</option>
           <option value="New York">New York</option>
@@ -1050,26 +1128,27 @@
       </div>
     </div>
 
-    <!-- TRADE FIELDS -->
+    <!-- TRADE -->
     <div id="trade-fields">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Instrument</label>
-          <input type="text" class="form-input" id="entry-instrument" placeholder="NQ, ES, GC..." />
+      <div class="form-section-label">Trade Details</div>
+      <div class="f2">
+        <div class="fg">
+          <label class="fl">Instrument</label>
+          <input class="fi" type="text" id="e-instrument" placeholder="NQ, ES, GC...">
         </div>
-        <div class="form-group">
-          <label class="form-label">Direction</label>
-          <select class="form-select" id="entry-direction">
+        <div class="fg">
+          <label class="fl">Direction</label>
+          <select class="fsel" id="e-direction">
             <option value="Long">Long</option>
             <option value="Short">Short</option>
             <option value="Missed">Missed</option>
           </select>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Result</label>
-          <select class="form-select" id="entry-result">
+      <div class="f2">
+        <div class="fg">
+          <label class="fl">Result</label>
+          <select class="fsel" id="e-result">
             <option value="">— Select —</option>
             <option value="Win">Win</option>
             <option value="Loss">Loss</option>
@@ -1077,195 +1156,230 @@
             <option value="Missed">Missed</option>
           </select>
         </div>
-        <div class="form-group">
-          <label class="form-label">Points / R:R</label>
-          <input type="text" class="form-input" id="entry-rr" placeholder="e.g. +320pts / 3R" />
+        <div class="fg">
+          <label class="fl">Points / R:R</label>
+          <input class="fi" type="text" id="e-rr" placeholder="+320pts / 3R">
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Concepts Used</label>
-          <input type="text" class="form-input" id="entry-concepts" placeholder="SMT, HVB, Fibonacci, POI..." />
+      <div class="fg">
+        <label class="fl">Concepts Used</label>
+        <input class="fi" type="text" id="e-concepts" placeholder="SMT, HVB, Fibonacci, POI...">
+      </div>
+      <div class="form-section-label">Notes</div>
+      <div class="fg">
+        <label class="fl">Entry Reasoning</label>
+        <textarea class="fta" id="e-reasoning" placeholder="What confluence gave you the entry?"></textarea>
+      </div>
+      <div class="fg">
+        <label class="fl">What I Did Well</label>
+        <textarea class="fta" id="e-good" placeholder="Execution, patience, reads..."></textarea>
+      </div>
+      <div class="fg">
+        <label class="fl">What To Improve</label>
+        <textarea class="fta" id="e-improve" placeholder="Mistakes, missed signals..."></textarea>
+      </div>
+      <div class="form-section-label">Screenshots</div>
+      <div class="fg">
+        <div class="file-input-wrap" onclick="document.getElementById('e-pics').click()">
+          <input type="file" id="e-pics" accept="image/*" multiple style="display:none" onchange="handlePics('e-pics','e-pics-preview')">
+          <div class="file-input-label">Click to add screenshots (multiple allowed)</div>
         </div>
-      <div class="form-group">
-        <label class="form-label">Entry Reasoning</label>
-          <div class="form-textarea" id="entry-reasoning" contenteditable="true" placeholder="What confluence gave you the entry?"></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-reasoning')">Paste</button>
-      </div>
-      <div class="form-group">
-        <label class="form-label">What I Did Well</label>
-          <div class="form-textarea" id="entry-good" contenteditable="true" placeholder="Execution, patience, reads..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-good')">Paste</button>
-      </div>
-      <div class="form-group">
-        <label class="form-label">What To Improve</label>
-          <div class="form-textarea" id="entry-improve" contenteditable="true" placeholder="Mistakes, missed signals..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-improve')">Paste</button>
+        <div class="img-preview-strip" id="e-pics-preview"></div>
       </div>
     </div>
 
-    <!-- LIVE OUTLOOK FIELDS -->
-    <div id="live-fields" style="display:none;">
-      <div class="form-group">
-        <label class="form-label">Bias</label>
-          <select class="form-select" id="entry-bias">
-            <option value="Bullish">Bullish</option>
-            <option value="Bearish">Bearish</option>
-            <option value="Neutral">Neutral</option>
-          </select>
+    <!-- LIVE -->
+    <div id="live-fields" style="display:none">
+      <div class="form-section-label">Outlook</div>
+      <div class="fg">
+        <label class="fl">Bias</label>
+        <select class="fsel" id="e-bias">
+          <option value="Bullish">Bullish</option>
+          <option value="Bearish">Bearish</option>
+          <option value="Neutral">Neutral</option>
+        </select>
       </div>
-      <div class="form-group">
-        <label class="form-label">HTF Context</label>
-          <div class="form-textarea" id="entry-htf" contenteditable="true" placeholder="Higher timeframe structure, key levels..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-htf')">Paste</button>
+      <div class="fg">
+        <label class="fl">HTF Context</label>
+        <textarea class="fta" id="e-htf" placeholder="Higher timeframe structure, key levels..."></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label">Manipulation Expectation</label>
-          <div class="form-textarea" id="entry-manip" contenteditable="true" placeholder="Where do you expect manipulation? AMD levels..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-manip')">Paste</button>
+      <div class="fg">
+        <label class="fl">Manipulation Expectation</label>
+        <textarea class="fta" id="e-manip" placeholder="Where do you expect manipulation? AMD levels..."></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label">Key POIs to Watch</label>
-          <div class="form-textarea" id="entry-pois" contenteditable="true" placeholder="POIs, SMTs, HVBs on watch..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-pois')">Paste</button>
+      <div class="fg">
+        <label class="fl">Key POIs to Watch</label>
+        <textarea class="fta" id="e-pois" placeholder="POIs, SMTs, HVBs on watch..."></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label">General Thoughts</label>
-          <div class="form-textarea" id="entry-live-thoughts" contenteditable="true" placeholder="Anything else on your mind pre-session..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-live-thoughts')">Paste</button>
+      <div class="fg">
+        <label class="fl">General Thoughts</label>
+        <textarea class="fta" id="e-live-thoughts" placeholder="Anything else on your mind pre-session..."></textarea>
+      </div>
+      <div class="form-section-label">Screenshots</div>
+      <div class="fg">
+        <div class="file-input-wrap" onclick="document.getElementById('e-live-pics').click()">
+          <input type="file" id="e-live-pics" accept="image/*" multiple style="display:none" onchange="handlePics('e-live-pics','e-live-pics-preview')">
+          <div class="file-input-label">Click to add screenshots (multiple allowed)</div>
+        </div>
+        <div class="img-preview-strip" id="e-live-pics-preview"></div>
       </div>
     </div>
 
-    <!-- POST MARKET FIELDS -->
-    <div id="post-fields" style="display:none;">
-      <div class="form-group">
-        <label class="form-label">Day Rating</label>
-          <select class="form-select" id="entry-rating">
-            <option value="A">A — Executed the plan</option>
-            <option value="B">B — Good but minor issues</option>
-            <option value="C">C — Average, missed things</option>
-            <option value="D">D — Poor execution</option>
-            <option value="X">X — Off charts / no trade</option>
-          </select>
+    <!-- POST MARKET -->
+    <div id="post-fields" style="display:none">
+      <div class="form-section-label">Review</div>
+      <div class="fg">
+        <label class="fl">Day Rating</label>
+        <select class="fsel" id="e-rating">
+          <option value="A">A — Executed the plan</option>
+          <option value="B">B — Good, minor issues</option>
+          <option value="C">C — Average, missed things</option>
+          <option value="D">D — Poor execution</option>
+          <option value="X">X — Off charts / no trade</option>
+        </select>
       </div>
-      <div class="form-group">
-        <label class="form-label">What Happened (Macro Breakdown)</label>
-          <div class="form-textarea" id="entry-macro" contenteditable="true" placeholder="L1-L2, 2:30, AMD breakdown, what actually played out..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-macro')">Paste</button>
+      <div class="fg">
+        <label class="fl">Macro Breakdown</label>
+        <textarea class="fta" id="e-macro" placeholder="L1-L2, 2:30, AMD breakdown, what played out..."></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label">Setups That Presented</label>
-          <div class="form-textarea" id="entry-setups" contenteditable="true" placeholder="Describe the setups — caught or missed..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-setups')">Paste</button>
+      <div class="fg">
+        <label class="fl">Setups That Presented</label>
+        <textarea class="fta" id="e-setups" placeholder="Caught or missed — describe them..."></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label">Key Lesson</label>
-          <div class="form-textarea" id="entry-lesson" contenteditable="true" placeholder="The one thing you're taking away from today..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-lesson')">Paste</button>
+      <div class="fg">
+        <label class="fl">Key Lesson</label>
+        <textarea class="fta" id="e-lesson" placeholder="The one thing you're taking away today..."></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label">Mistakes & Fixes</label>
-          <div class="form-textarea" id="entry-mistakes" contenteditable="true" placeholder="What went wrong and how to fix it..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-mistakes')">Paste</button>
+      <div class="fg">
+        <label class="fl">Mistakes & Fixes</label>
+        <textarea class="fta" id="e-mistakes" placeholder="What went wrong and how to fix it..."></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label">Bias Going Forward</label>
-          <div class="form-textarea" id="entry-forward-bias" contenteditable="true" placeholder="What's your bias for tomorrow/next session?"></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-forward-bias')">Paste</button>
+      <div class="fg">
+        <label class="fl">Bias Going Forward</label>
+        <textarea class="fta" id="e-forward-bias" placeholder="Bias for tomorrow/next session..."></textarea>
       </div>
-    </div>
-
-    <!-- PRE-MARKET FIELDS -->
-    <div id="premarket-fields" style="display:none;">
-      <div class="form-group">
-        <label class="form-label">Pre-Market Notes</label>
-          <div class="form-textarea" id="entry-premarket-notes" contenteditable="true" placeholder="Your pre-market analysis, thoughts, plans..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-premarket-notes')">Paste</button>
+      <div class="form-section-label">Screenshots</div>
+      <div class="fg">
+        <div class="file-input-wrap" onclick="document.getElementById('e-post-pics').click()">
+          <input type="file" id="e-post-pics" accept="image/*" multiple style="display:none" onchange="handlePics('e-post-pics','e-post-pics-preview')">
+          <div class="file-input-label">Click to add screenshots (multiple allowed)</div>
+        </div>
+        <div class="img-preview-strip" id="e-post-pics-preview"></div>
       </div>
     </div>
 
-    <!-- FUNDED ACCOUNT FIELDS -->
-    <div id="funded-fields" style="display:none;">
-      <div class="form-group">
-        <label class="form-label">Account Name</label>
-          <input type="text" class="form-input" id="entry-funded-name" placeholder="e.g., FTMO, MyForexFunds" />
-        </div>
-      <div class="form-group">
-        <label class="form-label">Broker</label
-          <input type="text" class="form-input" id="entry-funded-broker" placeholder="e.g., ICMarkets, Pepperstone" />
-        </div>
-      <div class="form-group">
-        <label class="form-label">Account Size</label>
-          <input type="number" class="form-input" id="entry-funded-size" placeholder="e.g., 10000" />
-        </div>
-      <div class="form-group">
-        <label class="form-label">Current Balance</label
-          <input type="number" class="form-input" id="entry-funded-balance" placeholder="e.g., 10500" />
-        </div>
-      <div class="form-group">
-        <label class="form-label">Profit Target</label
-          <input type="number" class="form-input" id="entry-funded-target" placeholder="e.g., 1000" />
-        </div>
-      <div class="form-group">
-        <label class="form-label">Max Drawdown</label
-          <input type="number" class="form-input" id="entry-funded-dd" placeholder="e.g., 1000" />
-        </div>
-      <div class="form-group">
-        <label class="form-label">Status</label
-          <select class="form-select" id="entry-funded-status">
-            <option value="Active">Active</option>
-            <option value="Completed">Completed</option>
-            <option value="Failed">Failed</option>
-            <option value="Expired">Expired</option>
-            <option value="Paused">Paused</option>
-          </select>
-        </div>
-      <div class="form-group">
-        <label class="form-label">Notes</label
-          <div class="form-textarea" id="entry-funded-notes" contenteditable="true" placeholder="Any additional notes..."></div>
-        </div>
-      <div class="form-group">
-        <label class="form-label">Picture</label
-          <input type="file" id="entry-funded-picture" accept="image/*" />
-      </div>
-      <div class="form-group>
-        <button class="paste-btn" onclick="pasteHtml('entry-funded-notes')">Paste</button>
+    <!-- PRE-MARKET NOTES -->
+    <div id="premarket-fields" style="display:none">
+      <div class="form-section-label">Pre-Market Checklist</div>
+      <div id="modal-checklist-bias" style="margin-bottom:10px"></div>
+      <div id="modal-checklist-session" style="margin-bottom:10px"></div>
+      <div id="modal-checklist-risk" style="margin-bottom:10px"></div>
+      <div class="form-section-label">Notes</div>
+      <div class="fg">
+        <label class="fl">Pre-Market Notes</label>
+        <textarea class="fta" id="e-pm-notes" placeholder="Your thoughts, levels to watch, plan for the session..."></textarea>
       </div>
     </div>
 
-    <!-- PAYOUT FIELDS -->
-    <div id="payout-fields" style="display:none;">
-      <div class="form-group>
-        <label class="form-label">Payout Date</label
-          <input type="date" class="form-input" id="entry-payout-date" />
+    <!-- FUNDED -->
+    <div id="funded-fields" style="display:none">
+      <div class="form-section-label">Account Info</div>
+      <div class="f2">
+        <div class="fg">
+          <label class="fl">Account / Firm Name</label>
+          <input class="fi" type="text" id="e-funded-name" placeholder="FTMO, MyForexFunds...">
         </div>
-      <div class="form-group>
-        <label class="form-label">Amount</label
-          <input type="number" class="form-input" id="entry-payout-amount" placeholder="e.g., 500" />
+        <div class="fg">
+          <label class="fl">Broker</label>
+          <input class="fi" type="text" id="e-funded-broker" placeholder="ICMarkets, Pepperstone...">
         </div>
-      <div class="form-group>
-        <label class="form-label">Broker</label
-          <input type="text" class="form-input" id="entry-payout-broker" placeholder="e.g., FTMO, MyForexFunds" />
+      </div>
+      <div class="f2">
+        <div class="fg">
+          <label class="fl">Account Size ($)</label>
+          <input class="fi" type="number" id="e-funded-size" placeholder="10000">
         </div>
-      <div class="form-group>
-        <label class="form-label">Account Type</label
-          <select class="form-select" id="entry-payout-type">
-            <option value="Evaluation">Evaluation</option
-            <option value="Funded">Funded</option
+        <div class="fg">
+          <label class="fl">Current Balance ($)</label>
+          <input class="fi" type="number" id="e-funded-balance" placeholder="10500">
+        </div>
+      </div>
+      <div class="f2">
+        <div class="fg">
+          <label class="fl">Profit Target ($)</label>
+          <input class="fi" type="number" id="e-funded-target" placeholder="1000">
+        </div>
+        <div class="fg">
+          <label class="fl">Max Drawdown ($)</label>
+          <input class="fi" type="number" id="e-funded-dd" placeholder="1000">
+        </div>
+      </div>
+      <div class="fg">
+        <label class="fl">Status</label>
+        <select class="fsel" id="e-funded-status">
+          <option value="Active">Active</option>
+          <option value="Completed">Completed</option>
+          <option value="Failed">Failed</option>
+          <option value="Expired">Expired</option>
+          <option value="Paused">Paused</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="fl">Notes</label>
+        <textarea class="fta" id="e-funded-notes" placeholder="Any additional notes..."></textarea>
+      </div>
+      <div class="form-section-label">Screenshots / Proof</div>
+      <div class="fg">
+        <div class="file-input-wrap" onclick="document.getElementById('e-funded-pics').click()">
+          <input type="file" id="e-funded-pics" accept="image/*" multiple style="display:none" onchange="handlePics('e-funded-pics','e-funded-pics-preview')">
+          <div class="file-input-label">Click to add screenshots (multiple allowed)</div>
+        </div>
+        <div class="img-preview-strip" id="e-funded-pics-preview"></div>
+      </div>
+    </div>
+
+    <!-- PAYOUT -->
+    <div id="payout-fields" style="display:none">
+      <div class="form-section-label">Payout Details</div>
+      <div class="f2">
+        <div class="fg">
+          <label class="fl">Payout Date</label>
+          <input class="fi" type="date" id="e-payout-date">
+        </div>
+        <div class="fg">
+          <label class="fl">Amount ($)</label>
+          <input class="fi" type="number" id="e-payout-amount" placeholder="500">
+        </div>
+      </div>
+      <div class="f2">
+        <div class="fg">
+          <label class="fl">Firm / Broker</label>
+          <input class="fi" type="text" id="e-payout-broker" placeholder="FTMO...">
+        </div>
+        <div class="fg">
+          <label class="fl">Account Type</label>
+          <select class="fsel" id="e-payout-actype">
+            <option value="Evaluation">Evaluation</option>
+            <option value="Funded">Funded</option>
             <option value="Scaling Plan">Scaling Plan</option>
           </select>
         </div>
       </div>
-      <div class="form-group>
-        <label class="form-label">Transaction ID</label
-          <input type="text" class="form-input" id="entry-payout-txid" placeholder="Transaction ID" />
-        </div>
+      <div class="fg">
+        <label class="fl">Transaction ID</label>
+        <input class="fi" type="text" id="e-payout-txid" placeholder="Transaction ID">
       </div>
-      <div class="form-group>
-        <label class="form-label">Notes</label
-          <div class="form-textarea" id="entry-payout-notes" contenteditable="true" placeholder="Any additional notes..."></div>
+      <div class="fg">
+        <label class="fl">Notes</label>
+        <textarea class="fta" id="e-payout-notes" placeholder="Any additional notes..."></textarea>
+      </div>
+      <div class="form-section-label">Screenshots / Proof</div>
+      <div class="fg">
+        <div class="file-input-wrap" onclick="document.getElementById('e-payout-pics').click()">
+          <input type="file" id="e-payout-pics" accept="image/*" multiple style="display:none" onchange="handlePics('e-payout-pics','e-payout-pics-preview')">
+          <div class="file-input-label">Click to add screenshots (multiple allowed)</div>
         </div>
-      <div class="form-group>
-        <button class="paste-btn" onclick="pasteHtml('entry-payout-notes')">Paste</button>
+        <div class="img-preview-strip" id="e-payout-pics-preview"></div>
       </div>
     </div>
 
@@ -1276,37 +1390,43 @@
   </div>
 </div>
 
-<script>
-console.log('Script loaded');
-const PASSWORD = 'apostles';
-let entries = [];
-try { const item = localStorage.getItem('tj_entries'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) entries = parsed; } } catch (e) {};
-let fundedAccounts = [];
-try { const item = localStorage.getItem('tj_funded'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) fundedAccounts = parsed; } } catch (e) {};
-let payouts = [];
-try { const item = localStorage.getItem('tj_payouts'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) payouts = parsed; } } catch (e) {};
-let tdlTasks = [];
-try { const item = localStorage.getItem('tj_tdl'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) tdlTasks = parsed; } } catch (e) {};
-let currentFilter = 'all';
-let activeTradeFilter = 'all';
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
 
+<script>
+const PW = 'vbucks123';
+
+// ── STATE ──
+let entries = safeLoad('tj_entries', []);
+let fundedAccounts = safeLoad('tj_funded', []);
+let payouts = safeLoad('tj_payouts', []);
+let tasks = safeLoad('tj_tasks', []);
+let goals = safeLoad('tj_goals', []);
+
+// pending images per section [{ dataUrl, name }]
+let pendingPics = { trade: [], live: [], post: [], premarket: [], funded: [], payout: [] };
+
+function safeLoad(key, fallback) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch(e) { return fallback; }
+}
+
+function save(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
+
+// ── LOCK ──
 function unlock() {
-  console.log('[Unlock] Function started');
-  const val = document.getElementById('pw-input').value.trim();
-  console.log('[Unlock] Entered password:', val);
-  if (val === PASSWORD) {
-    console.log('[Unlock] Password correct');
-    const lockScreen = document.getElementById('lock-screen');
-    lockScreen.innerHTML = '<div style="color:var(--green);font-size:20px;">Unlocking...</div>';
-    setTimeout(() => {
-      console.log('[Unlock] Hiding lock screen, showing app');
-      lockScreen.style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      initApp();
-    }, 300);
+  const val = document.getElementById('pw-input').value;
+  if (val === PW) {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    init();
   } else {
-    console.log('[Unlock] Password incorrect');
-    const err = document.getElementById('pw-error');
+    const err = document.getElementById('pw-err');
     err.textContent = 'Incorrect password';
     document.getElementById('pw-input').value = '';
     setTimeout(() => err.textContent = '', 2000);
@@ -1319,57 +1439,41 @@ function lockApp() {
   document.getElementById('pw-input').value = '';
 }
 
-function saveGoals() {
-  const goalsText = document.getElementById('goals-input').value.trim();
-  localStorage.setItem('tj_goals', goalsText);
+// ── INIT ──
+function init() {
+  const now = new Date();
+  document.getElementById('topbar-date').textContent =
+    now.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+  document.getElementById('entry-date').value = now.toISOString().split('T')[0];
+  renderAll();
+  renderGoals();
+  renderTasks();
+  initChecklists();
 }
 
-function initApp() {
-  console.log('[InitApp] Started');
-  const now = new Date();
-  const topbarDateEl = document.getElementById('topbar-date');
-  if (topbarDateEl) {
-    topbarDateEl.textContent = now.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
-  }
-  const entryDateEl = document.getElementById('entry-date');
-  if (entryDateEl) {
-    entryDateEl.value = now.toISOString().split('T')[0];
-  }
-  // Load goals
-  const goalsInputEl = document.getElementById('goals-input');
-  if (goalsInputEl) {
-    const savedGoals = localStorage.getItem('tj_goals') || '';
-    goalsInputEl.value = savedGoals;
-  }
-  console.log('[InitApp] About to call renderAll');
-  renderAll();
-  console.log('[InitApp] Finished');
-}
+// ── PAGES ──
+const PAGE_TITLES = {
+  dashboard:'Overview', trades:'Trades', live:'Live Outlook',
+  post:'Post Market', premarket:'Pre-Market',
+  funded:'Funded Accounts', payouts:'Payouts', tdl:'Personal TDL'
+};
 
 function showPage(name, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   if (el) el.classList.add('active');
-  const titles = {
-    dashboard: 'Overview',
-    trades: 'Trades',
-    live: 'Live Outlook',
-    post: 'Post Market',
-    premarket: 'Pre-Market',
-    funded: 'Funded Accounts',
-    payouts: 'Payouts',
-    tdl: 'Personal TDL'
-  };
-  document.getElementById('page-title').textContent = titles[name] || name;
-  const newBtn = document.querySelector('.new-entry-btn');
-  if (name === 'dashboard') {
-    newBtn.style.display = 'none';
-  } else {
-    newBtn.style.display = 'inline-block';
+  document.getElementById('page-title').textContent = PAGE_TITLES[name] || name;
+  document.getElementById('btn-new').style.display = name === 'dashboard' || name === 'tdl' ? 'none' : 'flex';
+  // pre-select entry type to match page
+  const typeMap = { trades:'trade', live:'live', post:'post', premarket:'premarket', funded:'funded', payouts:'payout' };
+  if (typeMap[name]) {
+    document.getElementById('entry-type').value = typeMap[name];
+    toggleFields();
   }
 }
 
+// ── MODAL ──
 function openModal() {
   document.getElementById('modal').classList.add('open');
   toggleFields();
@@ -1381,303 +1485,293 @@ function closeModal() {
 }
 
 function toggleFields() {
-  const type = document.getElementById('entry-type').value;
-  document.getElementById('trade-fields').style.display = type === 'trade' ? 'block' : 'none';
-  document.getElementById('live-fields').style.display = type === 'live' ? 'block' : 'none';
-  document.getElementById('post-fields').style.display = type === 'post' ? 'block' : 'none';
-  document.getElementById('premarket-fields').style.display = type === 'premarket' ? 'block' : 'none';
-  document.getElementById('funded-fields').style.display = type === 'funded' ? 'block' : 'none';
-  document.getElementById('payout-fields').style.display = type === 'payout' ? 'block' : 'none';
+  const t = document.getElementById('entry-type').value;
+  ['trade','live','post','premarket','funded','payout'].forEach(k => {
+    document.getElementById(k + '-fields').style.display = t === k ? 'block' : 'none';
+  });
+  document.getElementById('session-group').style.display =
+    ['trade','live','post','premarket'].includes(t) ? 'block' : 'none';
 }
 
+// ── IMAGE HANDLING ──
+function handlePics(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  const typeMap = { 'e-pics':'trade','e-live-pics':'live','e-post-pics':'post','e-pm-pics':'premarket','e-funded-pics':'funded','e-payout-pics':'payout' };
+  const section = typeMap[inputId] || 'trade';
+
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      pendingPics[section].push(e.target.result);
+      renderPreview(preview, section);
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+function renderPreview(previewEl, section) {
+  if (typeof previewEl === 'string') previewEl = document.getElementById(previewEl);
+  if (!previewEl) return;
+  previewEl.innerHTML = pendingPics[section].map((src, i) => `
+    <div class="img-preview-item">
+      <img src="${src}" onclick="openLightbox('${src}')">
+      <button class="img-preview-remove" onclick="removePendingPic('${section}',${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removePendingPic(section, index) {
+  pendingPics[section].splice(index, 1);
+  const previewMap = { trade:'e-pics-preview',live:'e-live-pics-preview',post:'e-post-pics-preview',premarket:'e-pm-pics-preview',funded:'e-funded-pics-preview',payout:'e-payout-pics-preview' };
+  renderPreview(previewMap[section], section);
+}
+
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lightbox-img').src = '';
+}
+
+// ── SAVE ENTRY ──
 function saveEntry() {
   const type = document.getElementById('entry-type').value;
   const date = document.getElementById('entry-date').value;
   const session = document.getElementById('entry-session').value;
-
-  let entry = { id: Date.now(), type, date, session };
+  const id = Date.now();
+  let entry = { id, type, date, session };
 
   if (type === 'trade') {
-    entry.instrument = document.getElementById('entry-instrument').value;
-    entry.direction = document.getElementById('entry-direction').value;
-    entry.result = document.getElementById('entry-result').value;
-    entry.rr = document.getElementById('entry-rr').value;
-    entry.concepts = document.getElementById('entry-concepts').value;
-    entry.reasoning = document.getElementById('entry-reasoning').innerHTML;
-    entry.good = document.getElementById('entry-good').innerHTML;
-    entry.improve = document.getElementById('entry-improve').innerHTML;
+    entry.instrument = document.getElementById('e-instrument').value;
+    entry.direction = document.getElementById('e-direction').value;
+    entry.result = document.getElementById('e-result').value;
+    entry.rr = document.getElementById('e-rr').value;
+    entry.concepts = document.getElementById('e-concepts').value;
+    entry.reasoning = document.getElementById('e-reasoning').value;
+    entry.good = document.getElementById('e-good').value;
+    entry.improve = document.getElementById('e-improve').value;
+    entry.pics = [...pendingPics.trade];
   } else if (type === 'live') {
-    entry.bias = document.getElementById('entry-bias').value;
-    entry.htf = document.getElementById('entry-htf').innerHTML;
-    entry.manip = document.getElementById('entry-manip').innerHTML;
-    entry.pois = document.getElementById('entry-pois').innerHTML;
-    entry.thoughts = document.getElementById('entry-live-thoughts').innerHTML;
+    entry.bias = document.getElementById('e-bias').value;
+    entry.htf = document.getElementById('e-htf').value;
+    entry.manip = document.getElementById('e-manip').value;
+    entry.pois = document.getElementById('e-pois').value;
+    entry.thoughts = document.getElementById('e-live-thoughts').value;
+    entry.pics = [...pendingPics.live];
   } else if (type === 'post') {
-    entry.rating = document.getElementById('entry-rating').value;
-    entry.macro = document.getElementById('entry-macro').innerHTML;
-    entry.setups = document.getElementById('entry-setups').innerHTML;
-    entry.lesson = document.getElementById('entry-lesson').innerHTML;
-    entry.mistakes = document.getElementById('entry-mistakes').innerHTML;
-    entry.forwardBias = document.getElementById('entry-forward-bias').innerHTML;
+    entry.rating = document.getElementById('e-rating').value;
+    entry.macro = document.getElementById('e-macro').value;
+    entry.setups = document.getElementById('e-setups').value;
+    entry.lesson = document.getElementById('e-lesson').value;
+    entry.mistakes = document.getElementById('e-mistakes').value;
+    entry.forwardBias = document.getElementById('e-forward-bias').value;
+    entry.pics = [...pendingPics.post];
   } else if (type === 'premarket') {
-    entry.notes = document.getElementById('entry-premarket-notes').innerHTML;
+    entry.notes = document.getElementById('e-pm-notes').value;
+    entry.pics = [...pendingPics.premarket];
   } else if (type === 'funded') {
-    entry.name = document.getElementById('entry-funded-name').value;
-    entry.broker = document.getElementById('entry-funded-broker').value;
-    entry.size = parseFloat(document.getElementById('entry-funded-size').value) || 0;
-    entry.balance = parseFloat(document.getElementById('entry-funded-balance').value) || 0;
-    entry.target = parseFloat(document.getElementById('entry-funded-target').value) || 0;
-    entry.dd = parseFloat(document.getElementById('entry-funded-dd').value) || 0;
-    entry.status = document.getElementById('entry-funded-status').value;
-    entry.notes = document.getElementById('entry-funded-notes').innerHTML;
-
-    // Picture handling
-    const picInput = document.getElementById('entry-funded-picture');
-    if (picInput.files && picInput.files[0]) {
-      const file = picInput.files[0];
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        entry.picture = e.target.result; // base64 string
-        // Save the entry after picture is loaded
-        fundedAccounts.push(entry);
-        localStorage.setItem('tj_funded', JSON.stringify(fundedAccounts));
-        renderFunded();
-        closeModal();
-      };
-      reader.onerror = function(e) {
-        console.error('Error reading file:', e);
-        // Still save without picture if reading fails
-        fundedAccounts.push(entry);
-        localStorage.setItem('tj_funded', JSON.stringify(fundedAccounts));
-        renderFunded();
-        closeModal();
-      };
-      reader.readAsDataURL(file);
-      // Return early to prevent saving before picture is read
-      return;
-    }
-    // No picture, save normally
-    fundedAccounts.push(entry);
-    localStorage.setItem('tj_funded', JSON.stringify(fundedAccounts));
+    entry.name = document.getElementById('e-funded-name').value;
+    entry.broker = document.getElementById('e-funded-broker').value;
+    entry.size = parseFloat(document.getElementById('e-funded-size').value) || 0;
+    entry.balance = parseFloat(document.getElementById('e-funded-balance').value) || 0;
+    entry.target = parseFloat(document.getElementById('e-funded-target').value) || 0;
+    entry.dd = parseFloat(document.getElementById('e-funded-dd').value) || 0;
+    entry.status = document.getElementById('e-funded-status').value;
+    entry.notes = document.getElementById('e-funded-notes').value;
+    entry.pics = [...pendingPics.funded];
+    fundedAccounts.unshift(entry);
+    save('tj_funded', fundedAccounts);
     renderFunded();
     closeModal();
     return;
   } else if (type === 'payout') {
-    entry.date = document.getElementById('entry-payout-date').value;
-    entry.amount = parseFloat(document.getElementById('entry-payout-amount').value) || 0;
-    entry.broker = document.getElementById('entry-payout-broker').value;
-    entry.type = document.getElementById('entry-payout-type').value;
-    entry.txid = document.getElementById('entry-payout-txid').value;
-    entry.notes = document.getElementById('entry-payout-notes').innerHTML;
-    payouts.push(entry);
-    localStorage.setItem('tj_payouts', JSON.stringify(payouts));
+    entry.payoutDate = document.getElementById('e-payout-date').value;
+    entry.amount = parseFloat(document.getElementById('e-payout-amount').value) || 0;
+    entry.broker = document.getElementById('e-payout-broker').value;
+    entry.actype = document.getElementById('e-payout-actype').value;
+    entry.txid = document.getElementById('e-payout-txid').value;
+    entry.notes = document.getElementById('e-payout-notes').value;
+    entry.pics = [...pendingPics.payout];
+    payouts.unshift(entry);
+    save('tj_payouts', payouts);
     renderPayouts();
     closeModal();
     return;
   }
 
   entries.unshift(entry);
-  localStorage.setItem('tj_entries', JSON.stringify(entries));
+  save('tj_entries', entries);
   renderAll();
   closeModal();
 }
 
 function clearForm() {
-  ['entry-instrument','entry-reasoning','entry-good','entry-improve','entry-concepts','entry-rr',
-   'entry-htf','entry-manip','entry-pois','entry-live-thoughts',
-   'entry-macro','entry-setups','entry-lesson','entry-mistakes','entry-forward-bias',
-   'entry-premarket-notes',
-   'entry-funded-name','entry-funded-broker','entry-funded-size','entry-funded-balance','entry-funded-target','entry-funded-dd','entry-funded-status','entry-funded-notes',
-   'entry-payout-date','entry-payout-amount','entry-payout-broker','entry-payout-type','entry-payout-txid','entry-payout-notes'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
-        el.value = '';
-      } else {
-        el.innerHTML = '';
-      }
-    }
+  const ids = ['e-instrument','e-rr','e-concepts','e-reasoning','e-good','e-improve',
+    'e-htf','e-manip','e-pois','e-live-thoughts',
+    'e-macro','e-setups','e-lesson','e-mistakes','e-forward-bias',
+    'e-pm-notes','e-funded-name','e-funded-broker','e-funded-size',
+    'e-funded-balance','e-funded-target','e-funded-dd','e-funded-notes',
+    'e-payout-date','e-payout-amount','e-payout-broker','e-payout-txid','e-payout-notes'];
+  ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.getElementById('e-result').value = '';
+  // clear previews
+  pendingPics = { trade:[], live:[], post:[], premarket:[], funded:[], payout:[] };
+  ['e-pics-preview','e-live-pics-preview','e-post-pics-preview',
+   'e-pm-pics-preview','e-funded-pics-preview','e-payout-pics-preview'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.innerHTML = '';
   });
-  document.getElementById('entry-result').value = '';
-  document.getElementById('entry-type').value = 'trade';
-  document.getElementById('entry-funded-picture').value = '';
-    toggleFields();
 }
 
+// ── RENDER ALL ──
 function renderAll() {
   const trades = entries.filter(e => e.type === 'trade');
   const live = entries.filter(e => e.type === 'live');
   const post = entries.filter(e => e.type === 'post');
-  const premarket = entries.filter(e => e.type === 'premarket');
+  const pre = entries.filter(e => e.type === 'premarket');
 
   document.getElementById('stat-total').textContent = entries.length;
   document.getElementById('stat-trades').textContent = trades.length;
   document.getElementById('stat-live').textContent = live.length;
   document.getElementById('stat-post').textContent = post.length;
 
-  renderEntries('dash-entries', entries.slice(0, 6));
-  renderEntries('trade-entries', trades, 'trade');
-  renderEntries('live-entries', live, 'live');
-  renderEntries('post-entries', post, 'post');
-  renderEntries('premarket-entries', premarket, 'premarket');
+  renderList('dash-entries', entries.slice(0, 8));
+  renderList('trade-entries', trades);
+  renderList('live-entries', live);
+  renderList('post-entries', post);
+  renderList('premarket-entries', pre);
+  renderFunded();
+  renderPayouts();
 }
 
-function filterEntries(section, filter, btn) {
-  activeTradeFilter = filter;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const trades = entries.filter(e => e.type === 'trade');
-  let filtered = trades;
-  if (filter !== 'all') {
-    filtered = trades.filter(e => (e.direction || '').toLowerCase() === filter || (e.result || '').toLowerCase() === filter);
-  }
-  renderEntries('trade-entries', filtered, 'trade');
+function renderList(containerId, list) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  if (!list.length) { c.innerHTML = emptyHtml(); return; }
+  c.innerHTML = list.map(buildCard).join('');
 }
 
-function renderEntries(containerId, list, typeHint) {
-  const container = document.getElementById(containerId);
-  if (!list.length) {
-    let msg = 'No entries yet';
-    if (typeHint === 'trade') msg = 'No trade entries yet';
-    else if (typeHint === 'live') msg = 'No live outlooks yet';
-    else if (typeHint === 'post') msg = 'No post market entries yet';
-    else if (typeHint === 'premarket') msg = 'No pre-market entries yet';
-    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" width="18" height="18"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><p>${msg}</p></div>`;
-    return;
-  }
-  container.innerHTML = list.map(e => buildCard(e)).join('');
+function emptyHtml() {
+  return `<div class="empty"><div class="empty-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><p>Nothing here yet</p></div>`;
 }
 
 function buildCard(e) {
-  let badgeClass = '', badgeLabel = '', title = '', inner = '';
+  const dateStr = e.date ? new Date(e.date + 'T00:00:00').toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : '';
+  let badge = '', title = '', body = '';
 
   if (e.type === 'trade') {
-    badgeClass = 'badge-trade';
-    badgeLabel = 'Trade';
-    const resultColor = e.result === 'Win' ? 'pnl-pos' : e.result === 'Loss' ? 'pnl-neg' : '';
+    badge = `<span class="badge badge-trade">Trade</span>`;
     title = (e.instrument || 'Trade') + (e.session ? ' · ' + e.session : '');
-    inner = `
-      ${e.concepts ? `<div>${e.concepts.split(',').map(c => `<span class="entry-tag">${c.trim()}</span>`).join('')}</div>` : ''}
-      ${e.instrument ? `<div class="entry-section-title">Instrument</div><div>${e.instrument} · ${e.direction || ''} ${e.rr ? '· <span class="' + resultColor + '">' + e.rr + '</span>' : ''}</div>` : ''}
-      ${e.reasoning ? `<div class="entry-section-title">Entry Reasoning</div><div>${e.reasoning}</div>` : ''}
-      ${e.good ? `<div class="entry-section-title">What went well</div><div>${e.good}</div>` : ''}
-      ${e.improve ? `<div class="entry-section-title">To improve</div><div>${e.improve}</div>` : ''}
+    const rc = e.result === 'Win' ? 'pnl-pos' : e.result === 'Loss' ? 'pnl-neg' : '';
+    body = `
+      ${e.concepts ? `<div style="margin-bottom:6px">${e.concepts.split(',').map(c=>`<span class="e-tag">${c.trim()}</span>`).join('')}</div>` : ''}
+      ${e.instrument ? `<div class="e-sec">Instrument</div><div>${e.instrument} · ${e.direction||''} ${e.rr?`· <span class="${rc}">${e.rr}</span>`:''}</div>` : ''}
+      ${e.reasoning ? `<div class="e-sec">Entry Reasoning</div><div>${nl(e.reasoning)}</div>` : ''}
+      ${e.good ? `<div class="e-sec">What Went Well</div><div>${nl(e.good)}</div>` : ''}
+      ${e.improve ? `<div class="e-sec">To Improve</div><div>${nl(e.improve)}</div>` : ''}
+      ${picsHtml(e.pics)}
     `;
   } else if (e.type === 'live') {
-    badgeClass = 'badge-live';
-    badgeLabel = 'Live';
+    badge = `<span class="badge badge-live">Live</span>`;
     title = (e.session || 'Live') + ' Outlook';
-    inner = `
-      ${e.bias ? `<span class="entry-tag">${e.bias}</span>` : ''} ${e.session ? `<span class="entry-tag">${e.session}</span>` : ''}
-      ${e.htf ? `<div class="entry-section-title">HTF Context</div><div>${e.htf}</div>` : ''}
-      ${e.pois ? `<div class="entry-section-title">Key POIs</div><div>${e.pois}</div>` : ''}
-      ${e.thoughts ? `<div class="entry-section-title">Thoughts</div><div>${e.thoughts}</div>` : ''}
+    body = `
+      ${e.bias ? `<span class="e-tag">${e.bias}</span>` : ''}${e.session ? `<span class="e-tag">${e.session}</span>` : ''}
+      ${e.htf ? `<div class="e-sec">HTF Context</div><div>${nl(e.htf)}</div>` : ''}
+      ${e.manip ? `<div class="e-sec">Manipulation Expectation</div><div>${nl(e.manip)}</div>` : ''}
+      ${e.pois ? `<div class="e-sec">Key POIs</div><div>${nl(e.pois)}</div>` : ''}
+      ${e.thoughts ? `<div class="e-sec">Thoughts</div><div>${nl(e.thoughts)}</div>` : ''}
+      ${picsHtml(e.pics)}
     `;
   } else if (e.type === 'post') {
-    badgeClass = 'badge-post';
-    badgeLabel = 'Post Market';
+    badge = `<span class="badge badge-post">Post</span>`;
     title = (e.session || 'Post') + ' Market Review';
-    inner = `
-      ${e.rating ? `<span class="entry-tag">Grade: ${e.rating}</span>` : ''} ${e.session ? `<span class="entry-tag">${e.session}</span>` : ''}
-      ${e.macro ? `<div class="entry-section-title">Macro Breakdown</div><div>${e.macro}</div>` : ''}
-      ${e.setups ? `<div class="entry-section-title">Setups Presented</div><div>${e.setups}</div>` : ''}
-      ${e.lesson ? `<div class="entry-section-title">Key Lesson</div><div>${e.lesson}</div>` : ''}
-      ${e.mistakes ? `<div class="entry-section-title">Mistakes & Fixes</div><div>${e.mistakes}</div>` : ''}
-      ${e.forwardBias ? `<div class="entry-section-title">Bias Going Forward</div><div>${e.forwardBias}</div>` : ''}
+    body = `
+      ${e.rating ? `<span class="e-tag">Grade: ${e.rating}</span>` : ''}${e.session ? `<span class="e-tag">${e.session}</span>` : ''}
+      ${e.macro ? `<div class="e-sec">Macro Breakdown</div><div>${nl(e.macro)}</div>` : ''}
+      ${e.setups ? `<div class="e-sec">Setups Presented</div><div>${nl(e.setups)}</div>` : ''}
+      ${e.lesson ? `<div class="e-sec">Key Lesson</div><div>${nl(e.lesson)}</div>` : ''}
+      ${e.mistakes ? `<div class="e-sec">Mistakes & Fixes</div><div>${nl(e.mistakes)}</div>` : ''}
+      ${e.forwardBias ? `<div class="e-sec">Bias Going Forward</div><div>${nl(e.forwardBias)}</div>` : ''}
+      ${picsHtml(e.pics)}
     `;
   } else if (e.type === 'premarket') {
-    badgeClass = 'badge-premarket';
-    badgeLabel = 'Pre-Market';
-    title = 'Pre-Market Notes';
-    inner = `
-      ${e.notes ? `<div class="entry-section-title">Notes</div><div>${e.notes}</div>` : ''}
-    `;
-  } else if (e.type === 'funded') {
-    badgeClass = 'badge-funded';
-    badgeLabel = 'Funded';
-    title = e.name || 'Funded Account';
-    inner = `
-      ${e.picture ? `<img src="${e.picture}" class="funded-icon" alt="Account Picture">` : ''}
-      ${e.name ? `<div class="asset-section-title">Account Name</div><div>${e.name}</div>` : ''}
-      ${e.broker ? `<div class="asset-section-title">Broker</div><div>${e.broker}</div>` : ''}
-      ${e.size ? `<div class="asset-section-title">Account Size</div><div>$${e.size.toLocaleString()}</div>` : ''}
-      ${e.balance ? `<div class="asset-section-title">Current Balance</div><div>$${e.balance.toLocaleString()}</div>` : ''}
-      ${e.target ? `<div class="asset-section-title">Profit Target</div><div>$${e.target.toLocaleString()}</div>` : ''}
-      ${e.dd ? `<div class="asset-section-title">Max Drawdown</div><div>$${e.dd.toLocaleString()}</div>` : ''}
-      ${e.status ? `<div class="asset-section-title">Status</div><div>${e.status}</div>` : ''}
-      ${e.notes ? `<div class="asset-section-title">Notes</div><div>${e.notes}</div>` : ''}
-    `;
-  } else if (e.type === 'payout') {
-    badgeClass = 'badge-payout';
-    badgeLabel = 'Payout';
-    title = 'Payout on ' + (e.date ? new Date(e.date).toLocaleDateString('en-GB') : 'Unknown');
-    inner = `
-      ${e.date ? `<div class="asset-section-title">Date</div><div>${new Date(e.date).toLocaleDateString('en-GB')}</div>` : ''}
-      ${e.amount ? `<div class="asset-section-title">Amount</div><div>$${e.amount.toLocaleString()}</div>` : ''}
-      ${e.broker ? `<div class="asset-section-title">Broker</div><div>${e.broker}</div>` : ''}
-      ${e.type ? `<div class="asset-section-title">Account Type</div><div>${e.type}</div>` : ''}
-      ${e.txid ? `<div class="asset-section-title">Transaction ID</div><div>${e.txid}</div>` : ''}
-      ${e.notes ? `<div class="asset-section-title">Notes</div><div>${e.notes}</div>` : ''}
-    `;
+    badge = `<span class="badge badge-premarket">Pre-Market</span>`;
+    title = 'Pre-Market Notes' + (e.session ? ' · ' + e.session : '');
+    body = `${e.notes ? `<div class="e-sec">Notes</div><div>${nl(e.notes)}</div>` : ''}${picsHtml(e.pics)}`;
   }
-
-  const dateStr = e.date ? new Date(e.date + 'T00:00:00').toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '';
 
   return `
     <div class="entry-card" onclick="this.classList.toggle('open')">
       <div class="entry-card-head">
-        <div class="entry-card-left">
-          ${e.picture && e.type === 'funded' && document.getElementById('entry-funded-use-pic') && document.getElementById('entry-funded-use-pic').checked ?
-            ${e.picture ? `<img src="${e.picture}" class="funded-icon" alt="Entry Picture">` : `<span class="entry-type-badge ${badgeClass}">${badgeLabel}</span>`}
-          <span class="entry-title">${title}</span>
+        <div class="entry-card-left">${badge}<span class="entry-title">${title}</span></div>
+        <div class="entry-meta">
+          <span class="entry-date">${dateStr}</span>
+          <button class="del-btn" onclick="deleteEntry(event,${e.id})">✕</button>
         </div>
-        <span class="entry-date">${dateStr}</span>
-        <button class="view-btn" onclick="deleteEntry(event, ${e.id})">✕</button>
       </div>
-      <div class="entry-card-body">${inner}</div>
+      <div class="entry-body">${body}</div>
     </div>
   `;
+}
+
+function picsHtml(pics) {
+  if (!pics || !pics.length) return '';
+  return `<div class="e-sec">Screenshots</div><div class="img-strip">${pics.map(src=>`<img class="img-thumb" src="${src}" onclick="event.stopPropagation();openLightbox('${src}')">`).join('')}</div>`;
+}
+
+function nl(txt) {
+  return String(txt).replace(/\n/g, '<br>');
 }
 
 function deleteEntry(event, id) {
   event.stopPropagation();
   if (!confirm('Delete this entry?')) return;
-
   entries = entries.filter(e => e.id !== id);
-  localStorage.setItem('tj_entries', JSON.stringify(entries));
-
+  save('tj_entries', entries);
   renderAll();
-  renderFunded();
-  renderPayouts();
 }
 
+// ── FILTER TRADES ──
+function filterTrades(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const trades = entries.filter(e => e.type === 'trade');
+  const filtered = filter === 'all' ? trades : trades.filter(e =>
+    (e.direction||'').toLowerCase() === filter ||
+    (e.result||'').toLowerCase() === filter
+  );
+  renderList('trade-entries', filtered);
+}
+
+// ── FUNDED ──
 function renderFunded() {
-  const container = document.getElementById('funded-entries');
-  if (!fundedAccounts.length) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 16 14.5 18.18 20.09 12 16.77 5.82 20.09 8 14.5 2 9.27 6.91 8.26"/></svg></div><p>No funded accounts yet</p></div>`;
-    return;
-  }
-  container.innerHTML = fundedAccounts.map(acc => `
+  const c = document.getElementById('funded-entries');
+  if (!fundedAccounts.length) { c.innerHTML = emptyHtml(); return; }
+  c.innerHTML = fundedAccounts.map(a => `
     <div class="asset-card" onclick="this.classList.toggle('open')">
-      <div class="asset-card-head">
-        <div class="asset-card-left">
-          ${acc.picture && document.getElementById('entry-funded-use-pic') && document.getElementById('entry-funded-use-pic').checked ?
-            `<img src="${acc.picture}" class="funded-icon" alt="Funded Account Icon">` :
-            `<span class="asset-tag">Funded</span>`}
-          <span class="asset-title">${acc.name || 'Unnamed Account'}</span>
+      <div class="asset-head">
+        <div class="asset-left">
+          <span class="badge badge-funded">Funded</span>
+          <span class="asset-title">${a.name || 'Unnamed Account'}</span>
         </div>
-        <span class="asset-date">${acc.date ? new Date(acc.date).toLocaleDateString('en-GB') : 'N/A'}</span>
-        <button class="view-btn" onclick="deleteFunded(event, ${acc.id})">✕</button>
+        <div class="entry-meta">
+          <span class="asset-date">${a.date ? new Date(a.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : ''}</span>
+          <button class="del-btn" onclick="deleteFunded(event,${a.id})">✕</button>
+        </div>
       </div>
-      <div class="asset-card-body">
-        ${acc.name ? `<div class="asset-section-title">Account Name</div><div>${acc.name}</div>` : ''}
-        ${acc.broker ? `<div class="asset-section-title">Broker</div><div>${acc.broker}</div>` : ''}
-        ${acc.size ? `<div class="asset-section-title">Account Size</div><div>$${acc.size.toLocaleString()}</div>` : ''}
-        ${acc.balance ? `<div class="asset-section-title">Current Balance</div><div>$${acc.balance.toLocaleString()}</div>` : ''}
-        ${acc.target ? `<div class="asset-section-title">Profit Target</div><div>$${acc.target.toLocaleString()}</div>` : ''}
-        ${acc.dd ? `<div class="asset-section-title">Max Drawdown</div><div>$${acc.dd.toLocaleString()}</div>` : ''}
-        ${acc.status ? `<div class="asset-section-title">Status</div><div>${acc.status}</div>` : ''}
-        ${acc.notes ? `<div class="asset-section-title">Notes</div><div>${acc.notes}</div>` : ''}
+      <div class="asset-body">
+        ${a.broker ? `<div class="a-sec">Broker</div><div>${a.broker}</div>` : ''}
+        ${a.size ? `<div class="a-sec">Account Size</div><div>$${a.size.toLocaleString()}</div>` : ''}
+        ${a.balance ? `<div class="a-sec">Current Balance</div><div>$${a.balance.toLocaleString()}</div>` : ''}
+        ${a.target ? `<div class="a-sec">Profit Target</div><div>$${a.target.toLocaleString()}</div>` : ''}
+        ${a.dd ? `<div class="a-sec">Max Drawdown</div><div>$${a.dd.toLocaleString()}</div>` : ''}
+        ${a.status ? `<div class="a-sec">Status</div><div>${a.status}</div>` : ''}
+        ${a.notes ? `<div class="a-sec">Notes</div><div>${nl(a.notes)}</div>` : ''}
+        ${picsHtml(a.pics)}
       </div>
     </div>
   `).join('');
@@ -1685,35 +1779,35 @@ function renderFunded() {
 
 function deleteFunded(event, id) {
   event.stopPropagation();
-  if (!confirm('Delete this funded account?')) return;
-  fundedAccounts = fundedAccounts.filter(acc => acc.id !== id);
-  localStorage.setItem('tj_funded', JSON.stringify(fundedAccounts));
+  if (!confirm('Delete this account?')) return;
+  fundedAccounts = fundedAccounts.filter(a => a.id !== id);
+  save('tj_funded', fundedAccounts);
   renderFunded();
 }
 
+// ── PAYOUTS ──
 function renderPayouts() {
-  const container = document.getElementById('payout-entries');
-  if (!payouts.length) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 2 17"/><polyline points="17 6 15 10 15 22"/></svg></div><p>No payouts yet</p></div>`;
-    return;
-  }
-  container.innerHTML = payouts.map(pay => `
+  const c = document.getElementById('payout-entries');
+  if (!payouts.length) { c.innerHTML = emptyHtml(); return; }
+  c.innerHTML = payouts.map(p => `
     <div class="asset-card" onclick="this.classList.toggle('open')">
-      <div class="asset-card-head">
-        <div class="asset-card-left">
-          <span class="asset-tag">Payout</span>
-          <span class="asset-title">Payout on ${pay.date ? new Date(pay.date).toLocaleDateString('en-GB') : 'Unknown Date'}</span>
+      <div class="asset-head">
+        <div class="asset-left">
+          <span class="badge badge-payout">Payout</span>
+          <span class="asset-title">${p.amount ? '$' + p.amount.toLocaleString() : 'Payout'} ${p.broker ? '· ' + p.broker : ''}</span>
         </div>
-        <span class="asset-date">${pay.date ? new Date(pay.date).toLocaleDateString('en-GB') : 'N/A'}</span>
-        <button class="view-btn" onclick="deletePayout(event, ${pay.id})">✕</button>
+        <div class="entry-meta">
+          <span class="asset-date">${p.payoutDate ? new Date(p.payoutDate+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : ''}</span>
+          <button class="del-btn" onclick="deletePayout(event,${p.id})">✕</button>
+        </div>
       </div>
-      <div class="asset-card-body">
-        ${pay.date ? `<div class="asset-section-title">Date</div><div>${new Date(pay.date).toLocaleDateString('en-GB')}</div>` : ''}
-        ${pay.amount ? `<div class="asset-section-title">Amount</div><div>$${pay.amount.toLocaleString()}</div>` : ''}
-        ${pay.broker ? `<div class="asset-section-title">Broker</div><div>${pay.broker}</div>` : ''}
-        ${pay.type ? `<div class="asset-section-title">Account Type</div><div>${pay.type}</div>` : ''}
-        ${pay.txid ? `<div class="asset-section-title">Transaction ID</div><div>${pay.txid}</div>` : ''}
-        ${pay.notes ? `<div class="asset-section-title">Notes</div><div>${pay.notes}</div>` : ''}
+      <div class="asset-body">
+        ${p.amount ? `<div class="a-sec">Amount</div><div class="pnl-pos">$${p.amount.toLocaleString()}</div>` : ''}
+        ${p.broker ? `<div class="a-sec">Firm</div><div>${p.broker}</div>` : ''}
+        ${p.actype ? `<div class="a-sec">Account Type</div><div>${p.actype}</div>` : ''}
+        ${p.txid ? `<div class="a-sec">Transaction ID</div><div>${p.txid}</div>` : ''}
+        ${p.notes ? `<div class="a-sec">Notes</div><div>${nl(p.notes)}</div>` : ''}
+        ${picsHtml(p.pics)}
       </div>
     </div>
   `).join('');
@@ -1722,135 +1816,125 @@ function renderPayouts() {
 function deletePayout(event, id) {
   event.stopPropagation();
   if (!confirm('Delete this payout?')) return;
-  payouts = payouts.filter(pay => pay.id !== id);
-  localStorage.setItem('tj_payouts', JSON.stringify(payouts));
+  payouts = payouts.filter(p => p.id !== id);
+  save('tj_payouts', payouts);
   renderPayouts();
 }
 
-function addTDL() {
-  const input = document.getElementById('tdl-input');
-  const text = input.value.trim();
+// ── GOALS ──
+function addGoal() {
+  const inp = document.getElementById('goal-input');
+  const text = inp.value.trim();
   if (!text) return;
-
-  const task = {
-    id: Date.now(),
-    text: text,
-    completed: false
-  };
-
-  tdlTasks.push(task);
-  localStorage.setItem('tj_tdl', JSON.stringify(tdlTasks));
-  input.value = '';
-  renderTDL();
+  goals.push({ id: Date.now(), text, done: false });
+  save('tj_goals', goals);
+  inp.value = '';
+  renderGoals();
 }
 
-function renderTDL() {
-  const container = document.getElementById('tdl-entries');
-  if (!tdlTasks.length) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V5a2 2 0 0 1 2-2h11"/></svg></div><p>No tasks yet</p></div>`;
-    return;
-  }
-
-  container.innerHTML = tdlTasks.map(task => `
-    <div class="tdl-item ${task.completed ? 'completed' : ''}">
-      <span class="tdl-text">${task.text}</span>
-      <div class="tdl-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTDL(${task.id})"></div>
-      <div class="tdl-actions">
-        <button class="tdl-btn edit" onclick="editTDL(${task.id})">✎</button>
-        <button class="tdl-btn delete" onclick="deleteTDL(${task.id})">✕</button>
-      </div>
+function renderGoals() {
+  const c = document.getElementById('goals-list');
+  if (!goals.length) { c.innerHTML = '<div style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;color:var(--text-dim);padding:8px 0">No goals added yet</div>'; return; }
+  c.innerHTML = goals.map(g => `
+    <div class="goal-item">
+      <div class="goal-check ${g.done?'done':''}" onclick="toggleGoal(${g.id})"></div>
+      <div class="goal-text ${g.done?'done-text':''}" contenteditable="true"
+        onblur="updateGoalText(${g.id}, this.textContent)"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}"
+      >${g.text}</div>
+      <button class="goal-del" onclick="deleteGoal(${g.id})">✕</button>
     </div>
   `).join('');
 }
 
-function toggleTDL(id) {
-  const task = tdlTasks.find(t => t.id === id);
-  if (task) {
-    task.completed = !task.completed;
-    localStorage.setItem('tj_tdl', JSON.stringify(tdlTasks));
-    renderTDL();
-  }
+function toggleGoal(id) {
+  const g = goals.find(x => x.id === id);
+  if (g) { g.done = !g.done; save('tj_goals', goals); renderGoals(); }
 }
 
-function editTDL(id) {
-  const task = tdlTasks.find(t => t.id === id);
-  if (!task) return;
-
-  const newText = prompt('Edit task:', task.text);
-  if (newText === null) return;
-
-  task.text = newText.trim();
-  if (!task.text) {
-    deleteTDL(id);
-    return;
-  }
-
-  localStorage.setItem('tj_tdl', JSON.stringify(tdlTasks));
-  renderTDL();
+function updateGoalText(id, text) {
+  const g = goals.find(x => x.id === id);
+  if (g) { g.text = text.trim(); save('tj_goals', goals); }
 }
 
-function deleteTDL(id) {
-  if(!confirm('Delete this task?')) return;
-  tdlTasks = tdlTasks.filter(t => t.id !== id);
-  localStorage.setItem('tj_tdl', JSON.stringify(tdlTasks));
-  renderTDL();
+function deleteGoal(id) {
+  goals = goals.filter(g => g.id !== id);
+  save('tj_goals', goals);
+  renderGoals();
 }
 
-function pasteHtml(fieldId) {
-  navigator.clipboard.read().then(clipboardItems => {
-    let html = '';
-    let text = '';
-    for(const item of clipboardItems) {
-      for(const type of item.types) {
-        if(type === 'text/html') {
-          item.getType('text/html').then(blob => {
-            blob.text().then(result => {
-              html = result;
-              insertHtmlAtCursor(fieldId, html);
-            });
-          });
-          return;
-        }
-      }
-    }
-    if(!html) {
-      navigator.clipboard.readText().then(result => {
-        text = result;
-        insertTextAtCursor(fieldId, text);
-      });
-    }
-  }).catch(err => {
-    console.error('Failed to read clipboard:', err);
-    navigator.clipboard.readText().then(text => {
-      insertTextAtCursor(fieldId, text);
-    });
-  });
+// ── TASKS (TDL) ──
+function addTask() {
+  const inp = document.getElementById('tdl-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  tasks.push({ id: Date.now(), text, done: false });
+  save('tj_tasks', tasks);
+  inp.value = '';
+  renderTasks();
 }
 
-function insertHtmlAtCursor(fieldId, html) {
-  const el = document.getElementById(fieldId);
-  if(!el) return;
-  const sel = window.getSelection();
-  if(!sel.rangeCount) return;
-  const range = sel.getRangeAt(0);
-  range.deleteContents();
-  const div = document.createElement('div');
-  div.innerHTML = html;
-  const frag = document.createDocumentFragment();
-  while(div.firstChild) {
-    frag.appendChild(div.firstChild);
-  }
-  range.insertNode(frag);
+function renderTasks() {
+  const c = document.getElementById('tdl-list');
+  if (!tasks.length) { c.innerHTML = emptyHtml(); return; }
+  c.innerHTML = tasks.map(t => `
+    <div class="tdl-item">
+      <div class="tdl-chk ${t.done?'on':''}" onclick="toggleTask(${t.id})"></div>
+      <div class="tdl-txt ${t.done?'done':''}" contenteditable="true"
+        onblur="updateTask(${t.id}, this.textContent)"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}"
+      >${t.text}</div>
+      <button class="tdl-del" onclick="deleteTask(${t.id})">✕</button>
+    </div>
+  `).join('');
 }
 
-function insertTextAtCursor(fieldId, text) {
-  const el = document.getElementById(fieldId);
-  if(!el) return;
-  const sel = window.getSelection();
-  if(!sel.rangeCount) return;
-  const range = sel.getRangeAt(0);
-  range.deleteContents();
-  range.insertNode(document.createTextNode(text));
+function toggleTask(id) {
+  const t = tasks.find(x => x.id === id);
+  if (t) { t.done = !t.done; save('tj_tasks', tasks); renderTasks(); }
+}
+
+function updateTask(id, text) {
+  const t = tasks.find(x => x.id === id);
+  if (t) { t.text = text.trim(); save('tj_tasks', tasks); }
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  save('tj_tasks', tasks);
+  renderTasks();
+}
+
+// ── PRE-MARKET CHECKLIST ──
+const CHECKLISTS = {
+  bias: ['Identified HTF bias (daily/weekly)','Noted key SMT levels','Checked for unmitigated POIs','Asia high/low mapped','DXY correlation checked','AMD structure identified'],
+  session: ['High-impact news events checked','Session open time noted','Expected manipulation level identified','Key HVB zones marked','Fibonacci levels drawn','Entry criteria defined'],
+  risk: ['Max loss for session set','Position size calculated','SL placement logical','R:R minimum 2:1 confirmed','No revenge trading rule active','Eval rules reviewed']
+};
+
+function initChecklists() {
+  renderChecklist('chk-bias', 'bias');
+  renderChecklist('chk-session', 'session');
+  renderChecklist('chk-risk', 'risk');
+}
+
+function renderChecklist(containerId, key) {
+  const saved = safeLoad('tj_chk_' + key, []);
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  c.innerHTML = CHECKLISTS[key].map((item, i) => `
+    <div class="check-item">
+      <div class="chk ${saved[i]?'on':''}" onclick="toggleChk('${key}',${i},this)"></div>
+      <div class="chk-text">${item}</div>
+    </div>
+  `).join('');
+}
+
+function toggleChk(key, i, el) {
+  el.classList.toggle('on');
+  const saved = safeLoad('tj_chk_' + key, []);
+  saved[i] = el.classList.contains('on');
+  save('tj_chk_' + key, saved);
 }
 
 document.getElementById('pw-input').focus();
