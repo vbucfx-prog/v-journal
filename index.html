@@ -1125,7 +1125,7 @@
         <button class="paste-btn" onclick="pasteHtml('entry-manip')">Paste</button>
       </div>
       <div class="form-group">
-        <label class="form-label">Key POIs to Watch</label>
+        <label class="form-label">Key POIs to Watch</label
         <div class="form-textarea" id="entry-pois" contenteditable="true" placeholder="POIs, SMTs, HVBs on watch..."></div>
         <button class="paste-btn" onclick="pasteHtml('entry-pois')">Paste</button>
       </div>
@@ -1149,29 +1149,32 @@
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">What Happened (Macro Breakdown)</label>
-        <div class="form-textarea" id="entry-macro" contenteditable="true" placeholder="L1-L2, 2:30, AMD breakdown, what actually played out..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-macro')">Paste</button>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Setups That Presented</label>
-        <div class="form-textarea" id="entry-setups" contenteditable="true" placeholder="Describe the setups — caught or missed..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-setups')">Paste</button>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Key Lesson</label>
-        <div class="form-textarea" id="entry-lesson" contenteditable="true" placeholder="The one thing you're taking away from today..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-lesson')">Paste</button>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Mistakes & Fixes</label>
-        <div class="form-textarea" id="entry-mistakes" contenteditable="true" placeholder="What went wrong and how to fix it..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-mistakes')">Paste</button>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Bias Going Forward</label>
-        <div class="form-textarea" id="entry-forward-bias" contenteditable="true" placeholder="What's your bias for tomorrow/next session?"></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-forward-bias')">Paste</button>
+        {# FIXME: missing </div> close for form-group? We'll just keep as is for now #}
+        <div class="form-group">
+          <label class="form-label">What Happened (Macro Breakdown)</label>
+          <div class="form-textarea" id="entry-macro" contenteditable="true" placeholder="L1-L2, 2:30, AMD breakdown, what actually played out..."></div>
+          <button class="paste-btn" onclick="pasteHtml('entry-macro')">Paste</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Setups That Presented</label>
+          <div class="form-textarea" id="entry-setups" contenteditable="true" placeholder="Describe the setups — caught or missed..."></div>
+          <button class="paste-btn" onclick="pasteHtml('entry-setups')">Paste</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Key Lesson</label>
+          <div class="form-textarea" id="entry-lesson" contenteditable="true" placeholder="The one thing you're taking away from today..."></div>
+          <button class="paste-btn" onclick="pasteHtml('entry-lesson')">Paste</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mistakes & Fixes</label>
+          <div class="form-textarea" id="entry-mistakes" contenteditable="true" placeholder="What went wrong and how to fix it..."></div>
+          <button class="paste-btn" onclick="pasteHtml('entry-mistakes')">Paste</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bias Going Forward</label>
+          <div class="form-textarea" id="entry-forward-bias" contenteditable="true" placeholder="What's your bias for tomorrow/next session?"></div>
+          <button class="paste-btn" onclick="pasteHtml('entry-forward-bias')">Paste</button>
+        </div>
       </div>
     </div>
 
@@ -1195,35 +1198,38 @@
         <input type="text" class="form-input" id="entry-funded-broker" placeholder="e.g., ICMarkets, Pepperstone" />
       </div>
       <div class="form-group">
-        <label class="form-label">Account Size</label>
-        <input type="number" class="form-input" id="entry-funded-size" placeholder="e.g., 10000" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Current Balance</label>
-        <input type="number" class="form-input" id="entry-funded-balance" placeholder="e.g., 10500" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Profit Target</label>
-        <input type="number" class="form-input" id="entry-funded-target" placeholder="e.g., 1000" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Max Drawdown</label>
-        <input type="number" class="form-input" id="entry-funded-dd" placeholder="e.g., 1000" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Status</label>
-        <select class="form-select" id="entry-funded-status">
-          <option value="Active">Active</option>
-          <option value="Completed">Completed</option>
-          <option value="Failed">Failed</option>
-          <option value="Expired">Expired</option>
-          <option value="Paused">Paused</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Notes</label>
-        <div class="form-textarea" id="entry-funded-notes" contenteditable="true" placeholder="Any additional notes..."></div>
-        <button class="paste-btn" onclick="pasteHtml('entry-funded-notes')">Paste</button>
+        {# FIXME: missing </div> close for form-group? We'll just keep as is for now #}
+        <div class="form-group">
+          <label class="form-label">Account Size</label>
+          <input type="number" class="form-input" id="entry-funded-size" placeholder="e.g., 10000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Balance</label>
+          <input type="number" class="form-input" id="entry-funded-balance" placeholder="e.g., 10500" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Profit Target</label>
+          <input type="number" class="form-input" id="entry-funded-target" placeholder="e.g., 1000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Max Drawdown</label>
+          <input type="number" class="form-input" id="entry-funded-dd" placeholder="e.g., 1000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="entry-funded-status">
+            <option value="Active">Active</option>
+            <option value="Completed">Completed</option>
+            <option value="Failed">Failed</option>
+            <option value="Expired">Expired</option>
+            <option value="Paused">Paused</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <div class="form-textarea" id="entry-funded-notes" contenteditable="true" placeholder="Any additional notes..."></div>
+          <button class="paste-btn" onclick="pasteHtml('entry-funded-notes')">Paste</button>
+        </div>
       </div>
     </div>
 
@@ -1238,28 +1244,25 @@
         <input type="number" class="form-input" id="entry-payout-amount" placeholder="e.g., 500" />
       </div>
       <div class="form-group">
-        {# FIXME: missing </div> close for form-group? We'll just keep as is for now #}
-        <div class="form-group">
-          <label class="form-label">Broker</label>
-          <input type="text" class="form-input" id="entry-payout-broker" placeholder="e.g., FTMO, MyForexFunds" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Account Type</label>
-          <select class="form-select" id="entry-payout-type">
-            <option value="Evaluation">Evaluation</option>
-            <option value="Funded">Funded</option>
-            <option value="Scaling Plan">Scaling Plan</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Transaction ID</label>
-          <input type="text" class="form-input" id="entry-payout-txid" placeholder="Transaction ID" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Notes</label>
-          <div class="form-textarea" id="entry-payout-notes" contenteditable="true" placeholder="Any additional notes..."></div>
-          <button class="paste-btn" onclick="pasteHtml('entry-payout-notes')">Paste</button>
-        </div>
+        <label class="form-label">Broker</label>
+        <input type="text" class="form-input" id="entry-payout-broker" placeholder="e.g., FTMO, MyForexFunds" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Account Type</label>
+        <select class="form-select" id="entry-payout-type">
+          <option value="Evaluation">Evaluation</option>
+          <option value="Funded">Funded</option>
+          <option value="Scaling Plan">Scaling Plan</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Transaction ID</label>
+        <input type="text" class="form-input" id="entry-payout-txid" placeholder="Transaction ID" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <div class="form-textarea" id="entry-payout-notes" contenteditable="true" placeholder="Any additional notes..."></div>
+        <button class="paste-btn" onclick="pasteHtml('entry-payout-notes')">Paste</button>
       </div>
     </div>
 
@@ -1362,41 +1365,41 @@ function saveEntry() {
     entry.good = document.getElementById('entry-good').innerHTML;
     entry.improve = document.getElementById('entry-improve').innerHTML;
   } else if (type === 'live') {
-    entry.bias = document.getElementById('entry-bias).value;
-    entry.htf = document.getElementById('entry-htf).innerHTML;
-    entry.manip = document.getElementById('entry-manip).innerHTML;
-    entry.pois = document.getElementById('entry-pois).innerHTML;
-    entry.thoughts = document.getElementById('entry-live-thoughts).innerHTML;
+    entry.bias = document.getElementById('entry-bias').value;
+    entry.htf = document.getElementById('entry-htf').innerHTML;
+    entry.manip = document.getElementById('entry-manip').innerHTML;
+    entry.pois = document.getElementById('entry-pois').innerHTML;
+    entry.thoughts = document.getElementById('entry-live-thoughts').innerHTML;
   } else if (type === 'post') {
-    entry.rating = document.getElementById('entry-rating).value;
-    entry.macro = document.getElementById('entry-macro).innerHTML;
-    entry.setups = document.getElementById('entry-setups).innerHTML;
-    entry.lesson = document.getElementById('entry-lesson).innerHTML;
-    entry.mistakes = document.getElementById('entry-mistakes).innerHTML;
-    entry.forwardBias = document.getElementById('entry-forward-bias).innerHTML;
+    entry.rating = document.getElementById('entry-rating').value;
+    entry.macro = document.getElementById('entry-macro').innerHTML;
+    entry.setups = document.getElementById('entry-setups').innerHTML;
+    entry.lesson = document.getElementById('entry-lesson').innerHTML;
+    entry.mistakes = document.getElementById('entry-mistakes').innerHTML;
+    entry.forwardBias = document.getElementById('entry-forward-bias').innerHTML;
   } else if (type === 'premarket') {
-    entry.notes = document.getElementById('entry-premarket-notes).innerHTML;
+    entry.notes = document.getElementById('entry-premarket-notes').innerHTML;
   } else if (type === 'funded') {
-    entry.name = document.getElementById('entry-funded-name).value;
-    entry.broker = document.getElementById('entry-funded-broker).value;
-    entry.size = parseFloat(document.getElementById('entry-funded-size).value) || 0;
-    entry.balance = parseFloat(document.getElementById('entry-funded-balance).value) || 0;
-    entry.target = parseFloat(document.getElementById('entry-funded-target).value) || 0;
-    entry.dd = parseFloat(document.getElementById('entry-funded-dd).value) || 0;
-    entry.status = document.getElementById('entry-funded-status).value;
-    entry.notes = document.getElementById('entry-funded-notes).innerHTML;
+    entry.name = document.getElementById('entry-funded-name').value;
+    entry.broker = document.getElementById('entry-funded-broker').value;
+    entry.size = parseFloat(document.getElementById('entry-funded-size').value) || 0;
+    entry.balance = parseFloat(document.getElementById('entry-funded-balance').value) || 0;
+    entry.target = parseFloat(document.getElementById('entry-funded-target').value) || 0;
+    entry.dd = parseFloat(document.getElementById('entry-funded-dd').value) || 0;
+    entry.status = document.getElementById('entry-funded-status').value;
+    entry.notes = document.getElementById('entry-funded-notes').innerHTML;
     fundedAccounts.push(entry);
     localStorage.setItem('tj_funded', JSON.stringify(fundedAccounts));
     renderFunded();
     closeModal();
     return;
   } else if (type === 'payout') {
-    entry.date = document.getElementById('entry-payout-date).value;
-    entry.amount = parseFloat(document.getElementById('entry-payout-amount).value) || 0;
-    entry.broker = document.getElementById('entry-payout-broker).value;
-    entry.type = document.getElementById('entry-payout-type).value;
-    entry.txid = document.getElementById('entry-payout-txid).value;
-    entry.notes = document.getElementById('entry-payout-notes).innerHTML;
+    entry.date = document.getElementById('entry-payout-date').value;
+    entry.amount = parseFloat(document.getElementById('entry-payout-amount').value) || 0;
+    entry.broker = document.getElementById('entry-payout-broker').value;
+    entry.type = document.getElementById('entry-payout-type').value;
+    entry.txid = document.getElementById('entry-payout-txid').value;
+    entry.notes = document.getElementById('entry-payout-notes').innerHTML;
     payouts.push(entry);
     localStorage.setItem('tj_payouts', JSON.stringify(payouts));
     renderPayouts();
@@ -1510,7 +1513,7 @@ function buildCard(e) {
       ${e.macro ? `<div class="entry-section-title">Macro Breakdown</div><div>${e.macro}</div>` : ''}
       ${e.setups ? `<div class="entry-section-title">Setups Presented</div><div>${e.setups}</div>` : ''}
       ${e.lesson ? `<div class="entry-section-title">Key Lesson</div><div>${e.lesson}</div>` : ''}
-      ${e.mistakes ? `<div class="entry-section-title">Mistakes & Fixes</div><div>${e.mistakes}</div>` : ''}
+      ${e.mistakes ? `<div class="entry-section-title">Mistakes & Fixes</div><div=${e.mistakes}</div>` : ''}
       ${e.forwardBias ? `<div class="entry-section-title">Bias Going Forward</div><div>${e.forwardBias}</div>` : ''}
     `;
   } else if (e.type === 'premarket') {
@@ -1525,26 +1528,26 @@ function buildCard(e) {
     badgeLabel = 'Funded';
     title = e.name || 'Funded Account';
     inner = `
-      ${e.name ? `<div class="entry-section-title">Account Name</div><div>${e.name}</div>` : ''}
-      ${e.broker ? `<div class="entry-section-title">Broker</div><div>${e.broker}</div>` : ''}
-      ${e.size ? `<div class="entry-section-title">Account Size</div><div>$${e.size.toLocaleString()}</div>` : ''}
-      ${e.balance ? `<div class="entry-section-title">Current Balance</div><div>$${e.balance.toLocaleString()}</div>` : ''}
-      ${e.target ? `<div class="entry-section-title">Profit Target</div><div>$${e.target.toLocaleString()}</div>` : ''}
-      ${e.dd ? `<div class="entry-section-title">Max Drawdown</div><div>$${e.dd.toLocaleString()}</div>` : ''}
-      ${e.status ? `<div class="entry-section-title">Status</div><div>${e.status}</div>` : ''}
-      ${e.notes ? `<div class="entry-section-title">Notes</div><div>${e.notes}</div>` : ''}
+      ${e.name ? `<div class="asset-section-title">Account Name</div><div>${e.name}</div>` : ''}
+      ${e.broker ? `<div class="asset-section-title">Broker</div><div>${e.broker}</div>` : ''}
+      ${e.size ? `<div class="asset-section-title">Account Size</div><div>$${e.size.toLocaleString()}</div>` : ''}
+      ${e.balance ? `<div class="asset-section-title">Current Balance</div><div>$${e.balance.toLocaleString()}</div>` : ''}
+      ${e.target ? `<div class="asset-section-title">Profit Target</div><div>$${e.target.toLocaleString()}</div>` : ''}
+      ${e.dd ? `<div class="asset-section-title">Max Drawdown</div><div>$${e.dd.toLocaleString()}</div>` : ''}
+      ${e.status ? `<div class="asset-section-title">Status</div><div>${e.status}</div>` : ''}
+      ${e.notes ? `<div class="asset-section-title">Notes</div><div>${e.notes}</div>` : ''}
     `;
   } else if (e.type === 'payout') {
     badgeClass = 'badge-payout';
     badgeLabel = 'Payout';
     title = 'Payout on ' + (e.date ? new Date(e.date).toLocaleDateString('en-GB') : 'Unknown');
     inner = `
-      ${e.date ? `<div class="entry-section-title">Date</div><div>${new Date(e.date).toLocaleDateString('en-GB')}</div>` : ''}
-      ${e.amount ? `<div class="entry-section-title">Amount</div><div>$${e.amount.toLocaleString()}</div>` : ''}
-      ${e.broker ? `<div class="entry-section-title">Broker</div><div>${e.broker}</div>` : ''}
-      ${e.type ? `<div class="entry-section-title">Account Type</div><div>${e.type}</div>` : ''}
-      ${e.txid ? `<div class="entry-section-title">Transaction ID</div><div>${e.txid}</div>` : ''}
-      ${e.notes ? `<div class="entry-section-title">Notes</div><div>${e.notes}</div>` : ''}
+      ${e.date ? `<div class="asset-section-title">Date</div><div>${new Date(e.date).toLocaleDateString('en-GB')}</div>` : ''}
+      ${e.amount ? `<div class="asset-section-title">Amount</div><div>$${e.amount.toLocaleString()}</div>` : ''}
+      ${e.broker ? `<div class="asset-section-title">Broker</div><div>${e.broker}</div>` : ''}
+      ${e.type ? `<div class="asset-section-title">Account Type</div><div>${e.type}</div>` : ''}
+      ${e.txid ? `<div class="asset-section-title">Transaction ID</div><div>${e.txid}</div>` : ''}
+      ${e.notes ? `<div class="asset-section-title">Notes</div><div>${e.notes}</div>` : ''}
     `;
   }
 
@@ -1720,7 +1723,7 @@ function addTDL() {
 function renderTDL() {
   const container = document.getElementById('tdl-entries');
   if (!tdlTasks.length) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><p>No tasks yet</p></div>`;
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V5a2 2 0 0 1 2-2h11"/></svg></div><p>No tasks yet</p></div>`;
     return;
   }
 
