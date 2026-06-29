@@ -1262,21 +1262,32 @@
 </div>
 
 <script>
+console.log('Script loaded');
 const PASSWORD = 'apostles';
-let entries = JSON.parse(localStorage.getItem('tj_entries') || '[]');
-let fundedAccounts = JSON.parse(localStorage.getItem('tj_funded') || '[]');
-let payouts = JSON.parse(localStorage.getItem('tj_payouts') || '[]');
-let tdlTasks = JSON.parse(localStorage.getItem('tj_tdl') || '[]');
+let entries = [];
+try { const item = localStorage.getItem('tj_entries'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) entries = parsed; } } catch (e) {}
+let fundedAccounts = [];
+try { const item = localStorage.getItem('tj_funded'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) fundedAccounts = parsed; } } catch (e) {}
+let payouts = [];
+try { const item = localStorage.getItem('tj_payouts'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) payouts = parsed; } } catch (e) {}
+let tdlTasks = [];
+try { const item = localStorage.getItem('tj_tdl'); if (item) { const parsed = JSON.parse(item); if (Array.isArray(parsed)) tdlTasks = parsed; } } catch (e) {}
 let currentFilter = 'all';
 let activeTradeFilter = 'all';
 
 function unlock() {
-  const val = document.getElementById('pw-input').value;
+  const val = document.getElementById('pw-input').value.trim();
   if (val === PASSWORD) {
-    document.getElementById('lock-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    initApp();
+    console.log('Password correct');
+    const lockScreen = document.getElementById('lock-screen');
+    lockScreen.innerHTML = '<div style="color:var(--green);font-size:20px;">Unlocking...</div>';
+    setTimeout(() => {
+      lockScreen.style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      initApp();
+    }, 300);
   } else {
+    console.log('Password incorrect');
     const err = document.getElementById('pw-error');
     err.textContent = 'Incorrect password';
     document.getElementById('pw-input').value = '';
