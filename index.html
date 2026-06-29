@@ -1291,18 +1291,21 @@ let currentFilter = 'all';
 let activeTradeFilter = 'all';
 
 function unlock() {
+  console.log('[Unlock] Function started');
   const val = document.getElementById('pw-input').value.trim();
+  console.log('[Unlock] Entered password:', val);
   if (val === PASSWORD) {
-    console.log('Password correct');
+    console.log('[Unlock] Password correct');
     const lockScreen = document.getElementById('lock-screen');
     lockScreen.innerHTML = '<div style="color:var(--green);font-size:20px;">Unlocking...</div>';
     setTimeout(() => {
+      console.log('[Unlock] Hiding lock screen, showing app');
       lockScreen.style.display = 'none';
       document.getElementById('app').style.display = 'block';
       initApp();
     }, 300);
   } else {
-    console.log('Password incorrect');
+    console.log('[Unlock] Password incorrect');
     const err = document.getElementById('pw-error');
     err.textContent = 'Incorrect password';
     document.getElementById('pw-input').value = '';
@@ -1322,13 +1325,25 @@ function saveGoals() {
 }
 
 function initApp() {
+  console.log('[InitApp] Started');
   const now = new Date();
-  document.getElementById('topbar-date').textContent = now.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
-  document.getElementById('entry-date').value = now.toISOString().split('T')[0];
+  const topbarDateEl = document.getElementById('topbar-date');
+  if (topbarDateEl) {
+    topbarDateEl.textContent = now.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+  }
+  const entryDateEl = document.getElementById('entry-date');
+  if (entryDateEl) {
+    entryDateEl.value = now.toISOString().split('T')[0];
+  }
   // Load goals
-  const savedGoals = localStorage.getItem('tj_goals') || '';
-  document.getElementById('goals-input').value = savedGoals;
+  const goalsInputEl = document.getElementById('goals-input');
+  if (goalsInputEl) {
+    const savedGoals = localStorage.getItem('tj_goals') || '';
+    goalsInputEl.value = savedGoals;
+  }
+  console.log('[InitApp] About to call renderAll');
   renderAll();
+  console.log('[InitApp] Finished');
 }
 
 function showPage(name, el) {
