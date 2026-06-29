@@ -549,6 +549,7 @@
 
   /* ── PASTE BUTTON ── */
   .paste-btn {
+    display: none;
     margin-left: 8px;
     vertical-align: middle;
     background: var(--green);
@@ -1205,13 +1206,9 @@
           <div class="form-textarea" id="entry-funded-notes" contenteditable="true" placeholder="Any additional notes..."></div>
         </div>
       <div class="form-group">
-        <label class="form-label">Account Picture</label
+        <label class="form-label">Picture</label
           <input type="file" id="entry-funded-picture" accept="image/*" />
-        </div>
-      <div class="form-group">
-        <label class="form-label">Use Picture as Icon</label
-          <input type="checkbox" id="entry-funded-use-pic" />
-        </div>
+      </div>
       <div class="form-group>
         <button class="paste-btn" onclick="pasteHtml('entry-funded-notes')">Paste</button>
       </div>
@@ -1389,8 +1386,7 @@ function saveEntry() {
 
     // Picture handling
     const picInput = document.getElementById('entry-funded-picture');
-    const usePicCheckbox = document.getElementById('entry-funded-use-pic');
-    if (picInput.files && picInput.files[0] && usePicCheckbox.checked) {
+    if (picInput.files && picInput.files[0]) {
       const file = picInput.files[0];
       const reader = new FileReader();
       reader.onload = function(e) {
@@ -1413,7 +1409,7 @@ function saveEntry() {
       // Return early to prevent saving before picture is read
       return;
     }
-    // No picture or checkbox not checked, save normally
+    // No picture, save normally
     fundedAccounts.push(entry);
     localStorage.setItem('tj_funded', JSON.stringify(fundedAccounts));
     renderFunded();
@@ -1458,8 +1454,7 @@ function clearForm() {
   document.getElementById('entry-result').value = '';
   document.getElementById('entry-type').value = 'trade';
   document.getElementById('entry-funded-picture').value = '';
-  document.getElementById('entry-funded-use-pic').checked = false;
-  toggleFields();
+    toggleFields();
 }
 
 function renderAll() {
@@ -1555,6 +1550,7 @@ function buildCard(e) {
     badgeLabel = 'Funded';
     title = e.name || 'Funded Account';
     inner = `
+      ${e.picture ? `<img src="${e.picture}" class="funded-icon" alt="Account Picture">` : ''}
       ${e.name ? `<div class="asset-section-title">Account Name</div><div>${e.name}</div>` : ''}
       ${e.broker ? `<div class="asset-section-title">Broker</div><div>${e.broker}</div>` : ''}
       ${e.size ? `<div class="asset-section-title">Account Size</div><div>$${e.size.toLocaleString()}</div>` : ''}
@@ -1585,8 +1581,7 @@ function buildCard(e) {
       <div class="entry-card-head">
         <div class="entry-card-left">
           ${e.picture && e.type === 'funded' && document.getElementById('entry-funded-use-pic') && document.getElementById('entry-funded-use-pic').checked ?
-            `<img src="${e.picture}" class="funded-icon" alt="Funded Account Icon">` :
-            `<span class="entry-type-badge ${badgeClass}">${badgeLabel}</span>`}
+            ${e.picture ? `<img src="${e.picture}" class="funded-icon" alt="Entry Picture">` : `<span class="entry-type-badge ${badgeClass}">${badgeLabel}</span>`}
           <span class="entry-title">${title}</span>
         </div>
         <span class="entry-date">${dateStr}</span>
