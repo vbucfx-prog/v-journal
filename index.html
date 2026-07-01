@@ -1264,64 +1264,60 @@ async function iprompt(title,placeholder,onDone,defaultVal=''){
 async function loadFF(){
   const c=g('ff-events');
   c.innerHTML='<div class="ff-loading">Loading calendar...</div>';
-  try{
-    const res=await fetch('https://corsproxy.io/?'+encodeURIComponent('https://nfs.faireconomy.media/ff_calendar_thisweek.json'));
-    if(!res.ok)throw new Error('fetch failed');
-    const data=await res.json();
-    if(!data||!data.length){c.innerHTML='<div class="ff-error">No events found.</div>';return}
 
-    // Filter to today's events only
-    const todayStr=new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
-    const todayEvents=data.filter(e=>{
-      if(!e.date)return false;
-      // FF dates come as ISO strings — compare date portion in local time
-      const evDate=new Date(e.date).toLocaleDateString('en-CA');
-      return evDate===todayStr;
-    });
+  const FF_URL='https://nfs.faireconomy.media/ff_calendar_thisweek.json';
+  const proxies=[
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(FF_URL)}`,
+    `https://corsproxy.io/?${encodeURIComponent(FF_URL)}`,
+    `https://proxy.cors.sh/${FF_URL}`,
+  ];
 
-    if(!todayEvents.length){
-      c.innerHTML='<div class="ff-error">No events scheduled for today.</div>';
-      return;
-    }
-
-    // Only show Red, Orange, Yellow (High, Medium, Low) — skip non-economic
-    const allowed=['High','Medium','Low'];
-    const filtered=todayEvents.filter(e=>allowed.includes(e.impact));
-
-    if(!filtered.length){
-      c.innerHTML='<div class="ff-error">No red / orange / yellow events today.</div>';
-      return;
-    }
-
-    // Sort by time
-    filtered.sort((a,b)=>new Date(a.date)-new Date(b.date));
-
-    // Impact → folder colour mapping
-    const folderColor={
-      High:'#e74c3c',    // red folder
-      Medium:'#e67e22',  // orange folder
-      Low:'#f1c40f',     // yellow folder
-    };
-    const folderLabel={High:'Red',Medium:'Orange',Low:'Yellow'};
-
-    c.innerHTML=filtered.map(e=>{
-      const col=folderColor[e.impact]||'var(--text-dim)';
-      const lbl=folderLabel[e.impact]||e.impact;
-      const t=e.date?new Date(e.date).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}):'TBA';
-      const isHigh=e.impact==='High';
-      return`<div class="ff-event">
-        <div class="ff-folder" style="color:${col}" title="${lbl} folder">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="${col}" stroke="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <div class="ff-event-time">${t}</div>
-        <div class="ff-event-currency">${esc(e.currency||'')}</div>
-        <div class="ff-event-title ${isHigh?'high-impact':''}">${esc(e.title||e.name||'Event')}</div>
-      </div>`;
-    }).join('');
-  }catch(err){
-    c.innerHTML='<div class="ff-error">Could not load calendar — check connection or try refreshing.</div>';
-    console.warn('FF feed error:',err);
+  let data=null;
+  for(const url of proxies){
+    try{
+      const res=await fetch(url,{signal:AbortSignal.timeout(6000)});
+      if(!res.ok)continue;
+      data=await res.json();
+      if(data&&data.length)break;
+    }catch(e){continue}
   }
+
+  if(!data||!data.length){
+    c.innerHTML='<div class="ff-error">Could not load calendar — try refreshing later.</div>';
+    return;
+  }
+
+  // Filter to today only
+  const todayStr=new Date().toLocaleDateString('en-CA');
+  const todayEvents=data.filter(e=>{
+    if(!e.date)return false;
+    return new Date(e.date).toLocaleDateString('en-CA')===todayStr;
+  });
+
+  if(!todayEvents.length){c.innerHTML='<div class="ff-error">No events scheduled for today.</div>';return}
+
+  const allowed=['High','Medium','Low'];
+  const filtered=todayEvents.filter(e=>allowed.includes(e.impact));
+  if(!filtered.length){c.innerHTML='<div class="ff-error">No red / orange / yellow events today.</div>';return}
+
+  filtered.sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+  const folderColor={High:'#e74c3c',Medium:'#e67e22',Low:'#f1c40f'};
+  const folderLabel={High:'Red',Medium:'Orange',Low:'Yellow'};
+
+  c.innerHTML=filtered.map(e=>{
+    const col=folderColor[e.impact]||'var(--text-dim)';
+    const lbl=folderLabel[e.impact]||e.impact;
+    const t=e.date?new Date(e.date).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}):'TBA';
+    return`<div class="ff-event">
+      <div class="ff-folder" style="color:${col}" title="${lbl} folder">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="${col}" stroke="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="ff-event-time">${t}</div>
+      <div class="ff-event-currency">${esc(e.currency||'')}</div>
+      <div class="ff-event-title ${e.impact==='High'?'high-impact':''}">${esc(e.title||e.name||'Event')}</div>
+    </div>`;
+  }).join('');
 }
 
 /* ── PM GROUP (prompt replaced) ── */
