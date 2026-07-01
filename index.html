@@ -125,38 +125,37 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
 .stat-sub{font-size:10px;color:var(--text-muted);margin-top:3px}
 
 /* ── GOALS ── */
-.goals-block{background:linear-gradient(160deg,rgba(205,127,50,0.12) 0%,rgba(255,184,48,0.06) 60%,rgba(139,94,26,0.08) 100%);border:1px solid rgba(205,127,50,0.35);border-radius:var(--radius-sm);padding:26px 24px 20px;margin-bottom:22px;position:relative;overflow:hidden;box-shadow:0 0 48px rgba(255,184,48,0.06) inset}
-.goals-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(205,127,50,0.6),rgba(255,209,102,0.9),rgba(205,127,50,0.6),transparent)}
-.goals-block::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,184,48,0.15),transparent)}
-.goals-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.goals-hd-left{display:flex;align-items:center;gap:14px}
-.goals-icon{width:38px;height:38px;border-radius:50%;background:rgba(255,184,48,0.14);border:1px solid rgba(255,184,48,0.35);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(255,184,48,0.18),inset 0 0 12px rgba(255,184,48,0.06)}
-.goals-icon svg{width:16px;height:16px;stroke:var(--gold-bright);fill:none;stroke-width:1.5}
-.goals-heading{font-size:20px;font-weight:700;color:var(--gold-bright);letter-spacing:0.01em;text-shadow:0 0 24px rgba(255,184,48,0.3)}
-.goals-sub{font-family:var(--mono);font-size:8px;letter-spacing:0.16em;color:rgba(255,184,48,0.45);text-transform:uppercase;margin-top:3px}
+.goals-block{background:rgba(255,184,48,0.04);border:1px solid rgba(255,184,48,0.14);border-radius:var(--radius-sm);padding:22px 22px 18px;margin-bottom:22px;position:relative;overflow:hidden}
+.goals-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,184,48,0.25),transparent)}
+.goals-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.goals-hd-left{display:flex;align-items:center;gap:12px}
+.goals-icon{width:32px;height:32px;border-radius:50%;background:rgba(255,184,48,0.08);border:1px solid rgba(255,184,48,0.2);display:flex;align-items:center;justify-content:center}
+.goals-icon svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:1.5}
+.goals-heading{font-size:16px;font-weight:600;color:var(--text);letter-spacing:0.01em}
+.goals-sub{font-family:var(--mono);font-size:8px;letter-spacing:0.14em;color:var(--text-muted);text-transform:uppercase;margin-top:2px}
 .goals-progress{display:flex;align-items:center;gap:10px}
-.goals-progress-bar{width:80px;height:4px;background:rgba(255,184,48,0.1);border-radius:2px;overflow:hidden}
+.goals-progress-bar{width:72px;height:3px;background:rgba(255,184,48,0.08);border-radius:2px;overflow:hidden}
 .goals-progress-fill{height:100%;background:linear-gradient(90deg,var(--bronze),var(--gold));border-radius:2px;transition:width 0.3s ease}
-.goals-progress-txt{font-family:var(--mono);font-size:8px;color:rgba(255,184,48,0.5);letter-spacing:0.1em;white-space:nowrap}
-.goals-add-row{display:flex;gap:8px;margin-bottom:18px}
-.goals-inp{flex:1;background:rgba(255,184,48,0.06);border:1px solid rgba(255,184,48,0.18);border-radius:var(--radius-xs);padding:11px 14px;font-family:var(--font);font-size:13px;color:var(--text);outline:none;transition:border-color 0.15s}
-.goals-inp:focus{border-color:rgba(255,184,48,0.45)}
-.goals-add-btn{padding:11px 20px;background:linear-gradient(135deg,var(--bronze) 0%,var(--amber) 100%);border:none;border-radius:var(--radius-xs);font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.12em;color:#1a0e00;cursor:pointer;text-transform:uppercase;transition:opacity 0.15s,box-shadow 0.15s;white-space:nowrap;box-shadow:0 2px 12px rgba(205,127,50,0.25)}
-.goals-add-btn:hover{opacity:0.88;box-shadow:0 4px 20px rgba(205,127,50,0.4)}
-.goal-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,184,48,0.04);border:1px solid rgba(255,184,48,0.1);border-radius:var(--radius-xs);margin-bottom:8px;transition:border-color 0.15s,background 0.15s;position:relative;overflow:hidden}
+.goals-progress-txt{font-family:var(--mono);font-size:8px;color:var(--text-muted);letter-spacing:0.1em;white-space:nowrap}
+.goals-add-row{display:flex;gap:8px;margin-bottom:16px}
+.goals-inp{flex:1;background:rgba(255,184,48,0.04);border:1px solid rgba(255,184,48,0.12);border-radius:var(--radius-xs);padding:10px 14px;font-family:var(--font);font-size:13px;color:var(--text);outline:none;transition:border-color 0.15s}
+.goals-inp:focus{border-color:rgba(255,184,48,0.35)}
+.goals-add-btn{padding:10px 18px;background:rgba(255,184,48,0.1);border:1px solid rgba(255,184,48,0.2);border-radius:var(--radius-xs);font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.12em;color:var(--gold);cursor:pointer;text-transform:uppercase;transition:all 0.15s;white-space:nowrap}
+.goals-add-btn:hover{background:rgba(255,184,48,0.16);border-color:rgba(255,184,48,0.32)}
+.goal-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,184,48,0.03);border:1px solid rgba(255,184,48,0.08);border-radius:var(--radius-xs);margin-bottom:7px;transition:border-color 0.15s}
 .goal-item:last-child{margin-bottom:0}
-.goal-item:hover{border-color:rgba(255,184,48,0.22);background:rgba(255,184,48,0.06)}
-.goal-item.done-item{opacity:0.5}
-.goal-num{font-family:var(--mono);font-size:10px;font-weight:700;color:rgba(255,184,48,0.3);letter-spacing:0.1em;min-width:20px;flex-shrink:0}
-.goal-chk{width:20px;height:20px;flex-shrink:0;border:1px solid rgba(255,184,48,0.4);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;background:rgba(255,184,48,0.04)}
-.goal-chk.done{background:linear-gradient(135deg,var(--gold) 0%,var(--amber) 100%);border-color:var(--gold);box-shadow:0 0 12px rgba(255,184,48,0.25)}
-.goal-chk.done::after{content:'✓';font-size:11px;color:#1a0e00;font-weight:700}
-.goal-txt{flex:1;font-size:15px;font-weight:600;color:var(--text);outline:none;background:none;border:none;font-family:var(--font);line-height:1.4;cursor:text;letter-spacing:0.01em}
+.goal-item:hover{border-color:rgba(255,184,48,0.16)}
+.goal-item.done-item{opacity:0.45}
+.goal-num{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--text-dim);letter-spacing:0.08em;min-width:18px;flex-shrink:0}
+.goal-chk{width:18px;height:18px;flex-shrink:0;border:1px solid rgba(255,184,48,0.3);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.14s}
+.goal-chk.done{background:linear-gradient(135deg,var(--gold) 0%,var(--amber) 100%);border-color:var(--gold)}
+.goal-chk.done::after{content:'✓';font-size:10px;color:#1a0e00;font-weight:700}
+.goal-txt{flex:1;font-size:14px;font-weight:500;color:var(--text);outline:none;background:none;border:none;font-family:var(--font);line-height:1.4;cursor:text}
 .goal-txt:focus{color:var(--gold-bright)}
 .goal-txt.done{text-decoration:line-through;color:var(--text-muted)}
-.goal-del{width:24px;height:24px;background:none;border:none;color:var(--text-dim);cursor:pointer;border-radius:5px;font-size:13px;display:flex;align-items:center;justify-content:center;transition:color 0.12s,background 0.12s;flex-shrink:0}
-.goal-del:hover{color:#ff6b6b;background:rgba(255,107,107,0.08)}
-.goals-empty{font-family:var(--mono);font-size:9px;color:rgba(255,184,48,0.25);letter-spacing:0.14em;padding:16px 0;text-align:center;text-transform:uppercase}
+.goal-del{width:22px;height:22px;background:none;border:none;color:var(--text-dim);cursor:pointer;border-radius:4px;font-size:13px;display:flex;align-items:center;justify-content:center;transition:color 0.12s;flex-shrink:0}
+.goal-del:hover{color:#ff6b6b}
+.goals-empty{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.14em;padding:12px 0;text-align:center;text-transform:uppercase}
 
 /* ── FF CALENDAR ── */
 .ff-block{background:rgba(255,184,48,0.02);border:1px solid rgba(255,184,48,0.08);border-radius:var(--radius-sm);margin-bottom:22px;overflow:hidden}
@@ -169,6 +168,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
 .ff-refresh:hover{color:var(--gold);border-color:rgba(255,184,48,0.25)}
 .ff-events{padding:6px 0}
 .ff-event{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid rgba(255,184,48,0.04);transition:background 0.12s}
+.ff-folder{display:flex;align-items:center;flex-shrink:0}
 .ff-event:last-child{border-bottom:none}
 .ff-event:hover{background:rgba(255,184,48,0.03)}
 .ff-impact{width:6px;height:6px;border-radius:50%;flex-shrink:0}
@@ -1265,25 +1265,54 @@ async function loadFF(){
   const c=g('ff-events');
   c.innerHTML='<div class="ff-loading">Loading calendar...</div>';
   try{
-    const res=await fetch('https://nfs.faireconomy.media/ff_calendar_thisweek.json?version='+Date.now());
+    const res=await fetch('https://corsproxy.io/?'+encodeURIComponent('https://nfs.faireconomy.media/ff_calendar_thisweek.json'));
     if(!res.ok)throw new Error('fetch failed');
     const data=await res.json();
-    if(!data.length){c.innerHTML='<div class="ff-error">No events this week.</div>';return}
-    const impactMap={High:'high',Medium:'medium',Low:'low'};
-    const today=new Date().toDateString();
-    // filter to today + tomorrow for relevance, fallback to all if none
-    let events=data.filter(e=>{
-      const d=new Date(e.date);
-      const diff=(d-new Date())/(1000*60*60*24);
-      return diff>=-1&&diff<2;
+    if(!data||!data.length){c.innerHTML='<div class="ff-error">No events found.</div>';return}
+
+    // Filter to today's events only
+    const todayStr=new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
+    const todayEvents=data.filter(e=>{
+      if(!e.date)return false;
+      // FF dates come as ISO strings — compare date portion in local time
+      const evDate=new Date(e.date).toLocaleDateString('en-CA');
+      return evDate===todayStr;
     });
-    if(!events.length)events=data.slice(0,20);
-    c.innerHTML=events.map(e=>{
-      const imp=impactMap[e.impact]||'low';
+
+    if(!todayEvents.length){
+      c.innerHTML='<div class="ff-error">No events scheduled for today.</div>';
+      return;
+    }
+
+    // Only show Red, Orange, Yellow (High, Medium, Low) — skip non-economic
+    const allowed=['High','Medium','Low'];
+    const filtered=todayEvents.filter(e=>allowed.includes(e.impact));
+
+    if(!filtered.length){
+      c.innerHTML='<div class="ff-error">No red / orange / yellow events today.</div>';
+      return;
+    }
+
+    // Sort by time
+    filtered.sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+    // Impact → folder colour mapping
+    const folderColor={
+      High:'#e74c3c',    // red folder
+      Medium:'#e67e22',  // orange folder
+      Low:'#f1c40f',     // yellow folder
+    };
+    const folderLabel={High:'Red',Medium:'Orange',Low:'Yellow'};
+
+    c.innerHTML=filtered.map(e=>{
+      const col=folderColor[e.impact]||'var(--text-dim)';
+      const lbl=folderLabel[e.impact]||e.impact;
+      const t=e.date?new Date(e.date).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}):'TBA';
       const isHigh=e.impact==='High';
-      const t=e.date?new Date(e.date).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
       return`<div class="ff-event">
-        <div class="ff-impact ${imp}"></div>
+        <div class="ff-folder" style="color:${col}" title="${lbl} folder">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="${col}" stroke="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        </div>
         <div class="ff-event-time">${t}</div>
         <div class="ff-event-currency">${esc(e.currency||'')}</div>
         <div class="ff-event-title ${isHigh?'high-impact':''}">${esc(e.title||e.name||'Event')}</div>
@@ -1291,6 +1320,7 @@ async function loadFF(){
     }).join('');
   }catch(err){
     c.innerHTML='<div class="ff-error">Could not load calendar — check connection or try refreshing.</div>';
+    console.warn('FF feed error:',err);
   }
 }
 
