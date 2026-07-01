@@ -1251,44 +1251,61 @@ const ICONS={
 function buildGridCard(e){
   const pics=e.pics||[];
   const hasThumb=pics.length>0;
-  let badge='',title='',preview='',rBadge='',clickFn='';
+  let badge='',title='',subtitle='',preview='',rBadge='',clickFn='',pnlHtml='';
   const type=e.type;
+
   if(type==='trade'){
     badge=`<span class="badge badge-trade">Trade</span>`;
     rBadge=e.result==='Win'?`<span class="badge badge-win">W</span>`:e.result==='Loss'?`<span class="badge badge-loss">L</span>`:e.result==='BE'?`<span class="badge badge-be">BE</span>`:'';
+    // Title = instrument + session, subtitle = custom title if set
     title=(e.instrument||'Trade')+(e.session?' · '+e.session:'');
+    subtitle=e.customTitle||'';
     preview=e.reasoning||e.concepts||'';
     clickFn=`openDetail(${e.id})`;
+    // Prominent PnL
+    if(e.rr){
+      const m=(e.rr||'').match(/([+-]?\d+(?:\.\d+)?)\s*[Rr]/);
+      const rVal=m?parseFloat(m[1]):null;
+      const col=e.result==='Win'?'#6dffA0':e.result==='Loss'?'#ff6b6b':'var(--text-muted)';
+      pnlHtml=`<div style="font-family:var(--mono);font-size:14px;font-weight:700;color:${col};line-height:1;margin:4px 0 2px">${esc(e.rr)}</div>`;
+    }
   }else if(type==='post'){
     badge=`<span class="badge badge-post">Post</span>`;
     rBadge=e.rating?`<span class="badge badge-be">${e.rating}</span>`:'';
-    title=(e.session||'Post')+' Review';
+    // Title = date, subtitle = custom title
+    title=fmtDate(e.date);
+    subtitle=e.customTitle||((e.session||'Post')+' Market Review');
     preview=e.macro||e.lesson||'';
     clickFn=`openDetail(${e.id})`;
   }else if(type==='premarket'){
     badge=`<span class="badge badge-premarket">Pre</span>`;
-    title='Pre-Market'+(e.session?' · '+e.session:'');
+    // Title = date, subtitle = custom title
+    title=fmtDate(e.date);
+    subtitle=e.customTitle||('Pre-Market'+(e.session?' · '+e.session:''));
     preview=e.notes||'';
     clickFn=`openDetail(${e.id})`;
   }else if(type==='payout'){
     badge=`<span class="badge badge-payout">Payout</span>`;
     title=e.amount?'$'+Number(e.amount).toLocaleString():'Payout';
-    preview=e.broker||'';
+    subtitle=e.broker||'';
     clickFn=`openDetailPayout(${e.id})`;
   }
-  const thumbHtml=hasThumb
-    ?`<img src="${pics[0]}" alt="">`
-    :`${ICONS[type]||ICONS.trade}`;
-  const rrDisplay=e.rr?`<span style="font-family:var(--mono);font-size:9px;color:var(--gold)">${esc(e.rr)}</span>`:'';
+
+  const thumbHtml=hasThumb?`<img src="${pics[0]}" alt="">`:`${ICONS[type]||ICONS.trade}`;
+
   return`<div class="entry-card" onclick="${clickFn}">
     <div class="entry-card-thumb">${thumbHtml}</div>
     <div class="entry-card-body">
       <div class="entry-card-top">
-        <div class="entry-card-title">${esc(title)}</div>
-        <div class="entry-card-date">${fmtDate(e.date)}</div>
+        <div style="flex:1;min-width:0">
+          <div class="entry-card-title">${esc(title)}</div>
+          ${subtitle?`<div style="font-size:10px;color:var(--text-muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(subtitle)}</div>`:''}
+        </div>
       </div>
-      ${preview?`<div class="entry-card-preview">${esc(String(preview).substring(0,90))}</div>`:''}
-      <div class="entry-card-footer"><div style="display:flex;gap:4px">${badge}${rBadge}</div>${rrDisplay}</div>
+      ${pnlHtml}
+      ${preview&&!pnlHtml?`<div class="entry-card-preview">${esc(String(preview).substring(0,80))}</div>`:''}
+      ${preview&&pnlHtml?`<div class="entry-card-preview" style="-webkit-line-clamp:1">${esc(String(preview).substring(0,80))}</div>`:''}
+      <div class="entry-card-footer"><div style="display:flex;gap:4px">${badge}${rBadge}</div></div>
     </div>
   </div>`;
 }
@@ -1393,10 +1410,22 @@ function openDetail(id){
   let fields='';
   const typeBadge=e.type==='trade'?'badge-trade':e.type==='post'?'badge-post':'badge-premarket';
   const typeLabel=e.type==='trade'?'Trade':e.type==='post'?'Post Market':'Pre-Market';
-  const titleText=e.type==='trade'?(e.instrument||'Trade')+(e.session?' · '+e.session:''):e.type==='post'?(e.session||'Post')+' Review':'Pre-Market'+(e.session?' · '+e.session:'');
+  // For analysis types: date is the main title; for trades: instrument
+  const mainTitle=e.type==='trade'?(e.instrument||'Trade')+(e.session?' · '+e.session:''):fmtDate(e.date);
+
+  // Prominent PnL for trades
+  let pnlBanner='';
+  if(e.type==='trade'&&e.rr){
+    const m=(e.rr||'').match(/([+-]?\d+(?:\.\d+)?)\s*[Rr]/);
+    const rVal=m?parseFloat(m[1]):null;
+    const col=e.result==='Win'?'#6dffA0':e.result==='Loss'?'#ff6b6b':'var(--text-muted)';
+    pnlBanner=`<div style="font-family:var(--mono);font-size:28px;font-weight:700;color:${col};line-height:1;margin:8px 0 4px;letter-spacing:-0.01em">${esc(e.rr)}</div>`;
+  }
 
   if(e.type==='trade'){
     fields=`
+      <div class="detail-sec">Custom Title</div>
+      <div class="detail-val" contenteditable="true" onblur="ef(${id},'customTitle',this.textContent)" style="color:var(--text-muted);font-style:italic" data-placeholder="Add a title...">${esc(e.customTitle||'')}</div>
       <div class="detail-sec">Instrument</div>
       <div class="detail-val" contenteditable="true" onblur="ef(${id},'instrument',this.textContent)">${esc(e.instrument||'')}</div>
       <div class="detail-sec">Direction</div>
@@ -1421,6 +1450,8 @@ function openDetail(id){
       <div class="detail-val" contenteditable="true" onblur="ef(${id},'improve',this.innerText)">${nl(e.improve||'')}</div>`;
   }else if(e.type==='post'){
     fields=`
+      <div class="detail-sec">Title</div>
+      <div class="detail-val" contenteditable="true" onblur="ef(${id},'customTitle',this.textContent)" style="font-style:italic">${esc(e.customTitle||'')}</div>
       <div class="detail-sec">Day Rating</div>
       ${dSel(['A','B','C','D','X'],e.rating,`ef(${id},'rating',this.value)`)}
       <div class="detail-sec">Day Breakdown</div>
@@ -1434,14 +1465,18 @@ function openDetail(id){
       <div class="detail-sec">Bias Going Forward</div>
       <div class="detail-val" contenteditable="true" onblur="ef(${id},'forwardBias',this.innerText)">${nl(e.forwardBias||'')}</div>`;
   }else{
-    fields=`<div class="detail-sec">Notes</div>
+    fields=`
+      <div class="detail-sec">Title</div>
+      <div class="detail-val" contenteditable="true" onblur="ef(${id},'customTitle',this.textContent)" style="font-style:italic">${esc(e.customTitle||'')}</div>
+      <div class="detail-sec">Notes</div>
       <div class="detail-val" contenteditable="true" onblur="ef(${id},'notes',this.innerText)">${nl(e.notes||'')}</div>`;
   }
   const picsHtml=pics.length?`<div class="detail-sec">Screenshots</div><div class="detail-img-strip">${pics.map((s,i)=>`<img class="detail-img" src="${s}" onclick="openLb(JSON.parse(this.dataset.p),${i})" data-p="${pJ}">`).join('')}</div>`:'';
   document.getElementById('detail-modal').innerHTML=`
     <button class="detail-close" onclick="closeDetail()">✕</button>
     <div class="detail-type"><span class="badge ${typeBadge}">${typeLabel}</span></div>
-    <div class="detail-title">${esc(titleText)}</div>
+    <div class="detail-title">${esc(mainTitle)}</div>
+    ${pnlBanner}
     <div class="detail-meta">${fmtDate(e.date)}${e.session?' · '+e.session:''}</div>
     ${fields}${picsHtml}
     <div class="detail-footer">
@@ -1550,7 +1585,7 @@ function buildForm(type){
     <div class="f2"><div class="fg"><label class="fl">Result</label><select class="fsel" id="e-result"><option value="">— Select —</option><option>Win</option><option>Loss</option><option>BE</option></select></div>
     <div class="fg"><label class="fl">Points / R:R</label><input class="fi" id="e-rr" placeholder="+320pts / 3R"></div></div>
     <div class="f2"><div class="fg"><label class="fl">Concepts</label><input class="fi" id="e-concepts" placeholder="SMT, HVB, Fibonacci, POI..."></div>
-    <div class="fg"></div></div>
+    <div class="fg"><label class="fl">Title (optional)</label><input class="fi" id="e-custom-title" placeholder="e.g. Perfect SMT entry..."></div></div>
     <div class="form-sec">Levels</div>
     <div class="f2" style="grid-template-columns:1fr 1fr 1fr;gap:10px">
       <div class="fg"><label class="fl">Entry Price</label><input class="fi" type="number" id="e-entry-price" placeholder="0.00" step="any"></div>
@@ -1564,6 +1599,7 @@ function buildForm(type){
     ${picsBlock('trade','trade-pp')}`;
   else if(type==='post') body=`
     ${dateRow}<div class="form-sec">Review</div>
+    <div class="fg"><label class="fl">Title (optional)</label><input class="fi" id="e-custom-title" placeholder="e.g. Monday London session, NFP day..."></div>
     <div class="fg"><label class="fl">Day Rating</label><select class="fsel" id="e-rating"><option value="A">A — Executed the plan</option><option value="B">B — Good, minor issues</option><option value="C">C — Average</option><option value="D">D — Poor execution</option><option value="X">X — Off charts</option></select></div>
     <div class="fg"><label class="fl">Day Breakdown</label><textarea class="fta" id="e-macro" placeholder="L1-L2, 2:30, AMD breakdown..."></textarea></div>
     <div class="fg"><label class="fl">Setups Presented</label><textarea class="fta" id="e-setups" placeholder="Caught or missed..."></textarea></div>
@@ -1573,6 +1609,7 @@ function buildForm(type){
     ${picsBlock('post','post-pp')}`;
   else if(type==='premarket') body=`
     ${dateRow}<div class="form-sec">Notes</div>
+    <div class="fg"><label class="fl">Title (optional)</label><input class="fi" id="e-custom-title" placeholder="e.g. London open, Pre-NFP..."></div>
     <div class="fg"><label class="fl">Pre-Market Notes</label><textarea class="fta" id="e-pm-notes" placeholder="Your thoughts, levels, plan..." style="min-height:130px"></textarea></div>
     ${picsBlock('premarket','pm-pp')}`;
   else if(type==='funded') body=`
@@ -1624,13 +1661,13 @@ function saveEntry(type){
   const session=g('e-session')?g('e-session').value:'';
   let entry={id,type,date,session};
   if(type==='trade'){
-    Object.assign(entry,{instrument:g('e-instrument').value,direction:g('e-direction').value,result:g('e-result').value,rr:g('e-rr').value,concepts:g('e-concepts').value,entryPrice:g('e-entry-price').value,sl:g('e-sl').value,tp:g('e-tp').value,reasoning:g('e-reasoning').value,good:g('e-good').value,improve:g('e-improve').value,pics:[...pendingPics.trade]});
+    Object.assign(entry,{instrument:g('e-instrument').value,direction:g('e-direction').value,result:g('e-result').value,rr:g('e-rr').value,concepts:g('e-concepts').value,customTitle:g('e-custom-title')?g('e-custom-title').value:'',entryPrice:g('e-entry-price').value,sl:g('e-sl').value,tp:g('e-tp').value,reasoning:g('e-reasoning').value,good:g('e-good').value,improve:g('e-improve').value,pics:[...pendingPics.trade]});
     entries.unshift(entry);sv('tj_entries',entries);renderAll();
   }else if(type==='post'){
-    Object.assign(entry,{rating:g('e-rating').value,macro:g('e-macro').value,setups:g('e-setups').value,lesson:g('e-lesson').value,mistakes:g('e-mistakes').value,forwardBias:g('e-forward-bias').value,pics:[...pendingPics.post]});
+    Object.assign(entry,{customTitle:g('e-custom-title')?g('e-custom-title').value:'',rating:g('e-rating').value,macro:g('e-macro').value,setups:g('e-setups').value,lesson:g('e-lesson').value,mistakes:g('e-mistakes').value,forwardBias:g('e-forward-bias').value,pics:[...pendingPics.post]});
     entries.unshift(entry);sv('tj_entries',entries);renderAll();
   }else if(type==='premarket'){
-    Object.assign(entry,{notes:g('e-pm-notes').value,pics:[...pendingPics.premarket]});
+    Object.assign(entry,{customTitle:g('e-custom-title')?g('e-custom-title').value:'',notes:g('e-pm-notes').value,pics:[...pendingPics.premarket]});
     entries.unshift(entry);sv('tj_entries',entries);renderAll();
   }else if(type==='funded'){
     Object.assign(entry,{name:g('e-funded-name').value,broker:g('e-funded-broker').value,size:parseFloat(g('e-funded-size').value)||0,balance:parseFloat(g('e-funded-balance').value)||0,target:parseFloat(g('e-funded-target').value)||0,dd:parseFloat(g('e-funded-dd').value)||0,status:g('e-funded-status').value,notes:g('e-funded-notes').value,pics:[...pendingPics.funded]});
