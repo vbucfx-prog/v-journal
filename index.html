@@ -81,7 +81,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
 .panel-inner::-webkit-scrollbar-thumb{background:rgba(255,184,48,0.1);border-radius:2px}
 
 /* ── INTERNAL DIALOG ── */
-#idialog-overlay{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+#idialog-overlay{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 #idialog-overlay.open{display:flex;animation:fadeIn 0.18s ease both}
 .idialog{background:rgba(10,6,2,0.96);backdrop-filter:blur(44px);-webkit-backdrop-filter:blur(44px);border:1px solid var(--glass-border-bright);border-radius:var(--radius);padding:36px 32px 28px;width:min(420px,92vw);position:relative;box-shadow:0 0 60px rgba(255,184,48,0.1),0 32px 80px rgba(0,0,0,0.8);animation:modalIn 0.22s cubic-bezier(0.34,1.2,0.64,1) both;text-align:center}
 .idialog::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,184,48,0.5),rgba(245,166,35,0.8),rgba(255,184,48,0.5),transparent)}
@@ -296,8 +296,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
 .s-active{background:rgba(100,255,140,0.07);color:#6dffA0;border:1px solid rgba(100,255,140,0.18)}
 .s-completed{background:rgba(255,184,48,0.08);color:var(--gold);border:1px solid rgba(255,184,48,0.2)}
 .s-failed{background:rgba(255,100,100,0.07);color:#ff6b6b;border:1px solid rgba(255,100,100,0.18)}
+.s-funded{background:rgba(100,255,140,0.1);color:#6dffA0;border:1px solid rgba(100,255,140,0.25);box-shadow:0 0 8px rgba(100,255,140,0.08)}
+.s-evaluation{background:rgba(255,184,48,0.08);color:var(--gold);border:1px solid rgba(255,184,48,0.2)}
+.s-blown{background:rgba(255,50,50,0.1);color:#ff3333;border:1px solid rgba(255,50,50,0.28)}
 .s-expired{background:rgba(255,255,255,0.04);color:var(--text-muted);border:1px solid rgba(255,255,255,0.08)}
 .s-paused{background:rgba(205,127,50,0.08);color:var(--bronze);border:1px solid rgba(205,127,50,0.2)}
+
+/* ── BLOWN OVERLAY ── */
+.blown-overlay{position:absolute;inset:0;background:rgba(180,0,0,0.45);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;pointer-events:none;z-index:2}
+.blown-skull{font-size:28px;filter:drop-shadow(0 0 8px rgba(255,0,0,0.8));animation:blownPulse 2s ease-in-out infinite}
+@keyframes blownPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px rgba(255,0,0,0.8))}50%{transform:scale(1.08);filter:drop-shadow(0 0 16px rgba(255,0,0,1))}}
+.blown-label{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#ff3333;text-shadow:0 0 8px rgba(255,0,0,0.8)}
 
 /* ── TDL ── */
 .tdl-add-row{display:flex;gap:8px;margin-bottom:16px}
@@ -374,7 +383,25 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
   .dock-item span{display:none}
   .dock-item{min-width:44px;padding:8px 10px}
   #dock{padding:7px 6px}
+  #theme-btn,#theme-picker{right:10px}
 }
+
+/* ── THEME SWITCHER ── */
+#theme-btn{position:fixed;bottom:calc(var(--dock-h) + 14px);right:20px;z-index:40;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:rgba(8,5,2,0.7);transition:border-color 0.2s,box-shadow 0.2s}
+#theme-btn:hover{box-shadow:0 0 16px var(--t-glow,rgba(255,184,48,0.3))}
+#theme-btn-dot{width:16px;height:16px;border-radius:50%;background:var(--t-dot,#FFB830);transition:background 0.3s}
+#theme-picker{position:fixed;bottom:calc(var(--dock-h) + 60px);right:20px;z-index:40;display:flex;flex-direction:column;gap:8px;align-items:center;opacity:0;pointer-events:none;transition:opacity 0.2s,transform 0.2s;transform:translateY(8px)}
+#theme-picker.open{opacity:1;pointer-events:auto;transform:translateY(0)}
+.theme-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid rgba(255,255,255,0.08);transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s;position:relative;display:flex;align-items:center;justify-content:center}
+.theme-swatch:hover{transform:scale(1.18)}
+.theme-swatch.active{border-color:rgba(255,255,255,0.5)}
+.theme-swatch.active::after{content:'✓';font-size:11px;color:#000;font-weight:900;line-height:1}
+
+/* ── THEMES ── */
+body.theme-gold{--gold:#FFB830;--gold-bright:#FFD166;--amber:#F5A623;--bronze:#CD7F32;--copper:#B87333;--glass-border:rgba(255,184,48,0.12);--glass-border-bright:rgba(255,184,48,0.28);--text:#f0e6d0;--text-muted:#7a6a50;--text-dim:#3d3020;--t-dot:#FFB830;--t-glow:rgba(255,184,48,0.4)}
+body.theme-red{--gold:#ff5555;--gold-bright:#ff8080;--amber:#e03030;--bronze:#c02020;--copper:#d04040;--glass-border:rgba(255,85,85,0.12);--glass-border-bright:rgba(255,85,85,0.28);--text:#f5e0e0;--text-muted:#7a5050;--text-dim:#3d2020;--t-dot:#ff5555;--t-glow:rgba(255,85,85,0.4)}
+body.theme-blue{--gold:#5599ff;--gold-bright:#88bbff;--amber:#3377ee;--bronze:#2255cc;--copper:#4488dd;--glass-border:rgba(85,153,255,0.12);--glass-border-bright:rgba(85,153,255,0.28);--text:#ddeeff;--text-muted:#506070;--text-dim:#203040;--t-dot:#5599ff;--t-glow:rgba(85,153,255,0.4)}
+body.theme-neon{--gold:#39ff14;--gold-bright:#80ff55;--amber:#20e000;--bronze:#109000;--copper:#30cc10;--glass-border:rgba(57,255,20,0.12);--glass-border-bright:rgba(57,255,20,0.28);--text:#e0ffe0;--text-muted:#507050;--text-dim:#203020;--t-dot:#39ff14;--t-glow:rgba(57,255,20,0.4)}
 </style>
 </head>
 <body>
@@ -566,6 +593,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
       <span>TDL</span>
     </div>
   </div>
+  <!-- THEME SWITCHER -->
+  <div id="theme-picker">
+    <div class="theme-swatch active" id="sw-gold" style="background:#FFB830" onclick="setTheme('gold')" title="Gold"></div>
+    <div class="theme-swatch" id="sw-red" style="background:#ff5555" onclick="setTheme('red')" title="Red"></div>
+    <div class="theme-swatch" id="sw-blue" style="background:#5599ff" onclick="setTheme('blue')" title="Blue"></div>
+    <div class="theme-swatch" id="sw-neon" style="background:#39ff14" onclick="setTheme('neon')" title="Neon"></div>
+  </div>
+  <div id="theme-btn" onclick="toggleThemePicker()" title="Change theme">
+    <div id="theme-btn-dot"></div>
+  </div>
+
   <!-- INTERNAL DIALOG -->
   <div id="idialog-overlay">
     <div class="idialog" id="idialog-box">
@@ -883,14 +921,39 @@ function renderAnalysis(){
 function renderFunded(){
   const c=document.getElementById('funded-entries');
   if(!funded.length){c.innerHTML=emptyHtml();return}
-  c.innerHTML=funded.map(a=>{
+
+  // Sort: Funded first, Evaluation middle, Blown last, others in between
+  const order={Funded:0,Evaluation:1,Active:2,Completed:3,Paused:4,Expired:5,Failed:6,Blown:7};
+  const sorted=[...funded].sort((a,b)=>{
+    const oa=order[a.status]??3;
+    const ob=order[b.status]??3;
+    return oa-ob;
+  });
+
+  c.innerHTML=sorted.map(a=>{
     const pics=a.pics||[];
+    const isBlown=a.status==='Blown';
     const sc='s-'+(a.status||'active').toLowerCase();
     const pJ=JSON.stringify(pics).replace(/"/g,'&quot;');
+
+    const blownOverlay=isBlown?`
+      <div class="blown-overlay">
+        <div class="blown-skull">💀</div>
+        <div class="blown-label">Blown</div>
+      </div>`:'';
+
     const imgH=pics.length
-      ?`<div class="funded-card-img" onclick="event.stopPropagation();openLb(JSON.parse(this.dataset.p),0)" data-p="${pJ}"><img src="${pics[0]}" alt="">${pics.length>1?`<div class="funded-img-count">+${pics.length-1}</div>`:''}</div>`
-      :`<div class="funded-card-img">${ICONS.funded}</div>`;
-    return`<div class="funded-card" onclick="openDetailFunded(${a.id})">
+      ?`<div class="funded-card-img" style="position:relative" onclick="event.stopPropagation();${isBlown?'':''};openLb(JSON.parse(this.dataset.p),0)" data-p="${pJ}">
+          <img src="${pics[0]}" alt="" style="${isBlown?'filter:grayscale(0.6) brightness(0.5)':''}">
+          ${pics.length>1?`<div class="funded-img-count">+${pics.length-1}</div>`:''}
+          ${blownOverlay}
+        </div>`
+      :`<div class="funded-card-img" style="position:relative">
+          ${ICONS.funded}
+          ${blownOverlay}
+        </div>`;
+
+    return`<div class="funded-card ${isBlown?'blown-card':''}" onclick="openDetailFunded(${a.id})" style="${isBlown?'opacity:0.75;filter:saturate(0.7)':''}">
       ${imgH}
       <div class="funded-card-body">
         <div class="funded-card-title">${esc(a.name||'Unnamed')}</div>
@@ -961,7 +1024,7 @@ function openDetail(id){
     fields=`
       <div class="detail-sec">Day Rating</div>
       ${dSel(['A','B','C','D','X'],e.rating,`ef(${id},'rating',this.value)`)}
-      <div class="detail-sec">Macro Breakdown</div>
+      <div class="detail-sec">Day Breakdown</div>
       <div class="detail-val" contenteditable="true" onblur="ef(${id},'macro',this.innerText)">${nl(e.macro||'')}</div>
       <div class="detail-sec">Setups Presented</div>
       <div class="detail-val" contenteditable="true" onblur="ef(${id},'setups',this.innerText)">${nl(e.setups||'')}</div>
@@ -1001,7 +1064,7 @@ function openDetailFunded(id){
     <div class="detail-sec">Current Balance</div><div class="detail-val" contenteditable="true" onblur="eff(${id},'balance',this.textContent)">$${Number(a.balance||0).toLocaleString()}</div>
     <div class="detail-sec">Profit Target</div><div class="detail-val" contenteditable="true" onblur="eff(${id},'target',this.textContent)">$${Number(a.target||0).toLocaleString()}</div>
     <div class="detail-sec">Max Drawdown</div><div class="detail-val" contenteditable="true" onblur="eff(${id},'dd',this.textContent)">$${Number(a.dd||0).toLocaleString()}</div>
-    <div class="detail-sec">Status</div>${dSel(['Active','Completed','Failed','Expired','Paused'],a.status,`eff(${id},'status',this.value)`)}
+    <div class="detail-sec">Status</div>${dSel(['Funded','Evaluation','Active','Completed','Blown','Paused','Expired','Failed'],a.status,`eff(${id},'status',this.value)`)}
     <div class="detail-sec">Notes</div><div class="detail-val" contenteditable="true" onblur="eff(${id},'notes',this.innerText)">${nl(a.notes||'')}</div>
     ${pics.length?`<div class="detail-sec">Images</div><div class="detail-img-strip">${pics.map((s,i)=>`<img class="detail-img" src="${s}" onclick="openLb(JSON.parse(this.dataset.p),${i})" data-p="${pJ}">`).join('')}</div>`:''}
     <div class="detail-footer"><button class="btn-delete" onclick="deleteFunded(${id})">Delete</button><span class="detail-edit-hint">Tap any field to edit · Auto-saves</span></div>`;
@@ -1096,7 +1159,7 @@ function buildForm(type){
   else if(type==='post') body=`
     ${dateRow}<div class="form-sec">Review</div>
     <div class="fg"><label class="fl">Day Rating</label><select class="fsel" id="e-rating"><option value="A">A — Executed the plan</option><option value="B">B — Good, minor issues</option><option value="C">C — Average</option><option value="D">D — Poor execution</option><option value="X">X — Off charts</option></select></div>
-    <div class="fg"><label class="fl">Macro Breakdown</label><textarea class="fta" id="e-macro" placeholder="L1-L2, 2:30, AMD breakdown..."></textarea></div>
+    <div class="fg"><label class="fl">Day Breakdown</label><textarea class="fta" id="e-macro" placeholder="L1-L2, 2:30, AMD breakdown..."></textarea></div>
     <div class="fg"><label class="fl">Setups Presented</label><textarea class="fta" id="e-setups" placeholder="Caught or missed..."></textarea></div>
     <div class="fg"><label class="fl">Key Lesson</label><textarea class="fta" id="e-lesson" placeholder="One thing you're taking away..."></textarea></div>
     <div class="fg"><label class="fl">Mistakes & Fixes</label><textarea class="fta" id="e-mistakes" placeholder="What went wrong and how to fix it..."></textarea></div>
@@ -1114,7 +1177,7 @@ function buildForm(type){
     <div class="fg"><label class="fl">Balance ($)</label><input class="fi" type="number" id="e-funded-balance" placeholder="10500"></div></div>
     <div class="f2"><div class="fg"><label class="fl">Profit Target ($)</label><input class="fi" type="number" id="e-funded-target" placeholder="1000"></div>
     <div class="fg"><label class="fl">Max DD ($)</label><input class="fi" type="number" id="e-funded-dd" placeholder="1000"></div></div>
-    <div class="f2"><div class="fg"><label class="fl">Status</label><select class="fsel" id="e-funded-status"><option>Active</option><option>Completed</option><option>Failed</option><option>Expired</option><option>Paused</option></select></div>
+    <div class="f2"><div class="fg"><label class="fl">Status</label><select class="fsel" id="e-funded-status"><option>Funded</option><option>Evaluation</option><option>Active</option><option>Completed</option><option>Blown</option><option>Paused</option><option>Expired</option><option>Failed</option></select></div>
     <div class="fg"><label class="fl">Date</label><input class="fi" type="date" id="e-date" value="${TODAY}"></div></div>
     <div class="fg"><label class="fl">Notes</label><textarea class="fta" id="e-funded-notes" placeholder="Any notes..."></textarea></div>
     ${picsBlock('funded','funded-pp')}`;
@@ -1382,6 +1445,36 @@ function renderPMGroups(){
     ${!group.items.length?`<div style="font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:0.1em;padding:4px 0">No items yet</div>`:''}
   </div>`).join('');
 }
+
+/* ── THEME SWITCHER ── */
+const THEMES=['gold','red','blue','neon'];
+function setTheme(name){
+  THEMES.forEach(t=>document.body.classList.remove('theme-'+t));
+  document.body.classList.add('theme-'+name);
+  THEMES.forEach(t=>{
+    const sw=g('sw-'+t);
+    if(sw)sw.classList.toggle('active',t===name);
+  });
+  sv('tj_theme',name);
+  // close picker
+  g('theme-picker').classList.remove('open');
+}
+function toggleThemePicker(){
+  g('theme-picker').classList.toggle('open');
+}
+// close picker when clicking elsewhere
+document.addEventListener('click',e=>{
+  const picker=g('theme-picker');
+  const btn=g('theme-btn');
+  if(picker&&btn&&!picker.contains(e.target)&&!btn.contains(e.target)){
+    picker.classList.remove('open');
+  }
+});
+// load saved theme
+(function(){
+  const saved=sl('tj_theme','gold');
+  setTheme(saved);
+})();
 
 document.getElementById('pw-input').focus();
 loadFF();
