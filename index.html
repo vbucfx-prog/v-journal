@@ -41,8 +41,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
 /* ── BACKGROUND ── */
 #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 .grid{position:fixed;inset:0;z-index:1;pointer-events:none;
-  background-image:linear-gradient(rgba(255,184,48,0.03) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(255,184,48,0.03) 1px,transparent 1px);
+  background-image:linear-gradient(var(--grid-line,rgba(255,184,48,0.03)) 1px,transparent 1px),
+  linear-gradient(90deg,var(--grid-line,rgba(255,184,48,0.03)) 1px,transparent 1px);
   background-size:52px 52px}
 
 /* ── LOCK ── */
@@ -398,10 +398,66 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
 .theme-swatch.active::after{content:'✓';font-size:11px;color:#000;font-weight:900;line-height:1}
 
 /* ── THEMES ── */
-body.theme-gold{--gold:#FFB830;--gold-bright:#FFD166;--amber:#F5A623;--bronze:#CD7F32;--copper:#B87333;--glass-border:rgba(255,184,48,0.12);--glass-border-bright:rgba(255,184,48,0.28);--text:#f0e6d0;--text-muted:#7a6a50;--text-dim:#3d3020;--t-dot:#FFB830;--t-glow:rgba(255,184,48,0.4)}
-body.theme-red{--gold:#ff5555;--gold-bright:#ff8080;--amber:#e03030;--bronze:#c02020;--copper:#d04040;--glass-border:rgba(255,85,85,0.12);--glass-border-bright:rgba(255,85,85,0.28);--text:#f5e0e0;--text-muted:#7a5050;--text-dim:#3d2020;--t-dot:#ff5555;--t-glow:rgba(255,85,85,0.4)}
-body.theme-blue{--gold:#5599ff;--gold-bright:#88bbff;--amber:#3377ee;--bronze:#2255cc;--copper:#4488dd;--glass-border:rgba(85,153,255,0.12);--glass-border-bright:rgba(85,153,255,0.28);--text:#ddeeff;--text-muted:#506070;--text-dim:#203040;--t-dot:#5599ff;--t-glow:rgba(85,153,255,0.4)}
-body.theme-neon{--gold:#39ff14;--gold-bright:#80ff55;--amber:#20e000;--bronze:#109000;--copper:#30cc10;--glass-border:rgba(57,255,20,0.12);--glass-border-bright:rgba(57,255,20,0.28);--text:#e0ffe0;--text-muted:#507050;--text-dim:#203020;--t-dot:#39ff14;--t-glow:rgba(57,255,20,0.4)}
+body.theme-gold{
+  --gold:#FFB830;--gold-bright:#FFD166;--amber:#F5A623;--bronze:#CD7F32;--copper:#B87333;
+  --gold-glow:rgba(255,184,48,0.18);--gold-glow2:rgba(255,184,48,0.07);
+  --amber-glow:rgba(245,166,35,0.22);--bronze-glow:rgba(205,127,50,0.15);
+  --glass-border:rgba(255,184,48,0.12);--glass-border-bright:rgba(255,184,48,0.28);
+  --text:#f0e6d0;--text-muted:#7a6a50;--text-dim:#3d3020;
+  --grid-line:rgba(255,184,48,0.03);
+  --t-dot:#FFB830;--t-glow:rgba(255,184,48,0.4);
+  background:#030202;
+}
+body.theme-red{
+  --gold:#ff4444;--gold-bright:#ff7777;--amber:#dd2222;--bronze:#bb1111;--copper:#cc3333;
+  --gold-glow:rgba(255,68,68,0.18);--gold-glow2:rgba(255,68,68,0.07);
+  --amber-glow:rgba(221,34,34,0.22);--bronze-glow:rgba(187,17,17,0.15);
+  --glass-border:rgba(255,68,68,0.12);--glass-border-bright:rgba(255,68,68,0.3);
+  --text:#f5dede;--text-muted:#7a4444;--text-dim:#3d2020;
+  --grid-line:rgba(255,68,68,0.03);
+  --t-dot:#ff4444;--t-glow:rgba(255,68,68,0.4);
+  background:#020101;
+}
+body.theme-blue{
+  --gold:#4488ff;--gold-bright:#77aaff;--amber:#2266ee;--bronze:#1144cc;--copper:#3377dd;
+  --gold-glow:rgba(68,136,255,0.18);--gold-glow2:rgba(68,136,255,0.07);
+  --amber-glow:rgba(34,102,238,0.22);--bronze-glow:rgba(17,68,204,0.15);
+  --glass-border:rgba(68,136,255,0.12);--glass-border-bright:rgba(68,136,255,0.3);
+  --text:#dde8ff;--text-muted:#445577;--text-dim:#1e2d40;
+  --grid-line:rgba(68,136,255,0.03);
+  --t-dot:#4488ff;--t-glow:rgba(68,136,255,0.4);
+  background:#010208;
+}
+body.theme-neon{
+  --gold:#39ff14;--gold-bright:#77ff55;--amber:#20e000;--bronze:#109000;--copper:#28cc10;
+  --gold-glow:rgba(57,255,20,0.18);--gold-glow2:rgba(57,255,20,0.07);
+  --amber-glow:rgba(32,224,0,0.22);--bronze-glow:rgba(16,144,0,0.15);
+  --glass-border:rgba(57,255,20,0.12);--glass-border-bright:rgba(57,255,20,0.3);
+  --text:#ddffdd;--text-muted:#447744;--text-dim:#1e3020;
+  --grid-line:rgba(57,255,20,0.03);
+  --t-dot:#39ff14;--t-glow:rgba(57,255,20,0.4);
+  background:#010801;
+}
+body.theme-purple{
+  --gold:#bb55ff;--gold-bright:#dd88ff;--amber:#9933ee;--bronze:#7711cc;--copper:#aa44ee;
+  --gold-glow:rgba(187,85,255,0.18);--gold-glow2:rgba(187,85,255,0.07);
+  --amber-glow:rgba(153,51,238,0.22);--bronze-glow:rgba(119,17,204,0.15);
+  --glass-border:rgba(187,85,255,0.12);--glass-border-bright:rgba(187,85,255,0.3);
+  --text:#eedeff;--text-muted:#664477;--text-dim:#2d1a3d;
+  --grid-line:rgba(187,85,255,0.03);
+  --t-dot:#bb55ff;--t-glow:rgba(187,85,255,0.4);
+  background:#020108;
+}
+body.theme-white{
+  --gold:#c8d0e0;--gold-bright:#eaeef8;--amber:#a0a8b8;--bronze:#7880a0;--copper:#9098b0;
+  --gold-glow:rgba(200,208,224,0.18);--gold-glow2:rgba(200,208,224,0.07);
+  --amber-glow:rgba(160,168,184,0.22);--bronze-glow:rgba(120,128,160,0.15);
+  --glass-border:rgba(200,208,224,0.14);--glass-border-bright:rgba(220,228,244,0.35);
+  --text:#eaecf4;--text-muted:#8890a8;--text-dim:#444c60;
+  --grid-line:rgba(200,208,224,0.03);
+  --t-dot:#c8d0e0;--t-glow:rgba(200,208,224,0.4);
+  background:#050508;
+}
 </style>
 </head>
 <body>
@@ -595,10 +651,12 @@ body.theme-neon{--gold:#39ff14;--gold-bright:#80ff55;--amber:#20e000;--bronze:#1
   </div>
   <!-- THEME SWITCHER -->
   <div id="theme-picker">
-    <div class="theme-swatch active" id="sw-gold" style="background:#FFB830" onclick="setTheme('gold')" title="Gold"></div>
-    <div class="theme-swatch" id="sw-red" style="background:#ff5555" onclick="setTheme('red')" title="Red"></div>
-    <div class="theme-swatch" id="sw-blue" style="background:#5599ff" onclick="setTheme('blue')" title="Blue"></div>
-    <div class="theme-swatch" id="sw-neon" style="background:#39ff14" onclick="setTheme('neon')" title="Neon"></div>
+    <div class="theme-swatch active" id="sw-gold"   style="background:#FFB830" onclick="setTheme('gold')"   title="Gold"></div>
+    <div class="theme-swatch"        id="sw-red"    style="background:#ff4444" onclick="setTheme('red')"    title="Red"></div>
+    <div class="theme-swatch"        id="sw-blue"   style="background:#4488ff" onclick="setTheme('blue')"   title="Blue"></div>
+    <div class="theme-swatch"        id="sw-neon"   style="background:#39ff14" onclick="setTheme('neon')"   title="Neon"></div>
+    <div class="theme-swatch"        id="sw-purple" style="background:#bb55ff" onclick="setTheme('purple')" title="Purple"></div>
+    <div class="theme-swatch"        id="sw-white"  style="background:#c8d0e0" onclick="setTheme('white')"  title="White"></div>
   </div>
   <div id="theme-btn" onclick="toggleThemePicker()" title="Change theme">
     <div id="theme-btn-dot"></div>
@@ -640,51 +698,89 @@ body.theme-neon{--gold:#39ff14;--gold-bright:#80ff55;--amber:#20e000;--bronze:#1
 
 <script>
 /* ── AURORA BACKGROUND ── */
+const THEME_PALETTES={
+  gold:{
+    blobs:['205,100,20','255,160,30','180,80,10','245,130,20','255,190,40'],
+    dock:[{r:[160,210],g:[80,120],b:[10,30]},{r:[200,255],g:[140,180],b:[20,50]},{r:[180,220],g:[100,140],b:[10,30]}],
+  },
+  red:{
+    blobs:['200,20,20','255,50,50','160,10,10','220,40,40','255,80,80'],
+    dock:[{r:[180,255],g:[10,50],b:[10,50]},{r:[200,255],g:[20,60],b:[20,60]},{r:[160,220],g:[10,40],b:[10,40]}],
+  },
+  blue:{
+    blobs:['20,80,220','40,120,255','10,60,180','20,100,240','60,140,255'],
+    dock:[{r:[10,40],g:[80,130],b:[180,255]},{r:[20,60],g:[100,150],b:[200,255]},{r:[10,40],g:[70,120],b:[160,230]}],
+  },
+  neon:{
+    blobs:['20,200,10','50,255,20','10,160,5','30,220,15','60,255,30'],
+    dock:[{r:[10,40],g:[180,255],b:[10,40]},{r:[20,60],g:[200,255],b:[10,40]},{r:[10,40],g:[160,230],b:[10,30]}],
+  },
+  purple:{
+    blobs:['120,20,220','160,50,255','90,10,180','140,30,240','180,80,255'],
+    dock:[{r:[100,160],g:[10,50],b:[180,255]},{r:[130,190],g:[20,60],b:[200,255]},{r:[90,150],g:[10,40],b:[160,230]}],
+  },
+  white:{
+    blobs:['180,180,200','210,210,230','160,160,190','190,190,210','220,220,240'],
+    dock:[{r:[180,220],g:[180,220],b:[200,240]},{r:[190,230],g:[190,230],b:[210,250]},{r:[170,210],g:[170,210],b:[190,230]}],
+  },
+};
+
+let _currentTheme='gold';
+let _auroraBlobs=null;
+
 (function(){
   const c=document.getElementById('bg-canvas');
   const ctx=c.getContext('2d');
-  const blobs=[
-    {x:0.15,y:0.25,rx:0.55,ry:0.42,rot:0,drot:0.0003,dx:0.00007,dy:0.00004,color:'rgba(205,100,20,'},
-    {x:0.82,y:0.65,rx:0.5,ry:0.38,rot:1.2,drot:-0.0004,dx:-0.00005,dy:0.00006,color:'rgba(255,160,30,'},
-    {x:0.5,y:0.08,rx:0.6,ry:0.32,rot:0.4,drot:0.0002,dx:0.00006,dy:0.00008,color:'rgba(180,80,10,'},
-    {x:0.28,y:0.85,rx:0.4,ry:0.28,rot:2.0,drot:-0.0003,dx:0.00009,dy:-0.00005,color:'rgba(245,130,20,'},
-    {x:0.75,y:0.2,rx:0.35,ry:0.45,rot:0.8,drot:0.0005,dx:-0.00007,dy:0.00003,color:'rgba(255,190,40,'},
+
+  _auroraBlobs=[
+    {x:0.15,y:0.25,rx:0.55,ry:0.42,rot:0,  drot:0.0003, dx:0.00007, dy:0.00004},
+    {x:0.82,y:0.65,rx:0.5, ry:0.38,rot:1.2, drot:-0.0004,dx:-0.00005,dy:0.00006},
+    {x:0.5, y:0.08,rx:0.6, ry:0.32,rot:0.4, drot:0.0002, dx:0.00006, dy:0.00008},
+    {x:0.28,y:0.85,rx:0.4, ry:0.28,rot:2.0, drot:-0.0003,dx:0.00009, dy:-0.00005},
+    {x:0.75,y:0.2, rx:0.35,ry:0.45,rot:0.8, drot:0.0005, dx:-0.00007,dy:0.00003},
   ];
+
   function resize(){c.width=window.innerWidth;c.height=window.innerHeight}
   resize();window.addEventListener('resize',resize);
-  function ellipseGrad(b){
+
+  function ellipseGrad(b,color){
     ctx.save();
     ctx.translate(b.x*c.width,b.y*c.height);
     ctx.rotate(b.rot);
     ctx.scale(b.rx*c.width,b.ry*c.height);
-    const g=ctx.createRadialGradient(0,0,0,0,0,1);
-    g.addColorStop(0,b.color+'0.32)');
-    g.addColorStop(0.4,b.color+'0.14)');
-    g.addColorStop(1,b.color+'0)');
-    ctx.fillStyle=g;
+    const grd=ctx.createRadialGradient(0,0,0,0,0,1);
+    grd.addColorStop(0,`rgba(${color},0.32)`);
+    grd.addColorStop(0.4,`rgba(${color},0.14)`);
+    grd.addColorStop(1,`rgba(${color},0)`);
+    ctx.fillStyle=grd;
     ctx.beginPath();ctx.arc(0,0,1,0,Math.PI*2);ctx.fill();
     ctx.restore();
   }
+
   function draw(){
     ctx.clearRect(0,0,c.width,c.height);
-    blobs.forEach(b=>{
+    const pal=THEME_PALETTES[_currentTheme]||THEME_PALETTES.gold;
+    _auroraBlobs.forEach((b,i)=>{
       b.x+=b.dx;b.y+=b.dy;b.rot+=b.drot;
       if(b.x<-0.2||b.x>1.2)b.dx*=-1;
       if(b.y<-0.2||b.y>1.2)b.dy*=-1;
-      ellipseGrad(b);
+      ellipseGrad(b,pal.blobs[i]||pal.blobs[0]);
     });
     requestAnimationFrame(draw);
   }
   draw();
-  /* Animate dock border to shift with aurora */
+
+  /* Animate dock border in theme colour */
   const dock=document.getElementById('dock');
   let t=0;
   function animDock(){
     t+=0.008;
-    const r=Math.floor(180+50*Math.sin(t));
-    const g=Math.floor(100+40*Math.sin(t+1));
-    const b=Math.floor(20+15*Math.sin(t+2));
-    dock.style.borderColor=`rgba(${r},${g},${b},0.28)`;
+    const pal=THEME_PALETTES[_currentTheme]||THEME_PALETTES.gold;
+    const d=pal.dock;
+    const r=Math.floor(d[0].r[0]+(d[0].r[1]-d[0].r[0])*(0.5+0.5*Math.sin(t)));
+    const g2=Math.floor(d[1].g[0]+(d[1].g[1]-d[1].g[0])*(0.5+0.5*Math.sin(t+1)));
+    const b2=Math.floor(d[2].b[0]+(d[2].b[1]-d[2].b[0])*(0.5+0.5*Math.sin(t+2)));
+    dock.style.borderColor=`rgba(${r},${g2},${b2},0.35)`;
     requestAnimationFrame(animDock);
   }
   animDock();
@@ -1447,22 +1543,23 @@ function renderPMGroups(){
 }
 
 /* ── THEME SWITCHER ── */
-const THEMES=['gold','red','blue','neon'];
+const THEMES=['gold','red','blue','neon','purple','white'];
 function setTheme(name){
+  // Update aurora immediately
+  _currentTheme=name;
+  // Swap body class
   THEMES.forEach(t=>document.body.classList.remove('theme-'+t));
   document.body.classList.add('theme-'+name);
-  THEMES.forEach(t=>{
-    const sw=g('sw-'+t);
-    if(sw)sw.classList.toggle('active',t===name);
-  });
+  // Update swatch active state
+  THEMES.forEach(t=>{const sw=g('sw-'+t);if(sw)sw.classList.toggle('active',t===name)});
+  // Save
   sv('tj_theme',name);
-  // close picker
+  // Close picker
   g('theme-picker').classList.remove('open');
 }
 function toggleThemePicker(){
   g('theme-picker').classList.toggle('open');
 }
-// close picker when clicking elsewhere
 document.addEventListener('click',e=>{
   const picker=g('theme-picker');
   const btn=g('theme-btn');
@@ -1470,9 +1567,10 @@ document.addEventListener('click',e=>{
     picker.classList.remove('open');
   }
 });
-// load saved theme
+// Apply saved theme on load
 (function(){
   const saved=sl('tj_theme','gold');
+  _currentTheme=saved;
   setTheme(saved);
 })();
 
