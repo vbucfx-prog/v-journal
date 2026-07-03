@@ -608,11 +608,13 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
 }
 
 /* ── THEME SWITCHER ── */
-#theme-btn{position:fixed;bottom:calc(var(--dock-h) + 14px);right:20px;z-index:40;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:rgba(8,5,2,0.7);transition:border-color 0.2s,box-shadow 0.2s}
+#theme-btn{position:fixed;bottom:calc(var(--dock-h) + 14px);right:64px;z-index:40;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:rgba(8,5,2,0.7);transition:border-color 0.2s,box-shadow 0.2s}
 #theme-btn:hover{box-shadow:0 0 16px var(--t-glow,rgba(var(--a1),0.3))}
 #theme-btn-dot{width:16px;height:16px;border-radius:50%;background:var(--t-dot,#FFB830);transition:background 0.3s}
-#theme-picker{position:fixed;bottom:calc(var(--dock-h) + 60px);right:20px;z-index:40;display:flex;flex-direction:column;gap:8px;align-items:center;opacity:0;pointer-events:none;transition:opacity 0.2s,transform 0.2s;transform:translateY(8px)}
+#theme-picker{position:fixed;bottom:calc(var(--dock-h) + 60px);right:64px;z-index:40;display:flex;flex-direction:column;gap:8px;align-items:center;opacity:0;pointer-events:none;transition:opacity 0.2s,transform 0.2s;transform:translateY(8px)}
 #theme-picker.open{opacity:1;pointer-events:auto;transform:translateY(0)}
+#sound-btn{position:fixed;bottom:calc(var(--dock-h) + 14px);right:20px;z-index:40;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:rgba(8,5,2,0.7);transition:border-color 0.2s,box-shadow 0.2s;color:var(--text-muted)}
+#sound-btn:hover{box-shadow:0 0 16px var(--t-glow,rgba(var(--a1),0.3));color:var(--gold)}
 .theme-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid rgba(255,255,255,0.08);transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s;position:relative;display:flex;align-items:center;justify-content:center}
 .theme-swatch:hover{transform:scale(1.18)}
 .theme-swatch.active{border-color:rgba(255,255,255,0.5)}
@@ -1039,6 +1041,9 @@ body.theme-white{
   <div id="theme-btn" onclick="toggleThemePicker()" title="Change theme">
     <div id="theme-btn-dot"></div>
   </div>
+  <button id="sound-btn" onclick="toggleSound()" title="Toggle sounds">
+    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="1.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+  </button>
 
 </div>
 
@@ -1272,6 +1277,8 @@ async function init(){
   togglePanel('overview',document.getElementById('di-overview'));
   showSync('Synced ✓');
   checkSundayPrompt();
+  const sb=g('sound-btn');
+  if(sb&&!_soundOn)sb.innerHTML=`<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="1.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
 }
 
 async function loadFromSupabase(){
@@ -1305,19 +1312,22 @@ function togglePanel(name,el){
   const panel=document.getElementById('panel-'+name);
   const bd=document.getElementById('panel-backdrop');
   document.querySelectorAll('.dock-item').forEach(d=>d.classList.remove('active'));
-  if(activePanel===name){panel.classList.remove('active');bd.classList.remove('active');activePanel=null;return}
+  if(activePanel===name){panel.classList.remove('active');bd.classList.remove('active');activePanel=null;playClose();return}
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   panel.classList.add('active');bd.classList.add('active');
   if(el)el.classList.add('active');
   activePanel=name;
+  playOpen();
   if(name==='insight')renderInsight();
 }
 function closeAllPanels(){
   // Don't close if click was on theme picker or btn
+  const wasOpen=!!activePanel;
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-backdrop').classList.remove('active');
   document.querySelectorAll('.dock-item').forEach(d=>d.classList.remove('active'));
   activePanel=null;
+  if(wasOpen)playClose();
 }
 
 /* ── RENDER ALL ── */
@@ -1666,7 +1676,7 @@ function openDetailPayout(id){
   document.getElementById('detail-overlay').classList.add('open');
 }
 
-function closeDetail(){document.getElementById('detail-overlay').classList.remove('open')}
+function closeDetail(){document.getElementById('detail-overlay').classList.remove('open');playClose()}
 
 /* ── EDIT HELPERS ── */
 function ef(id,field,val){
@@ -1707,11 +1717,13 @@ function openForm(type){
   document.getElementById('form-overlay').classList.add('open');
   pendingTags=[];
   if(g('tag-input-wrap'))renderTagInput();
+  playOpen();
 }
 function closeForm(){
   document.getElementById('form-overlay').classList.remove('open');
   pendingPics={trade:[],post:[],premarket:[],funded:[],payout:[],markup:[]};
   pendingTags=[];
+  playClose();
 }
 
 function picsBlock(section,previewId){
@@ -1875,7 +1887,7 @@ function openLb(pics,idx){
   document.getElementById('lb-nav').style.display=lbPics.length>1?'flex':'none';
   document.getElementById('lightbox').classList.add('open');
 }
-function closeLb(){document.getElementById('lightbox').classList.remove('open')}
+function closeLb(){document.getElementById('lightbox').classList.remove('open');playClose()}
 function lbStep(dir){lbIdx=(lbIdx+dir+lbPics.length)%lbPics.length;document.getElementById('lb-img').src=lbPics[lbIdx];document.getElementById('lb-count').textContent=(lbIdx+1)+' / '+lbPics.length}
 
 /* ── GOALS ── */
@@ -2469,7 +2481,7 @@ function openWeekly(){
   document.getElementById('weekly-overlay').classList.add('open');
 }
 
-function closeWeekly(){document.getElementById('weekly-overlay').classList.remove('open')}
+function closeWeekly(){document.getElementById('weekly-overlay').classList.remove('open');playClose()}
 
 function saveWeekly(){
   const now=new Date();
@@ -2808,6 +2820,45 @@ document.addEventListener('paste',e=>{
     }
   }
 });
+
+/* ── SOUND ENGINE ── */
+let _actx=null,_soundOn=sl('tj_sound','on')!=='off';
+function _ac(){
+  if(!_actx){try{_actx=new(window.AudioContext||window.webkitAudioContext)()}catch{return null}}
+  if(_actx.state==='suspended')_actx.resume();
+  return _actx;
+}
+function _tone(freq0,freq1,dur,vol,type){
+  if(!_soundOn)return;
+  const ctx=_ac();if(!ctx)return;
+  const t0=ctx.currentTime;
+  const osc=ctx.createOscillator();
+  const gain=ctx.createGain();
+  osc.type=type||'sine';
+  osc.frequency.setValueAtTime(freq0,t0);
+  osc.frequency.exponentialRampToValueAtTime(Math.max(freq1,1),t0+dur);
+  gain.gain.setValueAtTime(0,t0);
+  gain.gain.linearRampToValueAtTime(vol,t0+0.008);
+  gain.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  osc.connect(gain);gain.connect(ctx.destination);
+  osc.start(t0);osc.stop(t0+dur+0.02);
+}
+function playOpen(){_tone(420,900,0.16,0.05,'sine')}
+function playClose(){_tone(700,320,0.14,0.045,'sine')}
+function playClick(){_tone(1100,1400,0.045,0.035,'sine')}
+function toggleSound(){
+  _soundOn=!_soundOn;
+  sv('tj_sound',_soundOn?'on':'off');
+  const btn=g('sound-btn');
+  if(btn)btn.innerHTML=_soundOn
+    ?`<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="1.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`
+    :`<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="1.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+  if(_soundOn)playClick();
+}
+// Play click for buttons, dock items, filters, cards
+document.addEventListener('click',e=>{
+  if(e.target.closest('.dock-item,.btn-add,.btn-save,.btn-cancel,.btn-delete,.filt-btn,.entry-card,.funded-card,.markup-card,.eval-card,.idialog-btn,.tag-suggest,.theme-swatch,.card-star,.goal-chk,.tdl-chk,.pm-chk'))playClick();
+},true);
 
 document.getElementById('pw-input').focus();
 loadFF();
