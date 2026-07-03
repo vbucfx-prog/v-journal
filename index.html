@@ -1040,19 +1040,19 @@ body.theme-white{
     <div id="theme-btn-dot"></div>
   </div>
 
-  <!-- INTERNAL DIALOG -->
-  <div id="idialog-overlay">
-    <div class="idialog" id="idialog-box">
-      <div class="idialog-icon" id="idialog-icon">
-        <svg id="idialog-icon-svg" viewBox="0 0 24 24"></svg>
-      </div>
-      <div class="idialog-title" id="idialog-title"></div>
-      <div class="idialog-msg" id="idialog-msg"></div>
-      <input class="idialog-inp" id="idialog-inp" type="text" style="display:none">
-      <div class="idialog-btns" id="idialog-btns"></div>
-    </div>
-  </div>
+</div>
 
+<!-- INTERNAL DIALOG -->
+<div id="idialog-overlay">
+  <div class="idialog" id="idialog-box">
+    <div class="idialog-icon" id="idialog-icon">
+      <svg id="idialog-icon-svg" viewBox="0 0 24 24"></svg>
+    </div>
+    <div class="idialog-title" id="idialog-title"></div>
+    <div class="idialog-msg" id="idialog-msg"></div>
+    <input class="idialog-inp" id="idialog-inp" type="text" style="display:none">
+    <div class="idialog-btns" id="idialog-btns"></div>
+  </div>
 </div>
 
 <!-- WEEKLY REVIEW -->
@@ -1708,21 +1708,7 @@ function openForm(type){
   pendingTags=[];
   if(g('tag-input-wrap'))renderTagInput();
 }
-function formHasContent(){
-  const modal=document.getElementById('form-modal');
-  if(!modal)return false;
-  const inputs=modal.querySelectorAll('input:not([type=date]):not([readonly]), textarea');
-  for(const inp of inputs){if(inp.value&&inp.value.trim())return true}
-  if(pendingTags.length)return true;
-  const type=g('form-type')?.value;
-  if(type&&pendingPics[type]&&pendingPics[type].length)return true;
-  return false;
-}
-function closeForm(force){
-  if(!force&&formHasContent()){
-    iconfirm('Discard this entry? Your unsaved changes will be lost.',()=>closeForm(true),true);
-    return;
-  }
+function closeForm(){
   document.getElementById('form-overlay').classList.remove('open');
   pendingPics={trade:[],post:[],premarket:[],funded:[],payout:[],markup:[]};
   pendingTags=[];
@@ -1862,7 +1848,7 @@ function saveEntry(type){
     const ev={id:Date.now(),date:TODAY,firm:g('e-eval-firm').value,phase:g('e-eval-phase').value,accountSize:parseFloat(g('e-eval-size').value)||0,profitTarget:parseFloat(g('e-eval-target').value)||0,maxDD:parseFloat(g('e-eval-maxdd').value)||0,dailyLoss:parseFloat(g('e-eval-daily').value)||0,currentPnl:parseFloat(g('e-eval-pnl').value)||0,currentDD:parseFloat(g('e-eval-curdd').value)||0,daysLeft:g('e-eval-days').value,status:g('e-eval-status').value,notes:g('e-eval-notes').value};
     evals.unshift(ev);sv('tj_evals',evals);renderEvals();
   }
-  closeForm(true);
+  closeForm();
 }
 
 /* ── PICS ── */
