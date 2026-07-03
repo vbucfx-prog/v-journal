@@ -1981,8 +1981,10 @@ async function iprompt(title,placeholder,onDone,defaultVal=''){
 function toggleFF(){
   const body=g('ff-body');
   const chev=g('ff-chevron');
+  const opening=!body.classList.contains('open');
   body.classList.toggle('open');
   chev.classList.toggle('open');
+  opening?playSwipeOpen():playSwipeClose();
 }
 
 /* ── FOREX FACTORY FEED ── */
@@ -2078,7 +2080,9 @@ function deletePMGroup(gid){
 }
 function togglePMCollapse(gid){
   const group=pmGroups.find(x=>x.id===gid);if(!group)return;
-  group.collapsed=!group.collapsed;sv('tj_pm_groups',pmGroups);renderPMGroups();
+  group.collapsed=!group.collapsed;
+  group.collapsed?playSwipeClose():playSwipeOpen();
+  sv('tj_pm_groups',pmGroups);renderPMGroups();
 }
 function renderPMGroups(){
   const c=g('pm-groups');if(!c)return;
@@ -2275,7 +2279,9 @@ let notesDragging=false;
 
 function toggleNotes(){
   const w=document.getElementById('notes-widget');
+  const opening=!w.classList.contains('open');
   w.classList.toggle('open');
+  opening?playOpen():playClose();
   if(w.classList.contains('open')){
     const ta=document.getElementById('notes-ta');
     if(ta){ta.value=sl('tj_notepad','');setTimeout(()=>ta.focus(),80)}
@@ -2662,8 +2668,10 @@ function toggleStar(id,ev){
 function toggleAnalysisSec(name){
   const body=g('asec-'+name);
   const chev=g('asec-chev-'+name);
+  const opening=body&&!body.classList.contains('open');
   if(body)body.classList.toggle('open');
   if(chev)chev.classList.toggle('open');
+  opening?playSwipeOpen():playSwipeClose();
 }
 
 /* ── TAGS ── */
@@ -2822,30 +2830,94 @@ document.addEventListener('paste',e=>{
 });
 
 /* ── SOUND ENGINE ── */
-let _actx=null,_soundOn=sl('tj_sound','on')!=='off';
+let _actx=null,_soundOn=sl('tj_sound','on')!=='off',_noiseBuf=null;
 function _ac(){
   if(!_actx){try{_actx=new(window.AudioContext||window.webkitAudioContext)()}catch{return null}}
   if(_actx.state==='suspended')_actx.resume();
   return _actx;
 }
+function _rand(min,max){return min+Math.random()*(max-min)}
+
+// Simple tone with slight pitch randomization for variety
 function _tone(freq0,freq1,dur,vol,type){
   if(!_soundOn)return;
   const ctx=_ac();if(!ctx)return;
+  const jitter=_rand(0.96,1.04); // slight variance so repeated sounds don't feel robotic
   const t0=ctx.currentTime;
   const osc=ctx.createOscillator();
   const gain=ctx.createGain();
   osc.type=type||'sine';
-  osc.frequency.setValueAtTime(freq0,t0);
-  osc.frequency.exponentialRampToValueAtTime(Math.max(freq1,1),t0+dur);
+  osc.frequency.setValueAtTime(freq0*jitter,t0);
+  osc.frequency.exponentialRampToValueAtTime(Math.max(freq1*jitter,1),t0+dur);
   gain.gain.setValueAtTime(0,t0);
-  gain.gain.linearRampToValueAtTime(vol,t0+0.008);
+  gain.gain.linearRampToValueAtTime(vol,t0+0.007);
   gain.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
   osc.connect(gain);gain.connect(ctx.destination);
   osc.start(t0);osc.stop(t0+dur+0.02);
 }
-function playOpen(){_tone(420,900,0.16,0.05,'sine')}
-function playClose(){_tone(700,320,0.14,0.045,'sine')}
-function playClick(){_tone(1100,1400,0.045,0.035,'sine')}
+
+// Two-note chord/interval for richer "confirm"/"cancel" feel
+function _chord(f1,f2,dur,vol,delay){
+  if(!_soundOn)return;
+  const ctx=_ac();if(!ctx)return;
+  const t0=ctx.currentTime;
+  [f1,f2].forEach((f,i)=>{
+    const osc=ctx.createOscillator();const gain=ctx.createGain();
+    osc.type='sine';
+    const start=t0+(i*delay);
+    osc.frequency.setValueAtTime(f,start);
+    gain.gain.setValueAtTime(0,start);
+    gain.gain.linearRampToValueAtTime(vol,start+0.006);
+    gain.gain.exponentialRampToValueAtTime(0.0001,start+dur);
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.start(start);osc.stop(start+dur+0.02);
+  });
+}
+
+// Filtered noise burst — used for wind/swipe collapse sounds
+function _getNoiseBuffer(ctx){
+  if(_noiseBuf)return _noiseBuf;
+  const len=ctx.sampleRate*0.4;
+  const buf=ctx.createBuffer(1,len,ctx.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<len;i++)data[i]=Math.random()*2-1;
+  _noiseBuf=buf;
+  return buf;
+}
+function _whoosh(dir){
+  // dir: 1 = opening/expanding (sweep up), -1 = closing/collapsing (sweep down)
+  if(!_soundOn)return;
+  const ctx=_ac();if(!ctx)return;
+  const t0=ctx.currentTime;
+  const dur=_rand(0.22,0.28);
+  const src=ctx.createBufferSource();
+  src.buffer=_getNoiseBuffer(ctx);
+  const filter=ctx.createBiquadFilter();
+  filter.type='bandpass';
+  filter.Q.value=1.1;
+  const startFreq=dir>0?_rand(500,650):_rand(1600,1900);
+  const endFreq=dir>0?_rand(1700,2000):_rand(450,600);
+  filter.frequency.setValueAtTime(startFreq,t0);
+  filter.frequency.exponentialRampToValueAtTime(endFreq,t0+dur);
+  const gain=ctx.createGain();
+  gain.gain.setValueAtTime(0,t0);
+  gain.gain.linearRampToValueAtTime(0.05,t0+dur*0.3);
+  gain.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  src.connect(filter);filter.connect(gain);gain.connect(ctx.destination);
+  src.start(t0);src.stop(t0+dur+0.05);
+}
+
+/* Distinct sound identities per action type */
+function playOpen(){_tone(420,880,0.15,0.05,'sine')}
+function playClose(){_tone(680,310,0.13,0.045,'sine')}
+function playSwipeOpen(){_whoosh(1)}
+function playSwipeClose(){_whoosh(-1)}
+function playClick(){_tone(_rand(1050,1150),_rand(1350,1450),_rand(0.04,0.05),0.032,'sine')}
+function playPop(){_chord(880,1320,0.08,0.04,0.02)}          // add/create actions — bright little pop
+function playConfirm(){_chord(660,990,0.11,0.045,0.045)}      // save — rising two-note
+function playDeny(){_tone(360,220,0.13,0.05,'triangle')}      // delete/danger — lower descending thud
+function playToggle(){_tone(_rand(900,950),_rand(1150,1250),0.035,0.03,'sine')} // checkboxes/switches — quick tick
+
 function toggleSound(){
   _soundOn=!_soundOn;
   sv('tj_sound',_soundOn?'on':'off');
@@ -2855,9 +2927,15 @@ function toggleSound(){
     :`<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="1.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
   if(_soundOn)playClick();
 }
-// Play click for buttons, dock items, filters, cards
+
+// Route clicks to the right sound flavor by element type
 document.addEventListener('click',e=>{
-  if(e.target.closest('.dock-item,.btn-add,.btn-save,.btn-cancel,.btn-delete,.filt-btn,.entry-card,.funded-card,.markup-card,.eval-card,.idialog-btn,.tag-suggest,.theme-swatch,.card-star,.goal-chk,.tdl-chk,.pm-chk'))playClick();
+  if(e.target.closest('.btn-delete'))return void playDeny();
+  if(e.target.closest('.btn-save,.idialog-btn.primary'))return void playConfirm();
+  if(e.target.closest('.btn-add,.tag-suggest,.pm-add-btn,.goals-add-btn,.tdl-add-btn'))return void playPop();
+  if(e.target.closest('.goal-chk,.tdl-chk,.pm-chk,.theme-swatch,.card-star'))return void playToggle();
+  if(e.target.closest('.btn-cancel,.idialog-btn.ghost,.idialog-btn.danger'))return void playClick();
+  if(e.target.closest('.dock-item,.filt-btn,.entry-card,.funded-card,.markup-card,.eval-card'))return void playClick();
 },true);
 
 document.getElementById('pw-input').focus();
