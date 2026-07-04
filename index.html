@@ -487,6 +487,16 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
 .analysis-sec-body{padding:14px 2px 4px;display:none}
 .analysis-sec-body.open{display:block}
 
+/* ── TRADE REPLAY BAR ── */
+.replay-wrap{margin:14px 0 4px;background:rgba(var(--a1),0.03);border:1px solid rgba(var(--a1),0.08);border-radius:var(--radius-sm);padding:16px 18px}
+.replay-labels{display:flex;justify-content:space-between;margin-bottom:8px}
+.replay-label{font-family:var(--mono);font-size:8px;letter-spacing:0.1em;text-transform:uppercase}
+.replay-track{position:relative;height:28px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,0.03)}
+.replay-seg{position:absolute;top:0;bottom:0}
+.replay-marker{position:absolute;top:0;bottom:0;width:2px;background:var(--text);opacity:0.9}
+.replay-marker-lbl{position:absolute;top:-18px;transform:translateX(-50%);font-family:var(--mono);font-size:7px;color:var(--text-muted);white-space:nowrap}
+.replay-rr-lbl{margin-top:8px;text-align:center;font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.08em}
+
 /* ── DONUT ── */
 .donut-wrap{display:flex;align-items:center;gap:24px;background:rgba(var(--a1),0.03);border:1px solid rgba(var(--a1),0.09);border-radius:var(--radius-sm);padding:20px;margin-bottom:22px}
 .donut-legend{display:flex;flex-direction:column;gap:10px;flex:1}
@@ -646,20 +656,20 @@ body.theme-blue{
   background:#010208;
 }
 body.theme-neon{
-  --gold:#39ff14;--gold-bright:#77ff55;--amber:#20e000;--bronze:#109000;--copper:#28cc10;
-  --a1:57,255,20;--a2:32,224,0;--a3:16,144,0;
-  --glass-border:rgba(var(--a1),0.12);--glass-border-bright:rgba(var(--a1),0.3);
-  --text:#ddffdd;--text-muted:#447744;--text-dim:#1e3020;
-  --grid-line:rgba(var(--a1),0.03);--t-dot:#39ff14;--t-glow:rgba(var(--a1),0.4);
-  background:#010801;
+  --gold:#d6f23a;--gold-bright:#ecff8a;--amber:#c2e820;--bronze:#94c410;--copper:#b8e030;
+  --a1:214,242,58;--a2:194,232,32;--a3:148,196,16;
+  --glass-border:rgba(var(--a1),0.12);--glass-border-bright:rgba(var(--a1),0.32);
+  --text:#f4ffd8;--text-muted:#7a9450;--text-dim:#263018;
+  --grid-line:rgba(var(--a1),0.03);--t-dot:#d6f23a;--t-glow:rgba(var(--a1),0.45);
+  background:#020601;
 }
 body.theme-purple{
-  --gold:#bb55ff;--gold-bright:#dd88ff;--amber:#9933ee;--bronze:#7711cc;--copper:#aa44ee;
-  --a1:187,85,255;--a2:153,51,238;--a3:119,17,204;
-  --glass-border:rgba(var(--a1),0.12);--glass-border-bright:rgba(var(--a1),0.3);
-  --text:#eedeff;--text-muted:#664477;--text-dim:#2d1a3d;
-  --grid-line:rgba(var(--a1),0.03);--t-dot:#bb55ff;--t-glow:rgba(var(--a1),0.4);
-  background:#020108;
+  --gold:#c88bff;--gold-bright:#e0bbff;--amber:#a866ee;--bronze:#8c4bd6;--copper:#b876f0;
+  --a1:200,139,255;--a2:168,102,238;--a3:140,75,214;
+  --glass-border:rgba(var(--a1),0.14);--glass-border-bright:rgba(var(--a1),0.32);
+  --text:#f2e6ff;--text-muted:#8874a0;--text-dim:#382a4a;
+  --grid-line:rgba(var(--a1),0.03);--t-dot:#c88bff;--t-glow:rgba(var(--a1),0.4);
+  background:#0a0714;
 }
 body.theme-white{
   --gold:#c8d0e0;--gold-bright:#eaeef8;--amber:#a0a8b8;--bronze:#7880a0;--copper:#9098b0;
@@ -1031,12 +1041,12 @@ body.theme-white{
   </div>
   <!-- THEME SWITCHER -->
   <div id="theme-picker">
-    <div class="theme-swatch active" id="sw-gold"   style="background:#FFB830" onclick="setTheme('gold')"   title="Gold"></div>
-    <div class="theme-swatch"        id="sw-red"    style="background:#ff4444" onclick="setTheme('red')"    title="Red"></div>
-    <div class="theme-swatch"        id="sw-blue"   style="background:#4488ff" onclick="setTheme('blue')"   title="Blue"></div>
-    <div class="theme-swatch"        id="sw-neon"   style="background:#39ff14" onclick="setTheme('neon')"   title="Neon"></div>
-    <div class="theme-swatch"        id="sw-purple" style="background:#bb55ff" onclick="setTheme('purple')" title="Purple"></div>
-    <div class="theme-swatch"        id="sw-white"  style="background:#c8d0e0" onclick="setTheme('white')"  title="White"></div>
+    <div class="theme-swatch active" id="sw-gold"   style="background:#FFB830" onclick="setTheme('gold')"   onmouseenter="previewTheme('gold')"   onmouseleave="revertThemePreview()" title="Gold"></div>
+    <div class="theme-swatch"        id="sw-red"    style="background:#ff4444" onclick="setTheme('red')"    onmouseenter="previewTheme('red')"    onmouseleave="revertThemePreview()" title="Red"></div>
+    <div class="theme-swatch"        id="sw-blue"   style="background:#4488ff" onclick="setTheme('blue')"   onmouseenter="previewTheme('blue')"   onmouseleave="revertThemePreview()" title="Blue"></div>
+    <div class="theme-swatch"        id="sw-neon"   style="background:#d6f23a" onclick="setTheme('neon')"   onmouseenter="previewTheme('neon')"   onmouseleave="revertThemePreview()" title="Butterfly Green"></div>
+    <div class="theme-swatch"        id="sw-purple" style="background:#c88bff" onclick="setTheme('purple')" onmouseenter="previewTheme('purple')" onmouseleave="revertThemePreview()" title="Purple"></div>
+    <div class="theme-swatch"        id="sw-white"  style="background:#c8d0e0" onclick="setTheme('white')"  onmouseenter="previewTheme('white')"  onmouseleave="revertThemePreview()" title="White"></div>
   </div>
   <div id="theme-btn" onclick="toggleThemePicker()" title="Change theme">
     <div id="theme-btn-dot"></div>
@@ -1113,12 +1123,12 @@ const THEME_PALETTES={
     dock:[{r:[10,40],g:[80,130],b:[180,255]},{r:[20,60],g:[100,150],b:[200,255]},{r:[10,40],g:[70,120],b:[160,230]}],
   },
   neon:{
-    blobs:['20,200,10','50,255,20','10,160,5','30,220,15','60,255,30'],
-    dock:[{r:[10,40],g:[180,255],b:[10,40]},{r:[20,60],g:[200,255],b:[10,40]},{r:[10,40],g:[160,230],b:[10,30]}],
+    blobs:['130,200,20','214,242,58','80,150,10','170,220,40','50,100,5'],
+    dock:[{r:[150,210],g:[220,250],b:[20,60]},{r:[180,230],g:[230,255],b:[30,70]},{r:[110,160],g:[180,220],b:[10,40]}],
   },
   purple:{
-    blobs:['120,20,220','160,50,255','90,10,180','140,30,240','180,80,255'],
-    dock:[{r:[100,160],g:[10,50],b:[180,255]},{r:[130,190],g:[20,60],b:[200,255]},{r:[90,150],g:[10,40],b:[160,230]}],
+    blobs:['140,60,220','200,139,255','110,40,190','168,102,238','220,170,255'],
+    dock:[{r:[140,190],g:[80,130],b:[220,255]},{r:[160,210],g:[100,150],b:[230,255]},{r:[130,180],g:[70,120],b:[200,240]}],
   },
   white:{
     blobs:['180,180,200','210,210,230','160,160,190','190,190,210','220,220,240'],
@@ -1537,6 +1547,47 @@ function dSel(opts,cur,cb){
   return`<select class="detail-select" onchange="${cb}" style="width:100%;margin-top:2px">${opts.map(o=>`<option ${cur===o?'selected':''}>${o}</option>`).join('')}</select>`;
 }
 
+/* ── TRADE REPLAY BAR ── */
+function buildTradeReplayBar(e){
+  if(e.type!=='trade')return'';
+  const entry=parseFloat(e.entryPrice);
+  const sl=parseFloat(e.sl);
+  const tp=parseFloat(e.tp);
+  if(isNaN(entry)||isNaN(sl)||isNaN(tp)||entry===sl)return'';
+
+  const isLong=tp>entry; // TP above entry = long-style risk shape (works for either direction field too)
+  const lo=Math.min(sl,tp);
+  const hi=Math.max(sl,tp);
+  const range=hi-lo||1;
+  const entryPct=((entry-lo)/range)*100;
+  const slPct=((sl-lo)/range)*100;
+  const tpPct=((tp-lo)/range)*100;
+
+  const riskStart=Math.min(entryPct,slPct);
+  const riskEnd=Math.max(entryPct,slPct);
+  const rewardStart=Math.min(entryPct,tpPct);
+  const rewardEnd=Math.max(entryPct,tpPct);
+
+  const risk=Math.abs(entry-sl);
+  const reward=Math.abs(tp-entry);
+  const rr=risk?(reward/risk).toFixed(2):'—';
+
+  return`<div class="replay-wrap">
+    <div class="replay-labels">
+      <span class="replay-label" style="color:#ff6b6b">Risk</span>
+      <span class="replay-label" style="color:#6dffA0">Reward</span>
+    </div>
+    <div class="replay-track">
+      <div class="replay-seg" style="left:${riskStart}%;width:${riskEnd-riskStart}%;background:rgba(255,107,107,0.28)"></div>
+      <div class="replay-seg" style="left:${rewardStart}%;width:${rewardEnd-rewardStart}%;background:rgba(109,255,160,0.24)"></div>
+      <div class="replay-marker" style="left:${slPct}%;background:#ff6b6b"><span class="replay-marker-lbl" style="left:${slPct}%;color:#ff6b6b">SL</span></div>
+      <div class="replay-marker" style="left:${entryPct}%;background:var(--gold)"><span class="replay-marker-lbl" style="left:${entryPct}%;color:var(--gold)">Entry</span></div>
+      <div class="replay-marker" style="left:${tpPct}%;background:#6dffA0"><span class="replay-marker-lbl" style="left:${tpPct}%;color:#6dffA0">TP</span></div>
+    </div>
+    <div class="replay-rr-lbl">Planned ${rr}R &nbsp;·&nbsp; Risk ${risk.toFixed(2)} / Reward ${reward.toFixed(2)}</div>
+  </div>`;
+}
+
 function openDetail(id){
   const e=entries.find(x=>x.id===id);if(!e)return;
   const pics=e.pics||[];
@@ -1574,6 +1625,7 @@ function openDetail(id){
         <div><div style="font-family:var(--mono);font-size:7px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px">Stop Loss</div><div class="detail-val" contenteditable="true" onblur="ef(${id},'sl',this.textContent)" style="color:#ff6b6b">${esc(e.sl||'—')}</div></div>
         <div><div style="font-family:var(--mono);font-size:7px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px">Take Profit</div><div class="detail-val" contenteditable="true" onblur="ef(${id},'tp',this.textContent)" style="color:#6dffA0">${esc(e.tp||'—')}</div></div>
       </div>
+      ${buildTradeReplayBar(e)}
       <div class="detail-sec">Concepts</div>
       <div class="detail-val" contenteditable="true" onblur="ef(${id},'concepts',this.textContent)">${esc(e.concepts||'')}</div>
       <div class="detail-sec">Entry Reasoning</div>
@@ -2206,18 +2258,29 @@ function renderMetrics(){
   }else{g('insight-extremes').innerHTML=emptyHtml()}
 }
 const THEMES=['gold','red','blue','neon','purple','white'];
-function setTheme(name){
-  // Update aurora immediately
+let _committedTheme='gold';
+
+function applyThemeVisual(name){
   _currentTheme=name;
-  // Swap body class
   THEMES.forEach(t=>document.body.classList.remove('theme-'+t));
   document.body.classList.add('theme-'+name);
+}
+
+function setTheme(name){
+  _committedTheme=name;
+  applyThemeVisual(name);
   // Update swatch active state
   THEMES.forEach(t=>{const sw=g('sw-'+t);if(sw)sw.classList.toggle('active',t===name)});
   // Save
   sv('tj_theme',name);
   // Close picker
   g('theme-picker').classList.remove('open');
+}
+function previewTheme(name){
+  applyThemeVisual(name);
+}
+function revertThemePreview(){
+  applyThemeVisual(_committedTheme);
 }
 function toggleThemePicker(){
   g('theme-picker').classList.toggle('open');
