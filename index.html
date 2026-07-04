@@ -529,6 +529,8 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
 #lecture-player-overlay.open{display:flex;animation:fadeIn 0.2s ease both}
 .lecture-player-box{width:min(900px,94vw);background:rgba(6,4,2,0.96);border:1px solid var(--glass-border-bright);border-radius:var(--radius);overflow:hidden;position:relative}
 .lecture-player-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(var(--a1),0.08)}
+.lp-close-btn{position:static;background:rgba(var(--a1),0.06);border:1px solid rgba(var(--a1),0.14);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-muted);font-size:14px;transition:all 0.12s;font-family:var(--mono);flex-shrink:0}
+.lp-close-btn:hover{color:var(--gold);background:rgba(var(--a1),0.12);border-color:rgba(var(--a1),0.3)}
 .lecture-player-title{font-size:14px;font-weight:600;color:var(--text)}
 .lecture-player-media{width:100%;aspect-ratio:16/9;background:#000}
 .lecture-player-media video,.lecture-player-media iframe{width:100%;height:100%;border:none;display:block}
@@ -1159,9 +1161,9 @@ body.theme-white{
   <div class="lecture-player-box">
     <div class="lecture-player-hd">
       <div class="lecture-player-title" id="lp-title"></div>
-      <div style="display:flex;gap:8px;align-items:center">
+      <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
         <button class="btn-delete" id="lp-delete-btn" onclick="deleteLecture(currentLectureId)">Delete</button>
-        <button class="detail-close" onclick="closeLecturePlayer()">✕</button>
+        <button class="lp-close-btn" onclick="closeLecturePlayer()">✕</button>
       </div>
     </div>
     <div class="lecture-player-media" id="lp-media"></div>
@@ -2987,6 +2989,46 @@ function handleLectureFile(input){
   g('lecture-file-lbl').textContent=`${file.name} (${mb} MB) — selected`;
 }
 
+/* ── LECTURE THUMBNAILS ── */
+function getLinkThumbnail(url){
+  const ytMatch=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+  if(ytMatch)return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+  const driveMatch=url.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+  if(driveMatch)return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w400`;
+  return null;
+}
+
+// Captures a frame ~1s into a local video file as a small JPEG thumbnail
+function captureLocalThumbnail(file){
+  return new Promise((resolve)=>{
+    try{
+      const url=URL.createObjectURL(file);
+      const video=document.createElement('video');
+      video.src=url;
+      video.muted=true;
+      video.playsInline=true;
+      const cleanup=()=>{try{URL.revokeObjectURL(url)}catch{}};
+      video.addEventListener('loadeddata',()=>{
+        const seekTo=Math.min(1,(video.duration||1)*0.1);
+        video.currentTime=seekTo;
+      });
+      video.addEventListener('seeked',()=>{
+        try{
+          const canvas=document.createElement('canvas');
+          canvas.width=320;canvas.height=180;
+          const ctx=canvas.getContext('2d');
+          ctx.drawImage(video,0,0,320,180);
+          const dataUrl=canvas.toDataURL('image/jpeg',0.6);
+          cleanup();
+          resolve(dataUrl);
+        }catch(e){cleanup();resolve(null)}
+      });
+      video.addEventListener('error',()=>{cleanup();resolve(null)});
+      setTimeout(()=>resolve(null),6000); // safety timeout
+    }catch{resolve(null)}
+  });
+}
+
 async function saveLectureEntry(){
   const title=g('e-lecture-title').value.trim()||'Untitled Lecture';
   const notes=g('e-lecture-notes').value;
@@ -3003,11 +3045,13 @@ async function saveLectureEntry(){
       console.warn('IndexedDB error:',err);
       return;
     }
-    lectures.unshift({id,title,notes,tags,source:'local',date:TODAY,sizeMB:(pendingLectureFile.size/(1024*1024)).toFixed(1)});
+    const thumb=await captureLocalThumbnail(pendingLectureFile);
+    lectures.unshift({id,title,notes,tags,source:'local',date:TODAY,sizeMB:(pendingLectureFile.size/(1024*1024)).toFixed(1),thumb});
   }else{
     const url=g('e-lecture-url').value.trim();
     if(!url){showSync('Paste a video URL first',false);return}
-    lectures.unshift({id,title,notes,tags,source:'link',url,date:TODAY});
+    const thumb=getLinkThumbnail(url);
+    lectures.unshift({id,title,notes,tags,source:'link',url,date:TODAY,thumb});
   }
 
   sv('tj_lectures',lectures);
@@ -3021,8 +3065,13 @@ function renderLectures(){
   const c=g('lecture-entries');if(!c)return;
   if(!lectures.length){c.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-ico"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><p>No lectures yet</p></div>`;return}
   const sorted=[...lectures].sort((a,b)=>b.date.localeCompare(a.date));
-  c.innerHTML=sorted.map(l=>`<div class="lecture-card" onclick="openLecturePlayer(${l.id})">
+  c.innerHTML=sorted.map(l=>{
+    const thumbHtml=l.thumb
+      ?`<img src="${l.thumb}" alt="" onerror="this.style.display='none'">`
+      :'';
+    return`<div class="lecture-card" onclick="openLecturePlayer(${l.id})">
     <div class="lecture-thumb">
+      ${thumbHtml}
       <span class="lecture-source-badge">${l.source==='local'?'Local':'Link'}</span>
       <div class="lecture-play-btn"><svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg></div>
     </div>
@@ -3031,7 +3080,8 @@ function renderLectures(){
       <div class="lecture-meta">${fmtDate(l.date)}${l.sizeMB?' · '+l.sizeMB+' MB':''}</div>
       ${(l.tags||[]).length?`<div class="card-tags">${l.tags.map(t=>`<span class="card-tag">${esc(t)}</span>`).join('')}</div>`:''}
     </div>
-  </div>`).join('');
+  </div>`;
+  }).join('');
 }
 
 let currentLectureId=null;
