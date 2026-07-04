@@ -535,6 +535,18 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
 .lecture-player-media{width:100%;aspect-ratio:16/9;background:#000}
 .lecture-player-media video,.lecture-player-media iframe{width:100%;height:100%;border:none;display:block}
 .lecture-player-tags{display:flex;flex-wrap:wrap;gap:6px;padding:14px 18px}
+.lp-speed-row{display:flex;align-items:center;gap:6px;padding:10px 18px;border-top:1px solid rgba(var(--a1),0.07)}
+.lp-speed-lbl{font-family:var(--mono);font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-right:6px}
+.lp-speed-btn{font-family:var(--mono);font-size:9px;padding:4px 9px;background:rgba(var(--a1),0.05);border:1px solid rgba(var(--a1),0.12);border-radius:5px;color:var(--text-muted);cursor:pointer;transition:all 0.12s}
+.lp-speed-btn:hover{border-color:rgba(var(--a1),0.3);color:var(--text)}
+.lp-speed-btn.active{background:rgba(var(--a1),0.14);border-color:rgba(var(--a1),0.4);color:var(--gold)}
+.lp-speed-note{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:0.06em;padding:10px 18px;border-top:1px solid rgba(var(--a1),0.07)}
+.lp-edit-section{padding:14px 18px;border-top:1px solid rgba(var(--a1),0.07)}
+.lp-edit-title{font-size:16px;font-weight:600;color:var(--text);outline:none;cursor:text;border-radius:6px;padding:4px 6px;margin:-4px -6px 8px}
+.lp-edit-title:focus{background:rgba(var(--a1),0.05)}
+.lp-edit-notes{font-size:12px;color:var(--text-muted);line-height:1.6;outline:none;cursor:text;border-radius:6px;padding:6px 8px;margin:-6px -8px;min-height:20px}
+.lp-edit-notes:focus{background:rgba(var(--a1),0.05);color:var(--text)}
+.lp-edit-notes:empty::before{content:'Click to add notes...';color:var(--text-dim)}
 
 /* ── EVAL TRACKER ── */
 .eval-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
@@ -1167,7 +1179,13 @@ body.theme-white{
       </div>
     </div>
     <div class="lecture-player-media" id="lp-media"></div>
+    <div id="lp-speed-container"></div>
     <div class="lecture-player-tags" id="lp-tags"></div>
+    <div class="lp-edit-section">
+      <div class="lp-edit-title" id="lp-edit-title" contenteditable="true" onblur="editLectureField(currentLectureId,'title',this.textContent)"></div>
+      <div class="lp-edit-notes" id="lp-edit-notes" contenteditable="true" onblur="editLectureField(currentLectureId,'notes',this.innerText)"></div>
+      <input class="fi" id="lp-tag-input" placeholder="Add tags, comma separated" style="margin-top:10px" onkeydown="if(event.key==='Enter'){addTagsToLecture(currentLectureId,this.value);this.value='';event.preventDefault()}" onblur="addTagsToLecture(currentLectureId,this.value);this.value=''">
+    </div>
   </div>
 </div>
 
@@ -3090,8 +3108,12 @@ async function openLecturePlayer(id){
   currentLectureId=id;
   g('lp-title').textContent=l.title;
   const media=g('lp-media');
+  const speedContainer=g('lp-speed-container');
   media.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);font-family:var(--mono);font-size:10px">Loading...</div>';
+  speedContainer.innerHTML='';
   g('lp-tags').innerHTML=(l.tags||[]).map(t=>`<span class="detail-tag">${esc(t)}</span>`).join('')||'';
+  g('lp-edit-title').textContent=l.title||'';
+  g('lp-edit-notes').innerText=l.notes||'';
   document.getElementById('lecture-player-overlay').classList.add('open');
 
   if(l.source==='local'){
@@ -3099,7 +3121,8 @@ async function openLecturePlayer(id){
       const blob=await _lecDbGet(String(l.id));
       if(!blob){media.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ff6b6b;font-family:var(--mono);font-size:10px;padding:20px;text-align:center">Video not found on this device — it may have been uploaded from a different browser/device.</div>';return}
       const url=URL.createObjectURL(blob);
-      media.innerHTML=`<video controls autoplay src="${url}"></video>`;
+      media.innerHTML=`<video controls autoplay src="${url}" id="lp-video-el"></video>`;
+      renderSpeedControls(speedContainer,true);
     }catch(err){
       media.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ff6b6b;font-family:var(--mono);font-size:10px">Failed to load video</div>';
     }
@@ -3112,11 +3135,14 @@ async function openLecturePlayer(id){
     if(ytMatch){
       embedUrl=`https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
       media.innerHTML=`<iframe src="${embedUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      speedContainer.innerHTML=`<div class="lp-speed-note">Playback speed: use the gear icon (⚙) inside the YouTube player itself — it's controlled by YouTube's embed, not this page.</div>`;
     }else if(driveMatch){
       embedUrl=`https://drive.google.com/file/d/${driveMatch[1]}/preview`;
       media.innerHTML=`<iframe src="${embedUrl}" allow="autoplay" allowfullscreen></iframe>`;
+      speedContainer.innerHTML=`<div class="lp-speed-note">Google Drive's embedded player doesn't support playback speed at all — that's a Drive limitation, not something this page can control (it's a separate player running on drive.google.com).</div>`;
     }else if(/\.(mp4|webm|ogg)($|\?)/i.test(url)){
-      media.innerHTML=`<video controls autoplay src="${url}"></video>`;
+      media.innerHTML=`<video controls autoplay src="${url}" id="lp-video-el"></video>`;
+      renderSpeedControls(speedContainer,true);
     }else{
       media.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;padding:20px;text-align:center">
         <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted)">Can't embed this link directly.</span>
@@ -3124,6 +3150,45 @@ async function openLecturePlayer(id){
       </div>`;
     }
   }
+}
+
+function renderSpeedControls(container,enabled){
+  if(!enabled){container.innerHTML='';return}
+  const speeds=[0.5,0.75,1,1.25,1.5,2];
+  container.innerHTML=`<div class="lp-speed-row">
+    <span class="lp-speed-lbl">Speed</span>
+    ${speeds.map(s=>`<button class="lp-speed-btn ${s===1?'active':''}" onclick="setLectureSpeed(${s},this)">${s}x</button>`).join('')}
+  </div>`;
+}
+
+function setLectureSpeed(speed,btn){
+  const video=g('lp-video-el');
+  if(video)video.playbackRate=speed;
+  document.querySelectorAll('.lp-speed-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function editLectureField(id,field,val){
+  const l=lectures.find(x=>x.id===id);if(!l)return;
+  l[field]=String(val).trim();
+  sv('tj_lectures',lectures);renderLectures();
+  if(field==='title')g('lp-title').textContent=l.title;
+}
+
+function addTagsToLecture(id,val){
+  if(!val||!val.trim())return;
+  const l=lectures.find(x=>x.id===id);if(!l)return;
+  if(!l.tags)l.tags=[];
+  val.split(',').forEach(t=>{
+    const tag=t.trim();
+    if(tag&&!l.tags.includes(tag)){
+      l.tags.push(tag);
+      if(!savedTags.includes(tag)){savedTags.push(tag);sv('tj_saved_tags',savedTags)}
+    }
+  });
+  sv('tj_lectures',lectures);
+  g('lp-tags').innerHTML=l.tags.map(t=>`<span class="detail-tag">${esc(t)}</span>`).join('');
+  renderLectures();
 }
 
 function closeLecturePlayer(){
