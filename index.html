@@ -505,6 +505,35 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
 .donut-leg-label{font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.08em}
 .donut-leg-val{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text);margin-left:auto}
 
+/* ── LECTURES ── */
+.lecture-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.lecture-card{background:rgba(var(--a1),0.03);border:1px solid rgba(var(--a1),0.09);border-radius:var(--radius-sm);overflow:hidden;cursor:pointer;transition:all 0.16s;position:relative}
+.lecture-card:hover{border-color:rgba(var(--a1),0.24);transform:translateY(-2px)}
+.lecture-thumb{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,rgba(var(--a1),0.1),rgba(var(--a1),0.03));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.lecture-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.lecture-play-btn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;z-index:2;transition:all 0.15s}
+.lecture-card:hover .lecture-play-btn{background:rgba(var(--a1),0.5);transform:scale(1.1);border-color:rgba(var(--a1),0.6)}
+.lecture-play-btn svg{width:16px;height:16px;fill:#fff;stroke:none;margin-left:2px}
+.lecture-source-badge{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:6px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 6px;border-radius:4px;background:rgba(0,0,0,0.55);color:var(--text-muted);z-index:2}
+.lecture-body{padding:12px 14px}
+.lecture-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lecture-meta{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:0.08em;margin-top:3px}
+.lecture-upload-choice{display:flex;gap:8px;margin-bottom:16px}
+.lecture-choice-btn{flex:1;padding:12px;background:rgba(var(--a1),0.04);border:1px solid rgba(var(--a1),0.12);border-radius:var(--radius-xs);cursor:pointer;text-align:center;transition:all 0.15s}
+.lecture-choice-btn:hover{border-color:rgba(var(--a1),0.3);background:rgba(var(--a1),0.08)}
+.lecture-choice-btn.active{border-color:rgba(var(--a1),0.4);background:rgba(var(--a1),0.1)}
+.lecture-choice-lbl{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)}
+.lecture-choice-sub{font-size:9px;color:var(--text-dim);margin-top:3px}
+.lecture-storage-note{background:rgba(var(--a1),0.03);border:1px solid rgba(var(--a1),0.08);border-radius:var(--radius-xs);padding:10px 12px;font-size:11px;color:var(--text-muted);line-height:1.5;margin-bottom:16px}
+#lecture-player-overlay{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);backdrop-filter:blur(10px)}
+#lecture-player-overlay.open{display:flex;animation:fadeIn 0.2s ease both}
+.lecture-player-box{width:min(900px,94vw);background:rgba(6,4,2,0.96);border:1px solid var(--glass-border-bright);border-radius:var(--radius);overflow:hidden;position:relative}
+.lecture-player-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(var(--a1),0.08)}
+.lecture-player-title{font-size:14px;font-weight:600;color:var(--text)}
+.lecture-player-media{width:100%;aspect-ratio:16/9;background:#000}
+.lecture-player-media video,.lecture-player-media iframe{width:100%;height:100%;border:none;display:block}
+.lecture-player-tags{display:flex;flex-wrap:wrap;gap:6px;padding:14px 18px}
+
 /* ── EVAL TRACKER ── */
 .eval-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
 .eval-card{background:rgba(var(--a1),0.03);border:1px solid rgba(var(--a1),0.09);border-radius:var(--radius-sm);overflow:hidden;transition:border-color 0.15s;cursor:pointer}
@@ -974,6 +1003,19 @@ body.theme-white{
       </div>
     </div>
 
+    <!-- LECTURES -->
+    <div class="panel" id="panel-lectures">
+      <div class="panel-header">
+        <div class="panel-title">Lectures</div>
+        <div class="panel-actions">
+          <button class="btn-add" onclick="openForm('lecture')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Lecture</button>
+        </div>
+      </div>
+      <div class="panel-inner">
+        <div class="lecture-grid" id="lecture-entries"></div>
+      </div>
+    </div>
+
   </div><!-- /panel-wrap -->
 
   <!-- MENTOR MODE -->
@@ -1032,6 +1074,11 @@ body.theme-white{
     <div class="dock-item" id="di-eval" onclick="togglePanel('eval',this)">
       <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       <span>Eval</span>
+    </div>
+    <div class="dock-sep"></div>
+    <div class="dock-item" id="di-lectures" onclick="togglePanel('lectures',this)">
+      <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      <span>Lectures</span>
     </div>
     <div class="dock-sep"></div>
     <div class="dock-item" id="di-tdl" onclick="togglePanel('tdl',this)">
@@ -1104,6 +1151,21 @@ body.theme-white{
     <button class="lb-btn" onclick="event.stopPropagation();lbStep(-1)">‹</button>
     <span id="lb-count"></span>
     <button class="lb-btn" onclick="event.stopPropagation();lbStep(1)">›</button>
+  </div>
+</div>
+
+<!-- LECTURE PLAYER -->
+<div id="lecture-player-overlay" onclick="if(event.target===this)closeLecturePlayer()">
+  <div class="lecture-player-box">
+    <div class="lecture-player-hd">
+      <div class="lecture-player-title" id="lp-title"></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn-delete" id="lp-delete-btn" onclick="deleteLecture(currentLectureId)">Delete</button>
+        <button class="detail-close" onclick="closeLecturePlayer()">✕</button>
+      </div>
+    </div>
+    <div class="lecture-player-media" id="lp-media"></div>
+    <div class="lecture-player-tags" id="lp-tags"></div>
   </div>
 </div>
 
@@ -1241,6 +1303,8 @@ let goals=sl('tj_goals',[]);
 let pmGroups=sl('tj_pm_groups',[]);
 let markups=sl('tj_markups',[]);
 let savedTags=sl('tj_saved_tags',[]);
+let lectures=sl('tj_lectures',[]); // metadata only — video blobs live in IndexedDB
+let pendingLectureFile=null,pendingLectureSource='file';
 let pendingPics={trade:[],post:[],premarket:[],funded:[],payout:[],markup:[]};
 let pendingTags=[];
 let lbPics=[],lbIdx=0;
@@ -1278,12 +1342,14 @@ async function init(){
   weeklyReviews=sl('tj_weekly',[]);
   markups=sl('tj_markups',[]);
   savedTags=sl('tj_saved_tags',[]);
+  lectures=sl('tj_lectures',[]);
   renderAll();
   renderGoals();
   renderTasks();
   renderPMGroups();
   renderEvals();
   renderMarkups();
+  renderLectures();
   togglePanel('overview',document.getElementById('di-overview'));
   showSync('Synced ✓');
   checkSundayPrompt();
@@ -1293,9 +1359,9 @@ async function init(){
 
 async function loadFromSupabase(){
   // Load all keys from Supabase, fall back to localStorage if offline
-  const keys=['tj_entries','tj_funded','tj_payouts','tj_tasks','tj_goals','tj_pm_groups','tj_markups','tj_evals','tj_saved_tags','tj_weekly','tj_notepad'];
+  const keys=['tj_entries','tj_funded','tj_payouts','tj_tasks','tj_goals','tj_pm_groups','tj_markups','tj_evals','tj_saved_tags','tj_weekly','tj_notepad','tj_lectures'];
   const results=await Promise.all(keys.map(k=>sbGet(k)));
-  const [e,f,p,t,go,pm,mk,ev,st,wk,np]=results;
+  const [e,f,p,t,go,pm,mk,ev,st,wk,np,lc]=results;
   if(e){entries=e;try{localStorage.setItem('tj_entries',JSON.stringify(e))}catch{}}
   if(f){funded=f;try{localStorage.setItem('tj_funded',JSON.stringify(f))}catch{}}
   if(p){payouts=p;try{localStorage.setItem('tj_payouts',JSON.stringify(p))}catch{}}
@@ -1307,6 +1373,7 @@ async function loadFromSupabase(){
   if(st){savedTags=st;try{localStorage.setItem('tj_saved_tags',JSON.stringify(st))}catch{}}
   if(wk){weeklyReviews=wk;try{localStorage.setItem('tj_weekly',JSON.stringify(wk))}catch{}}
   if(np!=null){try{localStorage.setItem('tj_notepad',JSON.stringify(np))}catch{}}
+  if(lc){lectures=lc;try{localStorage.setItem('tj_lectures',JSON.stringify(lc))}catch{}}
 }
 
 function checkDailyReset(){
@@ -1768,6 +1835,8 @@ function openForm(type){
   modal.innerHTML=buildForm(type);
   document.getElementById('form-overlay').classList.add('open');
   pendingTags=[];
+  pendingLectureFile=null;
+  pendingLectureSource='file';
   if(g('tag-input-wrap'))renderTagInput();
   playOpen();
 }
@@ -1775,6 +1844,7 @@ function closeForm(){
   document.getElementById('form-overlay').classList.remove('open');
   pendingPics={trade:[],post:[],premarket:[],funded:[],payout:[],markup:[]};
   pendingTags=[];
+  pendingLectureFile=null;
   playClose();
 }
 
@@ -1877,8 +1947,33 @@ function buildForm(type){
     <div class="f2"><div class="fg"><label class="fl">Days Left</label><input class="fi" type="number" id="e-eval-days" placeholder="30"></div>
     <div class="fg"><label class="fl">Status</label><select class="fsel" id="e-eval-status"><option>Active</option><option>Pass</option><option>Failed</option></select></div></div>
     <div class="fg"><label class="fl">Rules / Notes</label><textarea class="fta" id="e-eval-notes" placeholder="Specific rules, things to watch..."></textarea></div>`;
+  else if(type==='lecture') body=`
+    <div class="lecture-storage-note">📦 <strong>Local upload</strong> stores the video on this device only (free, unlimited-ish) — won't sync to other devices. <strong>Link</strong> (YouTube/Drive/Streamable) syncs everywhere and streams instead of storing.</div>
+    <div class="lecture-upload-choice">
+      <div class="lecture-choice-btn active" id="lc-choice-file" onclick="setLectureSource('file')">
+        <div class="lecture-choice-lbl">Upload File</div>
+        <div class="lecture-choice-sub">Stored on this device</div>
+      </div>
+      <div class="lecture-choice-btn" id="lc-choice-link" onclick="setLectureSource('link')">
+        <div class="lecture-choice-lbl">Paste Link</div>
+        <div class="lecture-choice-sub">Syncs across devices</div>
+      </div>
+    </div>
+    <div id="lc-file-section">
+      <div class="fg"><div class="file-zone" onclick="trigFile('lecture-file')">
+        <input type="file" id="lecture-file" accept="video/*" style="display:none" onchange="handleLectureFile(this)">
+        <div class="file-zone-lbl" id="lecture-file-lbl">Click to select a video file</div>
+      </div></div>
+    </div>
+    <div id="lc-link-section" style="display:none">
+      <div class="fg"><label class="fl">Video URL</label><input class="fi" id="e-lecture-url" placeholder="YouTube, Google Drive, Streamable link..."></div>
+    </div>
+    <div class="form-sec">Details</div>
+    <div class="fg"><label class="fl">Title</label><input class="fi" id="e-lecture-title" placeholder="e.g. SMT Concepts Deep Dive"></div>
+    ${tagsBlock()}
+    <div class="fg"><label class="fl">Notes (optional)</label><textarea class="fta" id="e-lecture-notes" placeholder="Key takeaways, timestamps..."></textarea></div>`;
   return`<input type="hidden" id="form-type" value="${type}">
-    <div class="form-hd">${{trade:'New Trade',post:'Post-Market Analysis',premarket:'Pre-Market Analysis',funded:'Add Funded Account',payout:'Add Payout',eval:'New Eval',markup:'New Markup'}[type]||'New Entry'}</div>
+    <div class="form-hd">${{trade:'New Trade',post:'Post-Market Analysis',premarket:'Pre-Market Analysis',funded:'Add Funded Account',payout:'Add Payout',eval:'New Eval',markup:'New Markup',lecture:'Add Lecture'}[type]||'New Entry'}</div>
     <button class="form-close" onclick="closeForm()">✕</button>
     ${body}${actions}`;
 }
@@ -1911,6 +2006,9 @@ function saveEntry(type){
   }else if(type==='eval'){
     const ev={id:Date.now(),date:TODAY,firm:g('e-eval-firm').value,phase:g('e-eval-phase').value,accountSize:parseFloat(g('e-eval-size').value)||0,profitTarget:parseFloat(g('e-eval-target').value)||0,maxDD:parseFloat(g('e-eval-maxdd').value)||0,dailyLoss:parseFloat(g('e-eval-daily').value)||0,currentPnl:parseFloat(g('e-eval-pnl').value)||0,currentDD:parseFloat(g('e-eval-curdd').value)||0,daysLeft:g('e-eval-days').value,status:g('e-eval-status').value,notes:g('e-eval-notes').value};
     evals.unshift(ev);sv('tj_evals',evals);renderEvals();
+  }else if(type==='lecture'){
+    saveLectureEntry(); // async, handles its own closeForm
+    return;
   }
   closeForm();
 }
@@ -2698,6 +2796,11 @@ function runSearch(q){
     const hay=[ev.firm,ev.phase,ev.notes,ev.status].filter(Boolean).join(' ').toLowerCase();
     if(hay.includes(q))results.push({type:'Eval',title:ev.firm||'Eval',meta:ev.phase||'',fn:`openDetailEval(${ev.id})`});
   });
+  // Search lectures
+  lectures.forEach(l=>{
+    const hay=[l.title,l.notes,(l.tags||[]).join(' ')].filter(Boolean).join(' ').toLowerCase();
+    if(hay.includes(q))results.push({type:'Lecture',title:l.title||'Lecture',meta:fmtDate(l.date),fn:`openLecturePlayer(${l.id})`});
+  });
 
   if(!results.length){box.innerHTML='<div class="search-empty">No matches found</div>';box.classList.add('open');return}
 
@@ -2825,6 +2928,173 @@ function editMarkupField(id,field,val){
 }
 function deleteMarkup(id){
   iconfirm('Delete this markup?',()=>{markups=markups.filter(m=>m.id!==id);sv('tj_markups',markups);renderMarkups();closeDetail();},true);
+}
+
+/* ── LECTURES ── */
+// Video files are stored in IndexedDB (holds much more than localStorage's 5MB cap).
+// Only metadata (title, tags, notes, source type, url) syncs via Supabase.
+let _lecDB=null;
+function _lecDbOpen(){
+  return new Promise((resolve,reject)=>{
+    if(_lecDB)return resolve(_lecDB);
+    const req=indexedDB.open('tj_lecture_videos',1);
+    req.onupgradeneeded=()=>{req.result.createObjectStore('videos')};
+    req.onsuccess=()=>{_lecDB=req.result;resolve(_lecDB)};
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function _lecDbSet(key,blob){
+  const db=await _lecDbOpen();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction('videos','readwrite');
+    tx.objectStore('videos').put(blob,key);
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+async function _lecDbGet(key){
+  const db=await _lecDbOpen();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction('videos','readonly');
+    const req=tx.objectStore('videos').get(key);
+    req.onsuccess=()=>resolve(req.result||null);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function _lecDbDelete(key){
+  const db=await _lecDbOpen();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction('videos','readwrite');
+    tx.objectStore('videos').delete(key);
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+
+function setLectureSource(src){
+  pendingLectureSource=src;
+  g('lc-choice-file').classList.toggle('active',src==='file');
+  g('lc-choice-link').classList.toggle('active',src==='link');
+  g('lc-file-section').style.display=src==='file'?'block':'none';
+  g('lc-link-section').style.display=src==='link'?'block':'none';
+}
+
+function handleLectureFile(input){
+  const file=input.files[0];
+  if(!file)return;
+  pendingLectureFile=file;
+  const mb=(file.size/(1024*1024)).toFixed(1);
+  g('lecture-file-lbl').textContent=`${file.name} (${mb} MB) — selected`;
+}
+
+async function saveLectureEntry(){
+  const title=g('e-lecture-title').value.trim()||'Untitled Lecture';
+  const notes=g('e-lecture-notes').value;
+  const tags=[...pendingTags];
+  const id=Date.now();
+
+  if(pendingLectureSource==='file'){
+    if(!pendingLectureFile){showSync('Select a video file first',false);return}
+    showSync('Saving video locally...');
+    try{
+      await _lecDbSet(String(id),pendingLectureFile);
+    }catch(err){
+      showSync('Failed to store video — file may be too large for this browser',false);
+      console.warn('IndexedDB error:',err);
+      return;
+    }
+    lectures.unshift({id,title,notes,tags,source:'local',date:TODAY,sizeMB:(pendingLectureFile.size/(1024*1024)).toFixed(1)});
+  }else{
+    const url=g('e-lecture-url').value.trim();
+    if(!url){showSync('Paste a video URL first',false);return}
+    lectures.unshift({id,title,notes,tags,source:'link',url,date:TODAY});
+  }
+
+  sv('tj_lectures',lectures);
+  renderLectures();
+  pendingLectureFile=null;
+  closeForm();
+  showSync('Lecture added ✓');
+}
+
+function renderLectures(){
+  const c=g('lecture-entries');if(!c)return;
+  if(!lectures.length){c.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-ico"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><p>No lectures yet</p></div>`;return}
+  const sorted=[...lectures].sort((a,b)=>b.date.localeCompare(a.date));
+  c.innerHTML=sorted.map(l=>`<div class="lecture-card" onclick="openLecturePlayer(${l.id})">
+    <div class="lecture-thumb">
+      <span class="lecture-source-badge">${l.source==='local'?'Local':'Link'}</span>
+      <div class="lecture-play-btn"><svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg></div>
+    </div>
+    <div class="lecture-body">
+      <div class="lecture-title">${esc(l.title)}</div>
+      <div class="lecture-meta">${fmtDate(l.date)}${l.sizeMB?' · '+l.sizeMB+' MB':''}</div>
+      ${(l.tags||[]).length?`<div class="card-tags">${l.tags.map(t=>`<span class="card-tag">${esc(t)}</span>`).join('')}</div>`:''}
+    </div>
+  </div>`).join('');
+}
+
+let currentLectureId=null;
+async function openLecturePlayer(id){
+  const l=lectures.find(x=>x.id===id);if(!l)return;
+  currentLectureId=id;
+  g('lp-title').textContent=l.title;
+  const media=g('lp-media');
+  media.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);font-family:var(--mono);font-size:10px">Loading...</div>';
+  g('lp-tags').innerHTML=(l.tags||[]).map(t=>`<span class="detail-tag">${esc(t)}</span>`).join('')||'';
+  document.getElementById('lecture-player-overlay').classList.add('open');
+
+  if(l.source==='local'){
+    try{
+      const blob=await _lecDbGet(String(l.id));
+      if(!blob){media.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ff6b6b;font-family:var(--mono);font-size:10px;padding:20px;text-align:center">Video not found on this device — it may have been uploaded from a different browser/device.</div>';return}
+      const url=URL.createObjectURL(blob);
+      media.innerHTML=`<video controls autoplay src="${url}"></video>`;
+    }catch(err){
+      media.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ff6b6b;font-family:var(--mono);font-size:10px">Failed to load video</div>';
+    }
+  }else{
+    // Embed link — support YouTube, Google Drive, or direct video links
+    const url=l.url||'';
+    let embedUrl=url;
+    const ytMatch=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+    const driveMatch=url.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+    if(ytMatch){
+      embedUrl=`https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+      media.innerHTML=`<iframe src="${embedUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    }else if(driveMatch){
+      embedUrl=`https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+      media.innerHTML=`<iframe src="${embedUrl}" allow="autoplay" allowfullscreen></iframe>`;
+    }else if(/\.(mp4|webm|ogg)($|\?)/i.test(url)){
+      media.innerHTML=`<video controls autoplay src="${url}"></video>`;
+    }else{
+      media.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;padding:20px;text-align:center">
+        <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted)">Can't embed this link directly.</span>
+        <a href="${esc(url)}" target="_blank" style="color:var(--gold);font-family:var(--mono);font-size:10px;letter-spacing:0.08em">Open in new tab ↗</a>
+      </div>`;
+    }
+  }
+}
+
+function closeLecturePlayer(){
+  document.getElementById('lecture-player-overlay').classList.remove('open');
+  const media=g('lp-media');
+  // Revoke object URL and stop playback
+  const video=media.querySelector('video');
+  if(video){if(video.src)URL.revokeObjectURL(video.src);video.pause()}
+  media.innerHTML='';
+  playClose();
+}
+
+function deleteLecture(id){
+  iconfirm('Delete this lecture? This cannot be undone.',async()=>{
+    const l=lectures.find(x=>x.id===id);
+    if(l&&l.source==='local'){try{await _lecDbDelete(String(id))}catch{}}
+    lectures=lectures.filter(x=>x.id!==id);
+    sv('tj_lectures',lectures);
+    renderLectures();
+    closeLecturePlayer();
+  },true);
 }
 
 /* ── W/L DONUT ── */
