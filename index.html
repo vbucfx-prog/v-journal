@@ -525,6 +525,29 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
 .lecture-choice-lbl{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)}
 .lecture-choice-sub{font-size:9px;color:var(--text-dim);margin-top:3px}
 .lecture-storage-note{background:rgba(var(--a1),0.03);border:1px solid rgba(var(--a1),0.08);border-radius:var(--radius-xs);padding:10px 12px;font-size:11px;color:var(--text-muted);line-height:1.5;margin-bottom:16px}
+
+/* ── LECTURE FOLDERS / SERIES ── */
+.lecture-breadcrumb{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.lecture-back-btn{display:flex;align-items:center;gap:6px;background:rgba(var(--a1),0.06);border:1px solid rgba(var(--a1),0.14);border-radius:20px;padding:6px 14px;font-family:var(--mono);font-size:9px;letter-spacing:0.08em;color:var(--text-muted);cursor:pointer;transition:all 0.12s}
+.lecture-back-btn:hover{border-color:rgba(var(--a1),0.3);color:var(--gold)}
+.lecture-series-title{font-size:15px;font-weight:600;color:var(--text)}
+.lecture-folder-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:22px}
+.lecture-folder-card{background:rgba(var(--a1),0.04);border:1px solid rgba(var(--a1),0.1);border-radius:var(--radius-sm);padding:18px 16px;cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.lecture-folder-card:hover{border-color:rgba(var(--a1),0.28);transform:translateY(-2px);background:rgba(var(--a1),0.07)}
+.lecture-folder-icon{width:40px;height:40px;stroke:var(--gold);fill:none;stroke-width:1.3}
+.lecture-folder-name{font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.lecture-folder-count{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:0.08em}
+.lecture-section-lbl{font-family:var(--mono);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
+
+/* ── TAG FILTER ── */
+.lecture-tag-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.lecture-tag-filter-btn{font-family:var(--mono);font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);background:rgba(var(--a1),0.03);border:1px solid rgba(var(--a1),0.08);border-radius:20px;padding:5px 12px;cursor:pointer;transition:all 0.12s}
+.lecture-tag-filter-btn:hover,.lecture-tag-filter-btn.active{color:var(--gold);border-color:rgba(var(--a1),0.28);background:rgba(var(--a1),0.08)}
+
+/* ── WATCHED / DURATION ── */
+.lecture-watched-dot{position:absolute;top:7px;left:7px;z-index:3;width:9px;height:9px;border-radius:50%;background:#6dffA0;box-shadow:0 0 6px rgba(109,255,160,0.6);border:1.5px solid rgba(0,0,0,0.4)}
+.lecture-duration-badge{position:absolute;bottom:7px;right:7px;z-index:2;font-family:var(--mono);font-size:8px;letter-spacing:0.04em;padding:2px 6px;border-radius:4px;background:rgba(0,0,0,0.65);color:#fff}
+.lp-resume-note{font-family:var(--mono);font-size:8px;color:var(--gold);letter-spacing:0.06em;padding:8px 18px 0}
 #lecture-player-overlay{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);backdrop-filter:blur(10px)}
 #lecture-player-overlay.open{display:flex;animation:fadeIn 0.2s ease both}
 .lecture-player-box{width:min(900px,94vw);background:rgba(6,4,2,0.96);border:1px solid var(--glass-border-bright);border-radius:var(--radius);overflow:hidden;position:relative}
@@ -1026,6 +1049,9 @@ body.theme-white{
         </div>
       </div>
       <div class="panel-inner">
+        <div id="lecture-breadcrumb"></div>
+        <div class="lecture-tag-filters" id="lecture-tag-filters"></div>
+        <div id="lecture-folders"></div>
         <div class="lecture-grid" id="lecture-entries"></div>
       </div>
     </div>
@@ -1990,6 +2016,7 @@ function buildForm(type){
     </div>
     <div class="form-sec">Details</div>
     <div class="fg"><label class="fl">Title</label><input class="fi" id="e-lecture-title" placeholder="e.g. SMT Concepts Deep Dive"></div>
+    <div class="fg"><label class="fl">Series / Course (optional)</label><input class="fi" id="e-lecture-series" list="lecture-series-list" placeholder="e.g. ICT Mentorship, SMC Basics..."><datalist id="lecture-series-list">${[...new Set(lectures.map(l=>l.series).filter(Boolean))].map(s=>`<option value="${esc(s)}">`).join('')}</datalist></div>
     ${tagsBlock()}
     <div class="fg"><label class="fl">Notes (optional)</label><textarea class="fta" id="e-lecture-notes" placeholder="Key takeaways, timestamps..."></textarea></div>`;
   return`<input type="hidden" id="form-type" value="${type}">
@@ -3016,7 +3043,7 @@ function getLinkThumbnail(url){
   return null;
 }
 
-// Captures a frame ~1s into a local video file as a small JPEG thumbnail
+// Captures a frame ~1s into a local video file as a small JPEG thumbnail, plus duration
 function captureLocalThumbnail(file){
   return new Promise((resolve)=>{
     try{
@@ -3025,7 +3052,9 @@ function captureLocalThumbnail(file){
       video.src=url;
       video.muted=true;
       video.playsInline=true;
+      let duration=0;
       const cleanup=()=>{try{URL.revokeObjectURL(url)}catch{}};
+      video.addEventListener('loadedmetadata',()=>{duration=video.duration||0});
       video.addEventListener('loadeddata',()=>{
         const seekTo=Math.min(1,(video.duration||1)*0.1);
         video.currentTime=seekTo;
@@ -3038,17 +3067,25 @@ function captureLocalThumbnail(file){
           ctx.drawImage(video,0,0,320,180);
           const dataUrl=canvas.toDataURL('image/jpeg',0.6);
           cleanup();
-          resolve(dataUrl);
-        }catch(e){cleanup();resolve(null)}
+          resolve({thumb:dataUrl,duration});
+        }catch(e){cleanup();resolve({thumb:null,duration})}
       });
-      video.addEventListener('error',()=>{cleanup();resolve(null)});
-      setTimeout(()=>resolve(null),6000); // safety timeout
-    }catch{resolve(null)}
+      video.addEventListener('error',()=>{cleanup();resolve({thumb:null,duration:0})});
+      setTimeout(()=>resolve({thumb:null,duration:0}),6000); // safety timeout
+    }catch{resolve({thumb:null,duration:0})}
   });
+}
+
+function fmtDuration(sec){
+  if(!sec)return'';
+  sec=Math.round(sec);
+  const m=Math.floor(sec/60),s=sec%60;
+  return`${m}:${String(s).padStart(2,'0')}`;
 }
 
 async function saveLectureEntry(){
   const title=g('e-lecture-title').value.trim()||'Untitled Lecture';
+  const series=g('e-lecture-series')?g('e-lecture-series').value.trim():'';
   const notes=g('e-lecture-notes').value;
   const tags=[...pendingTags];
   const id=Date.now();
@@ -3063,13 +3100,13 @@ async function saveLectureEntry(){
       console.warn('IndexedDB error:',err);
       return;
     }
-    const thumb=await captureLocalThumbnail(pendingLectureFile);
-    lectures.unshift({id,title,notes,tags,source:'local',date:TODAY,sizeMB:(pendingLectureFile.size/(1024*1024)).toFixed(1),thumb});
+    const{thumb,duration}=await captureLocalThumbnail(pendingLectureFile);
+    lectures.unshift({id,title,series,notes,tags,source:'local',date:TODAY,sizeMB:(pendingLectureFile.size/(1024*1024)).toFixed(1),thumb,duration,watched:false,resumeAt:0});
   }else{
     const url=g('e-lecture-url').value.trim();
     if(!url){showSync('Paste a video URL first',false);return}
     const thumb=getLinkThumbnail(url);
-    lectures.unshift({id,title,notes,tags,source:'link',url,date:TODAY,thumb});
+    lectures.unshift({id,title,series,notes,tags,source:'link',url,date:TODAY,thumb,watched:false});
   }
 
   sv('tj_lectures',lectures);
@@ -3079,17 +3116,21 @@ async function saveLectureEntry(){
   showSync('Lecture added ✓');
 }
 
-function renderLectures(){
-  const c=g('lecture-entries');if(!c)return;
-  if(!lectures.length){c.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-ico"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><p>No lectures yet</p></div>`;return}
-  const sorted=[...lectures].sort((a,b)=>b.date.localeCompare(a.date));
-  c.innerHTML=sorted.map(l=>{
-    const thumbHtml=l.thumb
-      ?`<img src="${l.thumb}" alt="" onerror="this.style.display='none'">`
-      :'';
-    return`<div class="lecture-card" onclick="openLecturePlayer(${l.id})">
+/* ── LECTURE NAVIGATION STATE ── */
+let lectureView={mode:'root',series:null};
+let lectureTagFilter=null;
+
+function buildLectureCard(l){
+  const thumbHtml=l.thumb
+    ?`<img src="${l.thumb}" alt="" onerror="this.style.display='none'">`
+    :'';
+  const watchedDot=l.watched?`<div class="lecture-watched-dot" title="Watched"></div>`:'';
+  const durationBadge=l.duration?`<div class="lecture-duration-badge">${fmtDuration(l.duration)}</div>`:'';
+  return`<div class="lecture-card" onclick="openLecturePlayer(${l.id})">
     <div class="lecture-thumb">
       ${thumbHtml}
+      ${watchedDot}
+      ${durationBadge}
       <span class="lecture-source-badge">${l.source==='local'?'Local':'Link'}</span>
       <div class="lecture-play-btn"><svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg></div>
     </div>
@@ -3099,7 +3140,90 @@ function renderLectures(){
       ${(l.tags||[]).length?`<div class="card-tags">${l.tags.map(t=>`<span class="card-tag">${esc(t)}</span>`).join('')}</div>`:''}
     </div>
   </div>`;
-  }).join('');
+}
+
+function openLectureSeries(name){
+  lectureView={mode:'series',series:name};
+  lectureTagFilter=null;
+  renderLectures();
+}
+function backToLectureRoot(){
+  lectureView={mode:'root',series:null};
+  lectureTagFilter=null;
+  renderLectures();
+}
+function setLectureTagFilter(tag){
+  lectureTagFilter=lectureTagFilter===tag?null:tag;
+  renderLectures();
+}
+
+function renderLectures(){
+  const grid=g('lecture-entries');
+  const foldersEl=g('lecture-folders');
+  const breadcrumbEl=g('lecture-breadcrumb');
+  const tagFiltersEl=g('lecture-tag-filters');
+  if(!grid)return;
+
+  if(!lectures.length){
+    breadcrumbEl.innerHTML='';foldersEl.innerHTML='';tagFiltersEl.innerHTML='';
+    grid.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-ico"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><p>No lectures yet</p></div>`;
+    return;
+  }
+
+  if(lectureView.mode==='root'){
+    breadcrumbEl.innerHTML='';
+    // Group by series
+    const seriesMap={};
+    const standalone=[];
+    lectures.forEach(l=>{
+      if(l.series){(seriesMap[l.series]=seriesMap[l.series]||[]).push(l)}
+      else standalone.push(l);
+    });
+    const seriesNames=Object.keys(seriesMap).sort();
+
+    // Folders
+    if(seriesNames.length){
+      foldersEl.innerHTML=`<div class="lecture-section-lbl">Series</div><div class="lecture-folder-grid">${seriesNames.map(name=>`
+        <div class="lecture-folder-card" onclick="openLectureSeries('${esc(name).replace(/'/g,"\\'")}')">
+          <svg class="lecture-folder-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <div class="lecture-folder-name">${esc(name)}</div>
+          <div class="lecture-folder-count">${seriesMap[name].length} lecture${seriesMap[name].length===1?'':'s'}</div>
+        </div>`).join('')}</div>`;
+    }else{
+      foldersEl.innerHTML='';
+    }
+
+    // Tag filter (built from all lectures)
+    const allTags=[...new Set(lectures.flatMap(l=>l.tags||[]))].sort();
+    tagFiltersEl.innerHTML=allTags.length?allTags.map(t=>`<button class="lecture-tag-filter-btn ${lectureTagFilter===t?'active':''}" onclick="setLectureTagFilter('${esc(t).replace(/'/g,"\\'")}')">${esc(t)}</button>`).join(''):'';
+
+    // Standalone lectures grid (filtered by tag)
+    let visible=standalone;
+    if(lectureTagFilter)visible=visible.filter(l=>(l.tags||[]).includes(lectureTagFilter));
+    const sorted=[...visible].sort((a,b)=>b.date.localeCompare(a.date));
+    if(seriesNames.length&&sorted.length){
+      grid.innerHTML=`<div class="lecture-section-lbl" style="margin-top:4px">Other Lectures</div>`+sorted.map(buildLectureCard).join('');
+    }else if(!sorted.length&&!seriesNames.length){
+      grid.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-ico"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><p>No lectures yet</p></div>`;
+    }else if(!sorted.length){
+      grid.innerHTML='';
+    }else{
+      grid.innerHTML=sorted.map(buildLectureCard).join('');
+    }
+  }else{
+    // Series view
+    foldersEl.innerHTML='';
+    breadcrumbEl.innerHTML=`<div class="lecture-breadcrumb">
+      <button class="lecture-back-btn" onclick="backToLectureRoot()">← All Lectures</button>
+      <span class="lecture-series-title">${esc(lectureView.series)}</span>
+    </div>`;
+    let seriesLectures=lectures.filter(l=>l.series===lectureView.series);
+    const allTags=[...new Set(seriesLectures.flatMap(l=>l.tags||[]))].sort();
+    tagFiltersEl.innerHTML=allTags.length?allTags.map(t=>`<button class="lecture-tag-filter-btn ${lectureTagFilter===t?'active':''}" onclick="setLectureTagFilter('${esc(t).replace(/'/g,"\\'")}')">${esc(t)}</button>`).join(''):'';
+    if(lectureTagFilter)seriesLectures=seriesLectures.filter(l=>(l.tags||[]).includes(lectureTagFilter));
+    const sorted=[...seriesLectures].sort((a,b)=>b.date.localeCompare(a.date));
+    grid.innerHTML=sorted.length?sorted.map(buildLectureCard).join(''):`<div class="empty" style="grid-column:1/-1"><p>No lectures match this filter</p></div>`;
+  }
 }
 
 let currentLectureId=null;
@@ -3116,6 +3240,9 @@ async function openLecturePlayer(id){
   g('lp-edit-notes').innerText=l.notes||'';
   document.getElementById('lecture-player-overlay').classList.add('open');
 
+  // Mark watched (works for every source — just tracks that it was opened)
+  if(!l.watched){l.watched=true;sv('tj_lectures',lectures);renderLectures();}
+
   if(l.source==='local'){
     try{
       const blob=await _lecDbGet(String(l.id));
@@ -3123,6 +3250,7 @@ async function openLecturePlayer(id){
       const url=URL.createObjectURL(blob);
       media.innerHTML=`<video controls autoplay src="${url}" id="lp-video-el"></video>`;
       renderSpeedControls(speedContainer,true);
+      setupResumeTracking(l);
     }catch(err){
       media.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ff6b6b;font-family:var(--mono);font-size:10px">Failed to load video</div>';
     }
@@ -3135,11 +3263,11 @@ async function openLecturePlayer(id){
     if(ytMatch){
       embedUrl=`https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
       media.innerHTML=`<iframe src="${embedUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-      speedContainer.innerHTML=`<div class="lp-speed-note">Playback speed: use the gear icon (⚙) inside the YouTube player itself — it's controlled by YouTube's embed, not this page.</div>`;
+      speedContainer.innerHTML='';
     }else if(driveMatch){
       embedUrl=`https://drive.google.com/file/d/${driveMatch[1]}/preview`;
       media.innerHTML=`<iframe src="${embedUrl}" allow="autoplay" allowfullscreen></iframe>`;
-      speedContainer.innerHTML=`<div class="lp-speed-note">Google Drive's embedded player doesn't support playback speed at all — that's a Drive limitation, not something this page can control (it's a separate player running on drive.google.com).</div>`;
+      speedContainer.innerHTML='';
     }else if(/\.(mp4|webm|ogg)($|\?)/i.test(url)){
       media.innerHTML=`<video controls autoplay src="${url}" id="lp-video-el"></video>`;
       renderSpeedControls(speedContainer,true);
@@ -3191,12 +3319,42 @@ function addTagsToLecture(id,val){
   renderLectures();
 }
 
+// Local videos: remember playback position so reopening resumes where you left off.
+// (Not possible for YouTube/Drive embeds — those iframes expose no position/duration API to this page.)
+function setupResumeTracking(lecture){
+  const video=g('lp-video-el');
+  if(!video)return;
+  video.addEventListener('loadedmetadata',()=>{
+    if(lecture.resumeAt&&lecture.resumeAt>3&&lecture.resumeAt<video.duration-5){
+      video.currentTime=lecture.resumeAt;
+      const note=document.createElement('div');
+      note.className='lp-resume-note';
+      note.textContent=`Resumed from ${fmtDuration(lecture.resumeAt)}`;
+      g('lp-speed-container').appendChild(note);
+      setTimeout(()=>note.remove(),3500);
+    }
+  });
+  let lastSaved=0;
+  video.addEventListener('timeupdate',()=>{
+    if(Math.abs(video.currentTime-lastSaved)<3)return; // throttle writes
+    lastSaved=video.currentTime;
+    const l=lectures.find(x=>x.id===lecture.id);
+    if(l){l.resumeAt=video.currentTime;sv('tj_lectures',lectures)}
+  });
+}
+
 function closeLecturePlayer(){
   document.getElementById('lecture-player-overlay').classList.remove('open');
   const media=g('lp-media');
-  // Revoke object URL and stop playback
+  // Revoke object URL and stop playback, save final resume position
   const video=media.querySelector('video');
-  if(video){if(video.src)URL.revokeObjectURL(video.src);video.pause()}
+  if(video){
+    const l=lectures.find(x=>x.id===currentLectureId);
+    if(l&&l.source==='local'&&video.currentTime>3){
+      l.resumeAt=video.currentTime;sv('tj_lectures',lectures);
+    }
+    if(video.src)URL.revokeObjectURL(video.src);video.pause();
+  }
   media.innerHTML='';
   playClose();
 }
