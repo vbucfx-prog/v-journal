@@ -478,6 +478,28 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
 .markup-tf-badge{font-family:var(--mono);font-size:7px;letter-spacing:0.1em;padding:2px 7px;border-radius:4px;background:rgba(var(--a1),0.1);color:var(--gold);text-transform:uppercase}
 .markup-card-note{font-size:11px;color:var(--text-muted);line-height:1.5;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
+/* ── ANALYSIS TABS ── */
+.analysis-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.analysis-tab{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);background:rgba(var(--a1),0.03);border:1px solid rgba(var(--a1),0.1);border-radius:20px;padding:8px 16px;cursor:pointer;transition:all 0.15s}
+.analysis-tab:hover{border-color:rgba(var(--a1),0.25);color:var(--text)}
+.analysis-tab.active{background:rgba(var(--a1),0.12);border-color:rgba(var(--a1),0.35);color:var(--gold)}
+.analysis-tab-count{font-family:var(--mono);font-size:8px;color:var(--text-dim)}
+.analysis-tab.active .analysis-tab-count{color:var(--gold);opacity:0.7}
+.analysis-tab-body{display:none}
+.analysis-tab-body.active{display:block;animation:fadeIn 0.15s ease both}
+
+/* ── SORT / FILTER ── */
+.sort-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sort-dropdown-wrap{position:relative}
+.sort-btn{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);background:rgba(var(--a1),0.04);border:1px solid rgba(var(--a1),0.12);border-radius:var(--radius-xs);padding:6px 12px;cursor:pointer;transition:all 0.12s}
+.sort-btn:hover{border-color:rgba(var(--a1),0.28);color:var(--text)}
+.sort-btn svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2}
+.sort-menu{position:absolute;top:calc(100% + 6px);right:0;background:rgba(8,5,2,0.98);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(var(--a1),0.2);border-radius:var(--radius-xs);min-width:170px;z-index:30;display:none;box-shadow:0 12px 40px rgba(0,0,0,0.5);overflow:hidden}
+.sort-menu.open{display:block}
+.sort-menu-item{padding:9px 14px;font-family:var(--mono);font-size:9px;letter-spacing:0.08em;color:var(--text-muted);cursor:pointer;transition:background 0.1s}
+.sort-menu-item:hover{background:rgba(var(--a1),0.06);color:var(--text)}
+.sort-menu-item.active{color:var(--gold);background:rgba(var(--a1),0.08)}
+
 /* ── ANALYSIS COLLAPSE ── */
 .analysis-section{margin-bottom:12px}
 .analysis-sec-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(var(--a1),0.04);border:1px solid rgba(var(--a1),0.1);border-radius:var(--radius-xs);cursor:pointer;user-select:none;transition:background 0.12s}
@@ -873,53 +895,75 @@ body.theme-white{
         </div>
       </div>
       <div class="panel-inner">
-        <!-- Discord Formatter -->
-        <div class="formatter-wrap">
-          <div class="formatter-label">📋 Discord Journal Formatter — paste your raw notes below</div>
-          <textarea class="formatter-ta" id="formatter-input" placeholder="Paste your raw Discord message or trade notes here... e.g. 'gara tap into poi, hvb confirmed this, bias remains lower, manipulation higher then distro lower...'"></textarea>
-          <div class="formatter-actions">
-            <select class="fsel" id="formatter-type" style="width:auto;font-size:11px;padding:6px 10px">
-              <option value="post">Post Market</option>
-              <option value="premarket">Pre-Market</option>
-            </select>
-            <button class="btn-add" onclick="runFormatter()" id="formatter-btn"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.5 1.18 5.59L12 16.77l-6.18 4.59L8 14.5 2 9.27l6.91-1.01L12 2z"/></svg>Format with AI</button>
-            <span class="formatter-status" id="formatter-status"></span>
+        <!-- Tab navigation -->
+        <div class="analysis-tabs">
+          <div class="analysis-tab active" id="atab-entries" onclick="switchAnalysisTab('entries')">
+            <span>Pre &amp; Post Market</span><span class="analysis-tab-count" id="atab-count-entries"></span>
           </div>
-          <div class="formatter-result" id="formatter-result"></div>
-          <div id="formatter-save-row" style="margin-top:10px;display:none;gap:8px;flex-wrap:wrap">
-            <button class="btn-add" onclick="saveFormattedEntry()" style="font-size:9px">Save as Entry</button>
-            <button class="btn-cancel" onclick="copyFormattedDiscord()" style="font-size:9px">Copy for Discord</button>
+          <div class="analysis-tab" id="atab-checklists" onclick="switchAnalysisTab('checklists')">
+            <span>Checklists</span><span class="analysis-tab-count" id="atab-count-checklists"></span>
+          </div>
+          <div class="analysis-tab" id="atab-markups" onclick="switchAnalysisTab('markups')">
+            <span>Markups</span><span class="analysis-tab-count" id="atab-count-markups"></span>
+          </div>
+          <div class="analysis-tab" id="atab-formatter" onclick="switchAnalysisTab('formatter')">
+            <span>📋 AI Formatter</span>
           </div>
         </div>
 
-        <!-- Collapsible: Checklists -->
-        <div class="analysis-section">
-          <div class="analysis-sec-header" onclick="toggleAnalysisSec('checklists')">
-            <div class="analysis-sec-title"><span class="ff-chevron open" id="asec-chev-checklists">▼</span>Checklists</div>
-            <button class="pm-add-btn" onclick="event.stopPropagation();addPMGroup()">+ Group</button>
+        <!-- Pre & Post Market -->
+        <div class="analysis-tab-body active" id="atabbody-entries">
+          <div class="sort-bar">
+            <div class="sec-lbl">Entries</div>
+            <div class="sort-dropdown-wrap">
+              <button class="sort-btn" onclick="toggleSortMenu(event)">
+                <svg viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+                <span id="sort-btn-label">Date Added</span>
+              </button>
+              <div class="sort-menu" id="sort-menu">
+                <div class="sort-menu-item active" data-sort="added" onclick="setAnalysisSort('added')">Date Added (newest)</div>
+                <div class="sort-menu-item" data-sort="added-old" onclick="setAnalysisSort('added-old')">Date Added (oldest)</div>
+                <div class="sort-menu-item" data-sort="chrono" onclick="setAnalysisSort('chrono')">Chronological (by date)</div>
+                <div class="sort-menu-item" data-sort="chrono-old" onclick="setAnalysisSort('chrono-old')">Chronological (oldest first)</div>
+                <div class="sort-menu-item" data-sort="az" onclick="setAnalysisSort('az')">Title A → Z</div>
+              </div>
+            </div>
           </div>
-          <div class="analysis-sec-body open" id="asec-checklists">
-            <div id="pm-groups"></div>
-          </div>
+          <div id="analysis-entries"></div>
         </div>
 
-        <!-- Collapsible: Markups -->
-        <div class="analysis-section">
-          <div class="analysis-sec-header" onclick="toggleAnalysisSec('markups')">
-            <div class="analysis-sec-title"><span class="ff-chevron open" id="asec-chev-markups">▼</span>Markups <span class="analysis-sec-count" id="markup-count"></span></div>
+        <!-- Checklists -->
+        <div class="analysis-tab-body" id="atabbody-checklists">
+          <div class="sort-bar">
+            <div class="sec-lbl">Checklist Groups</div>
+            <button class="pm-add-btn" onclick="addPMGroup()">+ Group</button>
           </div>
-          <div class="analysis-sec-body open" id="asec-markups">
-            <div class="markup-grid" id="markup-entries"></div>
-          </div>
+          <div id="pm-groups"></div>
         </div>
 
-        <!-- Collapsible: Pre/Post Entries -->
-        <div class="analysis-section">
-          <div class="analysis-sec-header" onclick="toggleAnalysisSec('entries')">
-            <div class="analysis-sec-title"><span class="ff-chevron open" id="asec-chev-entries">▼</span>Pre &amp; Post Market</div>
-          </div>
-          <div class="analysis-sec-body open" id="asec-entries">
-            <div id="analysis-entries"></div>
+        <!-- Markups -->
+        <div class="analysis-tab-body" id="atabbody-markups">
+          <div class="markup-grid" id="markup-entries"></div>
+        </div>
+
+        <!-- AI Formatter -->
+        <div class="analysis-tab-body" id="atabbody-formatter">
+          <div class="formatter-wrap" style="margin-bottom:0">
+            <div class="formatter-label">📋 Discord Journal Formatter — paste your raw notes below</div>
+            <textarea class="formatter-ta" id="formatter-input" placeholder="Paste your raw Discord message or trade notes here... e.g. 'gara tap into poi, hvb confirmed this, bias remains lower, manipulation higher then distro lower...'"></textarea>
+            <div class="formatter-actions">
+              <select class="fsel" id="formatter-type" style="width:auto;font-size:11px;padding:6px 10px">
+                <option value="post">Post Market</option>
+                <option value="premarket">Pre-Market</option>
+              </select>
+              <button class="btn-add" onclick="runFormatter()" id="formatter-btn"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.5 1.18 5.59L12 16.77l-6.18 4.59L8 14.5 2 9.27l6.91-1.01L12 2z"/></svg>Format with AI</button>
+              <span class="formatter-status" id="formatter-status"></span>
+            </div>
+            <div class="formatter-result" id="formatter-result"></div>
+            <div id="formatter-save-row" style="margin-top:10px;display:none;gap:8px;flex-wrap:wrap">
+              <button class="btn-add" onclick="saveFormattedEntry()" style="font-size:9px">Save as Entry</button>
+              <button class="btn-cancel" onclick="copyFormattedDiscord()" style="font-size:9px">Copy for Discord</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1401,6 +1445,9 @@ async function init(){
   checkSundayPrompt();
   const sb=g('sound-btn');
   if(sb&&!_soundOn)sb.innerHTML=`<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="1.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+  const sortLbl=g('sort-btn-label');
+  if(sortLbl)sortLbl.textContent=ANALYSIS_SORT_LABELS[analysisSort]||'Date Added';
+  document.querySelectorAll('.sort-menu-item').forEach(el=>el.classList.toggle('active',el.dataset.sort===analysisSort));
 }
 
 async function loadFromSupabase(){
@@ -1568,20 +1615,55 @@ function buildGridCard(e){
 }
 
 /* ── ANALYSIS ── */
+/* ── ANALYSIS SORT ── */
+let analysisSort=sl('tj_analysis_sort','added');
+const ANALYSIS_SORT_LABELS={
+  added:'Date Added',
+  'added-old':'Date Added (oldest)',
+  chrono:'Chronological',
+  'chrono-old':'Chronological (oldest)',
+  az:'Title A → Z',
+};
+
+function toggleSortMenu(ev){
+  ev.stopPropagation();
+  g('sort-menu').classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  const menu=g('sort-menu');
+  if(menu&&!e.target.closest('.sort-dropdown-wrap'))menu.classList.remove('open');
+});
+function setAnalysisSort(mode){
+  analysisSort=mode;
+  sv('tj_analysis_sort',mode);
+  document.querySelectorAll('.sort-menu-item').forEach(el=>el.classList.toggle('active',el.dataset.sort===mode));
+  g('sort-btn-label').textContent=ANALYSIS_SORT_LABELS[mode]||'Sort';
+  g('sort-menu').classList.remove('open');
+  renderAnalysis();
+}
+
 function renderAnalysis(){
   const list=entries.filter(e=>e.type==='premarket'||e.type==='post');
   const c=document.getElementById('analysis-entries');
+  const countEl=g('atab-count-entries');
+  if(countEl)countEl.textContent=list.length?`(${list.length})`:'';
   if(!list.length){c.innerHTML=emptyHtml();return}
-  const grouped={};
-  list.forEach(e=>{const d=e.date||'Unknown';if(!grouped[d])grouped[d]=[];grouped[d].push(e)});
-  const dates=Object.keys(grouped).sort((a,b)=>b.localeCompare(a));
-  c.innerHTML=dates.map(d=>{
-    const items=grouped[d].sort((a,b)=>(a.type==='premarket'?-1:b.type==='premarket'?1:0));
-    return`<div class="analysis-date-group">
-      <div class="adg-header"><span>${fmtDate(d)}</span><div class="adg-line"></div></div>
-      <div class="entry-grid">${items.map(buildGridCard).join('')}</div>
-    </div>`;
-  }).join('');
+
+  let sorted=[...list];
+  switch(analysisSort){
+    case 'added': sorted.sort((a,b)=>b.id-a.id); break; // id = Date.now() at creation, newest first
+    case 'added-old': sorted.sort((a,b)=>a.id-b.id); break;
+    case 'chrono': sorted.sort((a,b)=>(b.date||'').localeCompare(a.date||'')); break;
+    case 'chrono-old': sorted.sort((a,b)=>(a.date||'').localeCompare(b.date||'')); break;
+    case 'az': sorted.sort((a,b)=>{
+      const ta=(a.customTitle||a.title||fmtDate(a.date)).toLowerCase();
+      const tb=(b.customTitle||b.title||fmtDate(b.date)).toLowerCase();
+      return ta.localeCompare(tb);
+    }); break;
+    default: sorted.sort((a,b)=>b.id-a.id);
+  }
+
+  c.innerHTML=`<div class="entry-grid">${sorted.map(buildGridCard).join('')}</div>`;
 }
 
 /* ── FUNDED ── */
@@ -1947,6 +2029,7 @@ function buildForm(type){
     ${dateRow}<div class="form-sec">Review</div>
     <div class="fg"><label class="fl">Title (optional)</label><input class="fi" id="e-custom-title" placeholder="e.g. Monday London session, NFP day..."></div>
     <div class="fg"><label class="fl">Day Rating</label><select class="fsel" id="e-rating"><option value="A">A — Executed the plan</option><option value="B">B — Good, minor issues</option><option value="C">C — Average</option><option value="D">D — Poor execution</option><option value="X">X — Off charts</option></select></div>
+    ${tagsBlock()}
     <div class="fg"><label class="fl">Day Breakdown</label><textarea class="fta" id="e-macro" placeholder="L1-L2, 2:30, AMD breakdown..."></textarea></div>
     <div class="fg"><label class="fl">Setups Presented</label><textarea class="fta" id="e-setups" placeholder="Caught or missed..."></textarea></div>
     <div class="fg"><label class="fl">Key Lesson</label><textarea class="fta" id="e-lesson" placeholder="One thing you're taking away..."></textarea></div>
@@ -1956,6 +2039,7 @@ function buildForm(type){
   else if(type==='premarket') body=`
     ${dateRow}<div class="form-sec">Notes</div>
     <div class="fg"><label class="fl">Title (optional)</label><input class="fi" id="e-custom-title" placeholder="e.g. London open, Pre-NFP..."></div>
+    ${tagsBlock()}
     <div class="fg"><label class="fl">Pre-Market Notes</label><textarea class="fta" id="e-pm-notes" placeholder="Your thoughts, levels, plan..." style="min-height:130px"></textarea></div>
     ${picsBlock('premarket','pm-pp')}`;
   else if(type==='funded') body=`
@@ -2039,10 +2123,10 @@ function saveEntry(type){
     const mk={id:Date.now(),date:g('e-date').value,symbol:g('e-markup-symbol').value,tf:g('e-markup-tf').value,tags:[...pendingTags],notes:g('e-markup-notes').value,pics:[...pendingPics.markup]};
     markups.unshift(mk);sv('tj_markups',markups);renderMarkups();
   }else if(type==='post'){
-    Object.assign(entry,{customTitle:g('e-custom-title')?g('e-custom-title').value:'',rating:g('e-rating').value,macro:g('e-macro').value,setups:g('e-setups').value,lesson:g('e-lesson').value,mistakes:g('e-mistakes').value,forwardBias:g('e-forward-bias').value,pics:[...pendingPics.post]});
+    Object.assign(entry,{customTitle:g('e-custom-title')?g('e-custom-title').value:'',rating:g('e-rating').value,tags:[...pendingTags],macro:g('e-macro').value,setups:g('e-setups').value,lesson:g('e-lesson').value,mistakes:g('e-mistakes').value,forwardBias:g('e-forward-bias').value,pics:[...pendingPics.post]});
     entries.unshift(entry);sv('tj_entries',entries);renderAll();
   }else if(type==='premarket'){
-    Object.assign(entry,{customTitle:g('e-custom-title')?g('e-custom-title').value:'',notes:g('e-pm-notes').value,pics:[...pendingPics.premarket]});
+    Object.assign(entry,{customTitle:g('e-custom-title')?g('e-custom-title').value:'',tags:[...pendingTags],notes:g('e-pm-notes').value,pics:[...pendingPics.premarket]});
     entries.unshift(entry);sv('tj_entries',entries);renderAll();
   }else if(type==='funded'){
     Object.assign(entry,{name:g('e-funded-name').value,broker:g('e-funded-broker').value,size:parseFloat(g('e-funded-size').value)||0,balance:parseFloat(g('e-funded-balance').value)||0,target:parseFloat(g('e-funded-target').value)||0,dd:parseFloat(g('e-funded-dd').value)||0,status:g('e-funded-status').value,notes:g('e-funded-notes').value,pics:[...pendingPics.funded]});
@@ -2283,6 +2367,8 @@ function togglePMCollapse(gid){
 }
 function renderPMGroups(){
   const c=g('pm-groups');if(!c)return;
+  const countEl=g('atab-count-checklists');
+  if(countEl)countEl.textContent=pmGroups.length?`(${pmGroups.length})`:'';
   if(!pmGroups.length){c.innerHTML=`<div class="empty"><div class="empty-ico"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><p>No checklist groups yet</p></div>`;return}
   c.innerHTML=pmGroups.map(group=>{
     const done=group.items.filter(i=>i.checked).length;
@@ -2877,14 +2963,16 @@ function toggleStar(id,ev){
   e.starred=!e.starred;sv('tj_entries',entries);renderAll();
 }
 
-/* ── ANALYSIS SECTIONS ── */
-function toggleAnalysisSec(name){
-  const body=g('asec-'+name);
-  const chev=g('asec-chev-'+name);
-  const opening=body&&!body.classList.contains('open');
-  if(body)body.classList.toggle('open');
-  if(chev)chev.classList.toggle('open');
-  opening?playSwipeOpen():playSwipeClose();
+/* ── ANALYSIS TABS ── */
+const ANALYSIS_TABS=['entries','checklists','markups','formatter'];
+function switchAnalysisTab(name){
+  ANALYSIS_TABS.forEach(t=>{
+    const tab=g('atab-'+t);
+    const body=g('atabbody-'+t);
+    if(tab)tab.classList.toggle('active',t===name);
+    if(body)body.classList.toggle('active',t===name);
+  });
+  playSwipeOpen();
 }
 
 /* ── TAGS ── */
@@ -2935,7 +3023,7 @@ function autoCalcRR(){
 /* ── MARKUPS ── */
 function renderMarkups(){
   const c=g('markup-entries');if(!c)return;
-  const cnt=g('markup-count');if(cnt)cnt.textContent=markups.length?`(${markups.length})`:'';
+  const cnt=g('atab-count-markups');if(cnt)cnt.textContent=markups.length?`(${markups.length})`:'';
   if(!markups.length){c.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><p>No markups yet</p></div>`;return}
   const sorted=[...markups].sort((a,b)=>b.date.localeCompare(a.date));
   c.innerHTML=sorted.map(m=>{
