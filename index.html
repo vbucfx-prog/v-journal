@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Trading Journal</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23080808'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='22' font-weight='700' text-anchor='middle' fill='%23FFB830'%3EV%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#030202">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Journal">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -419,6 +425,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
 
 /* ── MENTOR MODE ── */
 #mentor-btn{position:fixed;top:16px;right:20px;z-index:55;display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(6,4,2,0.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(var(--a1),0.14);border-radius:40px;cursor:pointer;transition:all 0.2s;font-family:var(--mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)}
+
+/* ── OFFLINE / SYNC STATUS ── */
+#offline-badge{position:fixed;top:16px;left:20px;z-index:55;display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(255,107,107,0.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,107,107,0.25);border-radius:40px;font-family:var(--mono);font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:#ff9999;opacity:0;pointer-events:none;transition:opacity 0.25s}
+#offline-badge.visible{opacity:1}
+#offline-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#ff6b6b;flex-shrink:0;animation:pulse 2s infinite}
 #mentor-btn:hover{border-color:rgba(var(--a1),0.3);color:var(--text)}
 #mentor-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0}
 #mentor-btn.active{background:rgba(var(--a1),0.1);border-color:rgba(var(--a1),0.3);color:var(--gold)}
@@ -616,6 +627,10 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
 .eval-stat-val{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--gold)}
 .eval-card-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;border-top:1px solid rgba(var(--a1),0.06)}
 .eval-status-badge{font-family:var(--mono);font-size:7px;letter-spacing:0.12em;text-transform:uppercase;padding:3px 9px;border-radius:4px}
+.consistency-preview{background:rgba(var(--a1),0.06);border:1px solid rgba(var(--a1),0.16);border-radius:var(--radius-xs);padding:9px 12px;font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:0.03em;margin:-6px 0 16px}
+.consistency-preview strong{color:var(--gold)}
+.eval-consistency-row{padding:10px 18px;border-top:1px solid rgba(var(--a1),0.06);font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.04em;background:rgba(var(--a1),0.02)}
+.eval-consistency-row strong{color:var(--gold)}
 .eval-s-active{background:rgba(var(--a1),0.08);color:var(--gold);border:1px solid rgba(var(--a1),0.18)}
 .eval-s-pass{background:rgba(100,220,120,0.08);color:#6dffA0;border:1px solid rgba(100,220,120,0.2)}
 .eval-s-fail{background:rgba(255,80,80,0.08);color:#ff6b6b;border:1px solid rgba(255,80,80,0.2)}
@@ -995,6 +1010,31 @@ body.theme-white{
       </div>
     </div>
 
+    <!-- PORTFOLIO -->
+    <div class="panel" id="panel-portfolio">
+      <div class="panel-header">
+        <div class="panel-title">Portfolio</div>
+      </div>
+      <div class="panel-inner">
+        <div class="sec-head" style="margin-bottom:12px"><div class="sec-lbl">Overview</div></div>
+        <div class="insight-grid" id="portfolio-metrics" style="margin-bottom:22px"></div>
+
+        <div class="payout-curve-wrap">
+          <div class="payout-curve-header">
+            <div class="payout-curve-lbl">Combined Equity Curve — All Accounts</div>
+            <div class="payout-curve-total mentor-blur" id="portfolio-curve-total">$0</div>
+          </div>
+          <canvas id="portfolio-canvas"></canvas>
+        </div>
+
+        <div class="sec-head" style="margin-bottom:12px;margin-top:22px"><div class="sec-lbl">Contribution by Account</div></div>
+        <div class="session-bars" id="portfolio-contribution" style="margin-bottom:22px"></div>
+
+        <div class="sec-head" style="margin-bottom:12px"><div class="sec-lbl">Capital Allocation</div></div>
+        <div class="funded-grid" id="portfolio-accounts"></div>
+      </div>
+    </div>
+
     <!-- INSIGHT -->
     <div class="panel" id="panel-insight">
       <div class="panel-header">
@@ -1102,6 +1142,9 @@ body.theme-white{
 
   </div><!-- /panel-wrap -->
 
+  <!-- OFFLINE / SYNC STATUS -->
+  <div id="offline-badge"></div>
+
   <!-- MENTOR MODE -->
   <button id="mentor-btn" onclick="toggleMentor()" title="Mentor Mode — hides sensitive numbers">
     <svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -1148,6 +1191,10 @@ body.theme-white{
     <div class="dock-item" id="di-payouts" onclick="togglePanel('payouts',this)">
       <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
       <span>Payouts</span>
+    </div>
+    <div class="dock-item" id="di-portfolio" onclick="togglePanel('portfolio',this)">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <span>Portfolio</span>
     </div>
     <div class="dock-sep"></div>
     <div class="dock-item" id="di-insight" onclick="togglePanel('insight',this)">
@@ -1366,13 +1413,106 @@ async function sbGet(key){
 
 async function sbSet(key,val){
   try{
-    await fetch(`${SB_URL}/rest/v1/journal_data`,{
+    const r=await fetch(`${SB_URL}/rest/v1/journal_data`,{
       method:'POST',
       headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
       body:JSON.stringify({key,value:JSON.stringify(val)})
     });
-  }catch(e){console.warn('Supabase write failed, using localStorage',e)}
+    return r.ok;
+  }catch(e){
+    return false; // offline or network failure — caller queues it
+  }
 }
+
+/* ── OFFLINE SYNC QUEUE ── */
+// Real offline support: if a write fails (offline or network blip), it's queued in
+// IndexedDB and automatically flushed the moment the browser detects it's back online.
+// Only the LATEST value per key is kept in the queue (keyed by the storage key itself),
+// so rapid edits while offline don't pile up redundant writes.
+let _syncDB=null;
+function _syncDbOpen(){
+  return new Promise((resolve,reject)=>{
+    if(_syncDB)return resolve(_syncDB);
+    const req=indexedDB.open('tj_sync_queue',1);
+    req.onupgradeneeded=()=>{req.result.createObjectStore('outbox')};
+    req.onsuccess=()=>{_syncDB=req.result;resolve(_syncDB)};
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function _queueWrite(key,val){
+  try{
+    const db=await _syncDbOpen();
+    await new Promise((resolve,reject)=>{
+      const tx=db.transaction('outbox','readwrite');
+      tx.objectStore('outbox').put(val,key);
+      tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+    });
+    updateSyncStatusUI();
+  }catch(e){console.warn('Failed to queue offline write:',e)}
+}
+async function _removeFromQueue(key){
+  try{
+    const db=await _syncDbOpen();
+    await new Promise((resolve,reject)=>{
+      const tx=db.transaction('outbox','readwrite');
+      tx.objectStore('outbox').delete(key);
+      tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+    });
+  }catch{}
+}
+async function _getQueueEntries(){
+  try{
+    const db=await _syncDbOpen();
+    return await new Promise((resolve,reject)=>{
+      const tx=db.transaction('outbox','readonly');
+      const store=tx.objectStore('outbox');
+      const keysReq=store.getAllKeys();
+      const valsReq=store.getAll();
+      tx.oncomplete=()=>resolve(keysReq.result.map((k,i)=>({key:k,value:valsReq.result[i]})));
+      tx.onerror=()=>reject(tx.error);
+    });
+  }catch{return []}
+}
+async function _getQueueCount(){
+  const entries=await _getQueueEntries();
+  return entries.length;
+}
+
+let _flushInProgress=false;
+async function flushSyncQueue(){
+  if(_flushInProgress||!navigator.onLine)return;
+  const entries=await _getQueueEntries();
+  if(!entries.length){updateSyncStatusUI();return}
+  _flushInProgress=true;
+  let flushed=0;
+  for(const{key,value}of entries){
+    const ok=await sbSet(key,value);
+    if(ok){await _removeFromQueue(key);flushed++}
+    else break; // still offline/failing — stop and retry later
+  }
+  _flushInProgress=false;
+  updateSyncStatusUI();
+  if(flushed>0)showSync(`Synced ${flushed} pending change${flushed===1?'':'s'} ✓`);
+}
+
+async function updateSyncStatusUI(){
+  const badge=g('offline-badge');
+  if(!badge)return;
+  const count=await _getQueueCount();
+  if(!navigator.onLine){
+    badge.textContent='Offline'+(count?` · ${count} pending`:'');
+    badge.classList.add('visible');
+  }else if(count>0){
+    badge.textContent=`Syncing ${count} pending...`;
+    badge.classList.add('visible');
+  }else{
+    badge.classList.remove('visible');
+  }
+}
+
+window.addEventListener('online',flushSyncQueue);
+window.addEventListener('offline',updateSyncStatusUI);
+setInterval(flushSyncQueue,30000); // safety-net retry every 30s in case the online event is missed
 
 /* ── STATE ── */
 const PW='vbucks123';
@@ -1382,7 +1522,13 @@ const TODAY=new Date().toISOString().split('T')[0];
 function sl(k,fb){try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch{return fb}}
 function sv(k,v){
   try{localStorage.setItem(k,JSON.stringify(v))}catch{}
-  sbSet(k,v); // fire-and-forget sync to Supabase
+  // Try to sync immediately; if offline or the request fails, queue it —
+  // the queue auto-flushes the moment the browser comes back online.
+  if(!navigator.onLine){
+    _queueWrite(k,v);
+  }else{
+    sbSet(k,v).then(ok=>{if(!ok)_queueWrite(k,v);else{_removeFromQueue(k);updateSyncStatusUI()}});
+  }
 }
 
 let entries=sl('tj_entries',[]);
@@ -1448,6 +1594,8 @@ async function init(){
   const sortLbl=g('sort-btn-label');
   if(sortLbl)sortLbl.textContent=ANALYSIS_SORT_LABELS[analysisSort]||'Date Added';
   document.querySelectorAll('.sort-menu-item').forEach(el=>el.classList.toggle('active',el.dataset.sort===analysisSort));
+  updateSyncStatusUI();
+  flushSyncQueue(); // catch up on anything queued from a previous offline session
 }
 
 async function loadFromSupabase(){
@@ -1489,6 +1637,7 @@ function togglePanel(name,el){
   activePanel=name;
   playOpen();
   if(name==='insight')renderInsight();
+  if(name==='portfolio')renderPortfolio();
 }
 function closeAllPanels(){
   // Don't close if click was on theme picker or btn
@@ -2069,13 +2218,15 @@ function buildForm(type){
     <div class="f2"><div class="fg"><label class="fl">Firm / Prop</label><input class="fi" id="e-eval-firm" placeholder="FTMO, TopStep..."></div>
     <div class="fg"><label class="fl">Phase</label><select class="fsel" id="e-eval-phase"><option>Phase 1</option><option>Phase 2</option><option>Funded</option></select></div></div>
     <div class="f2"><div class="fg"><label class="fl">Account Size ($)</label><input class="fi" type="number" id="e-eval-size" placeholder="100000"></div>
-    <div class="fg"><label class="fl">Profit Target ($)</label><input class="fi" type="number" id="e-eval-target" placeholder="10000"></div></div>
+    <div class="fg"><label class="fl">Profit Target ($)</label><input class="fi" type="number" id="e-eval-target" placeholder="10000" oninput="updateConsistencyPreview()"></div></div>
     <div class="f2"><div class="fg"><label class="fl">Max Drawdown ($)</label><input class="fi" type="number" id="e-eval-maxdd" placeholder="5000"></div>
     <div class="fg"><label class="fl">Daily Loss Limit ($)</label><input class="fi" type="number" id="e-eval-daily" placeholder="1000"></div></div>
-    <div class="f2"><div class="fg"><label class="fl">Current PnL ($)</label><input class="fi" type="number" id="e-eval-pnl" placeholder="0"></div>
+    <div class="f2"><div class="fg"><label class="fl">Current PnL ($)</label><input class="fi" type="number" id="e-eval-pnl" placeholder="0" oninput="updateConsistencyPreview()"></div>
     <div class="fg"><label class="fl">Current DD ($)</label><input class="fi" type="number" id="e-eval-curdd" placeholder="0"></div></div>
     <div class="f2"><div class="fg"><label class="fl">Days Left</label><input class="fi" type="number" id="e-eval-days" placeholder="30"></div>
     <div class="fg"><label class="fl">Status</label><select class="fsel" id="e-eval-status"><option>Active</option><option>Pass</option><option>Failed</option></select></div></div>
+    <div class="fg"><label class="fl">Consistency Rule (%) — optional</label><input class="fi" type="number" id="e-eval-consistency" placeholder="e.g. 50" step="any" oninput="updateConsistencyPreview()"></div>
+    <div class="consistency-preview" id="consistency-preview" style="display:none"></div>
     <div class="fg"><label class="fl">Rules / Notes</label><textarea class="fta" id="e-eval-notes" placeholder="Specific rules, things to watch..."></textarea></div>`;
   else if(type==='lecture') body=`
     <div class="lecture-storage-note">📦 <strong>Local upload</strong> stores the video on this device only (free, unlimited-ish) — won't sync to other devices. <strong>Link</strong> (YouTube/Drive/Streamable) syncs everywhere and streams instead of storing.</div>
@@ -2135,7 +2286,7 @@ function saveEntry(type){
     Object.assign(entry,{payoutDate:g('e-payout-date').value,amount:parseFloat(g('e-payout-amount').value)||0,broker:g('e-payout-broker').value,actype:g('e-payout-actype').value,txid:g('e-payout-txid').value,notes:g('e-payout-notes').value,pics:[...pendingPics.payout]});
     payouts.unshift(entry);sv('tj_payouts',payouts);renderPayouts();renderAll();
   }else if(type==='eval'){
-    const ev={id:Date.now(),date:TODAY,firm:g('e-eval-firm').value,phase:g('e-eval-phase').value,accountSize:parseFloat(g('e-eval-size').value)||0,profitTarget:parseFloat(g('e-eval-target').value)||0,maxDD:parseFloat(g('e-eval-maxdd').value)||0,dailyLoss:parseFloat(g('e-eval-daily').value)||0,currentPnl:parseFloat(g('e-eval-pnl').value)||0,currentDD:parseFloat(g('e-eval-curdd').value)||0,daysLeft:g('e-eval-days').value,status:g('e-eval-status').value,notes:g('e-eval-notes').value};
+    const ev={id:Date.now(),date:TODAY,firm:g('e-eval-firm').value,phase:g('e-eval-phase').value,accountSize:parseFloat(g('e-eval-size').value)||0,profitTarget:parseFloat(g('e-eval-target').value)||0,maxDD:parseFloat(g('e-eval-maxdd').value)||0,dailyLoss:parseFloat(g('e-eval-daily').value)||0,currentPnl:parseFloat(g('e-eval-pnl').value)||0,currentDD:parseFloat(g('e-eval-curdd').value)||0,daysLeft:g('e-eval-days').value,status:g('e-eval-status').value,consistency:parseFloat(g('e-eval-consistency').value)||0,notes:g('e-eval-notes').value};
     evals.unshift(ev);sv('tj_evals',evals);renderEvals();
   }else if(type==='lecture'){
     saveLectureEntry(); // async, handles its own closeForm
@@ -2568,6 +2719,114 @@ function renderPayoutCurve(){
   });
 }
 
+/* ── PORTFOLIO ── */
+function renderPortfolio(){
+  // Metrics
+  const activeStatuses=['Funded','Evaluation','Active'];
+  const activeAccounts=funded.filter(a=>activeStatuses.includes(a.status));
+  const totalCapital=activeAccounts.reduce((s,a)=>s+(parseFloat(a.size)||0),0);
+  const totalBalance=activeAccounts.reduce((s,a)=>s+(parseFloat(a.balance)||0),0);
+  const totalPayoutsAll=payouts.reduce((s,p)=>s+(parseFloat(p.amount)||0),0);
+  const blownCount=funded.filter(a=>a.status==='Blown').length;
+
+  const metrics=[
+    {lbl:'Active Capital',val:'$'+totalCapital.toLocaleString(),sub:`${activeAccounts.length} account${activeAccounts.length===1?'':'s'}`,col:'var(--gold)'},
+    {lbl:'Current Balance',val:'$'+totalBalance.toLocaleString(),sub:'Across active accounts',col:'var(--gold)'},
+    {lbl:'Total Payouts',val:'$'+totalPayoutsAll.toLocaleString(),sub:'All time, all accounts',col:'#6dffA0'},
+    {lbl:'Total Accounts',val:String(funded.length),sub:`${blownCount} blown`,col:blownCount?'#ff6b6b':'var(--gold)'},
+  ];
+  const mEl=g('portfolio-metrics');
+  if(mEl)mEl.innerHTML=metrics.map(m=>`<div class="insight-metric mentor-blur">
+    <div class="insight-metric-lbl">${m.lbl}</div>
+    <div class="insight-metric-val" style="color:${m.col}">${m.val}</div>
+    <div class="insight-metric-sub">${m.sub}</div>
+  </div>`).join('');
+
+  renderPortfolioCurve();
+  renderPortfolioContribution();
+  renderPortfolioAccounts();
+}
+
+function renderPortfolioCurve(){
+  const canvas=g('portfolio-canvas');
+  if(!canvas)return;
+  if(!payouts.length){const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);const t=g('portfolio-curve-total');if(t)t.textContent='$0';return}
+  const sorted=[...payouts].sort((a,b)=>new Date(a.payoutDate||a.date)-new Date(b.payoutDate||b.date));
+  let running=0;
+  const pts=sorted.map(p=>{running+=parseFloat(p.amount)||0;return running});
+  const total=pts[pts.length-1]||0;
+  const totalEl=g('portfolio-curve-total');
+  if(totalEl)totalEl.textContent='$'+total.toLocaleString();
+  const dpr=window.devicePixelRatio||1;
+  const rect=canvas.getBoundingClientRect();
+  canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+  const W=rect.width,H=rect.height,pad=16;
+  const maxV=Math.max(...pts);const minV=0;
+  const scaleX=i=>(pts.length===1)?W/2:pad+(i/(pts.length-1))*(W-pad*2);
+  const scaleY=v=>H-pad-(((v-minV)/(maxV-minV||1))*(H-pad*2));
+  const grad=ctx.createLinearGradient(0,0,0,H);
+  const rgb=getComputedStyle(document.body).getPropertyValue('--a1').trim()||'255,184,48';
+  grad.addColorStop(0,`rgba(${rgb},0.22)`);
+  grad.addColorStop(1,`rgba(${rgb},0)`);
+  ctx.beginPath();ctx.moveTo(scaleX(0),H-pad);
+  pts.forEach((v,i)=>ctx.lineTo(scaleX(i),scaleY(v)));
+  ctx.lineTo(scaleX(pts.length-1),H-pad);ctx.closePath();
+  ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();ctx.moveTo(scaleX(0),scaleY(pts[0]));
+  pts.forEach((v,i)=>{if(i>0)ctx.lineTo(scaleX(i),scaleY(v))});
+  ctx.strokeStyle=`rgba(${rgb},0.8)`;ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
+  pts.forEach((v,i)=>{
+    ctx.beginPath();ctx.arc(scaleX(i),scaleY(v),3,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${rgb},0.9)`;ctx.fill();
+  });
+}
+
+function renderPortfolioContribution(){
+  const c=g('portfolio-contribution');
+  if(!c)return;
+  if(!payouts.length){c.innerHTML=`<div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">No payouts logged yet</div>`;return}
+  // Group payouts by firm/broker name (matches funded account 'broker' or 'name' field)
+  const byAccount={};
+  payouts.forEach(p=>{
+    const key=p.broker||'Unspecified';
+    byAccount[key]=(byAccount[key]||0)+(parseFloat(p.amount)||0);
+  });
+  const totalAll=Object.values(byAccount).reduce((a,b)=>a+b,0)||1;
+  const sortedEntries=Object.entries(byAccount).sort((a,b)=>b[1]-a[1]);
+  const maxVal=Math.max(...sortedEntries.map(e=>e[1]),1);
+  c.innerHTML=sortedEntries.map(([name,amt])=>{
+    const pct=((amt/totalAll)*100).toFixed(1);
+    return`<div class="session-bar-row">
+      <div class="session-bar-lbl" style="min-width:100px" title="${esc(name)}">${esc(name)}</div>
+      <div class="session-bar-track"><div class="session-bar-fill mentor-blur" style="width:${Math.round((amt/maxVal)*100)}%"></div></div>
+      <div class="session-bar-val mentor-blur" style="min-width:70px">$${amt.toLocaleString()} · ${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderPortfolioAccounts(){
+  const c=g('portfolio-accounts');
+  if(!c)return;
+  if(!funded.length){c.innerHTML=emptyHtml();return}
+  const order={Funded:0,Evaluation:1,Active:2,Completed:3,Paused:4,Expired:5,Failed:6,Blown:7};
+  const sorted=[...funded].sort((a,b)=>(order[a.status]??3)-(order[b.status]??3));
+  c.innerHTML=sorted.map(a=>{
+    const sc='s-'+(a.status||'active').toLowerCase();
+    const accountPayouts=payouts.filter(p=>p.broker===a.broker).reduce((s,p)=>s+(parseFloat(p.amount)||0),0);
+    return`<div class="funded-card" onclick="openDetailFunded(${a.id})" style="cursor:pointer">
+      <div class="funded-card-body" style="padding-top:14px">
+        <div class="funded-card-title">${esc(a.name||'Unnamed')}</div>
+        <div class="funded-card-meta">${esc(a.broker||'—')}</div>
+        <div class="funded-card-row mentor-blur"><span class="lbl">Size</span><span>$${Number(a.size||0).toLocaleString()}</span></div>
+        <div class="funded-card-row mentor-blur"><span class="lbl">Balance</span><span>$${Number(a.balance||0).toLocaleString()}</span></div>
+        <div class="funded-card-row mentor-blur"><span class="lbl">Payouts</span><span class="pnl-pos">$${accountPayouts.toLocaleString()}</span></div>
+      </div>
+      <div class="funded-card-footer"><span class="funded-status ${sc}">${a.status||'Active'}</span></div>
+    </div>`;
+  }).join('');
+}
+
 /* ── FLOATING NOTES (freeform scratchpad) ── */
 let notesDragging=false;
 
@@ -2693,6 +2952,34 @@ function toggleMentor(){
 /* ── EVAL TRACKER ── */
 let evals=sl('tj_evals',[]);
 
+/* ── CONSISTENCY RULE CALCULATOR ── */
+// Many prop firms cap how much of your total profit target can come from a single
+// trade/day (e.g. "no single day can be more than 50% of your total profit").
+// Given remaining profit needed and that cap %, this works out the max you're
+// allowed to make in one trade, and the minimum number of trades required to
+// reach the target without breaching the rule.
+function calcConsistency(ev){
+  if(!ev.consistency||ev.consistency<=0||ev.consistency>=100)return null;
+  const remaining=(ev.profitTarget||0)-(ev.currentPnl||0);
+  if(remaining<=0)return null;
+  const fraction=ev.consistency/100;
+  const maxPerTrade=remaining*fraction;
+  const minTrades=Math.ceil(1/fraction);
+  return{remaining,maxPerTrade,minTrades,fraction};
+}
+
+function updateConsistencyPreview(){
+  const target=parseFloat(g('e-eval-target')?.value)||0;
+  const pnl=parseFloat(g('e-eval-pnl')?.value)||0;
+  const consistency=parseFloat(g('e-eval-consistency')?.value)||0;
+  const box=g('consistency-preview');
+  if(!box)return;
+  const calc=calcConsistency({profitTarget:target,currentPnl:pnl,consistency});
+  if(!calc){box.style.display='none';return}
+  box.style.display='block';
+  box.innerHTML=`Max per trade: <strong>$${calc.maxPerTrade.toLocaleString(undefined,{maximumFractionDigits:0})}</strong> &nbsp;·&nbsp; Minimum trades to pass: <strong>${calc.minTrades}</strong>`;
+}
+
 function renderEvals(){
   const c=document.getElementById('eval-entries');if(!c)return;
   if(!evals.length){c.innerHTML=emptyHtml();return}
@@ -2702,6 +2989,8 @@ function renderEvals(){
     const phaseClass=ev.phase==='Phase 1'?'phase1':ev.phase==='Phase 2'?'phase2':ev.status==='Failed'?'failed-phase':'funded-phase';
     const badgeStyle=ev.status==='Pass'?'background:rgba(100,220,120,0.1);color:#6dffA0;border:1px solid rgba(100,220,120,0.2)':ev.status==='Failed'?'background:rgba(255,80,80,0.08);color:#ff6b6b;border:1px solid rgba(255,80,80,0.2)':`background:rgba(var(--a1),0.08);color:var(--gold);border:1px solid rgba(var(--a1),0.18)`;
     const statusCls=ev.status==='Pass'?'eval-s-pass':ev.status==='Failed'?'eval-s-fail':'eval-s-active';
+    const consCalc=calcConsistency(ev);
+    const consistencyRow=consCalc?`<div class="eval-consistency-row">📐 ${ev.consistency}% consistency rule — max <strong>$${consCalc.maxPerTrade.toLocaleString(undefined,{maximumFractionDigits:0})}</strong>/trade · min <strong>${consCalc.minTrades}</strong> trade${consCalc.minTrades===1?'':'s'} to pass</div>`:'';
     return`<div class="eval-card" onclick="openDetailEval(${ev.id})">
       <div class="eval-card-top ${phaseClass}">
         <div class="eval-firm">${esc(ev.firm||'Unnamed')}</div>
@@ -2716,6 +3005,7 @@ function renderEvals(){
         <div class="eval-stat"><div class="eval-stat-lbl">Daily Limit</div><div class="eval-stat-val" style="color:#ff6b6b">$${(ev.dailyLoss||0).toLocaleString()}</div></div>
         <div class="eval-stat"><div class="eval-stat-lbl">Days Left</div><div class="eval-stat-val">${ev.daysLeft||'—'}</div></div>
       </div>
+      ${consistencyRow}
       <div class="eval-card-footer">
         <span class="eval-status-badge ${statusCls}">${ev.status||'Active'}</span>
         <button class="tdl-del" onclick="event.stopPropagation();deleteEval(${ev.id})">✕</button>
@@ -2726,6 +3016,8 @@ function renderEvals(){
 
 function openDetailEval(id){
   const ev=evals.find(x=>x.id===id);if(!ev)return;
+  const consCalc=calcConsistency(ev);
+  const consistencyDetailBox=consCalc?`<div class="consistency-preview" style="margin-top:8px">Max per trade: <strong>$${consCalc.maxPerTrade.toLocaleString(undefined,{maximumFractionDigits:0})}</strong> &nbsp;·&nbsp; Minimum trades to pass: <strong>${consCalc.minTrades}</strong></div>`:'';
   document.getElementById('detail-modal').innerHTML=`
     <button class="detail-close" onclick="closeDetail()">✕</button>
     <div class="detail-type"><span class="badge badge-trade">${esc(ev.phase||'Phase 1')}</span></div>
@@ -2740,6 +3032,8 @@ function openDetailEval(id){
     <div class="detail-sec">Days Left</div><div class="detail-val" contenteditable="true" onblur="editEvalField(${id},'daysLeft',this.textContent)">${ev.daysLeft||''}</div>
     <div class="detail-sec">Phase</div>${dSel(['Phase 1','Phase 2','Funded'],ev.phase,`editEvalField(${id},'phase',this.value)`)}
     <div class="detail-sec">Status</div>${dSel(['Active','Pass','Failed'],ev.status,`editEvalField(${id},'status',this.value)`)}
+    <div class="detail-sec">Consistency Rule (%)</div><div class="detail-val" contenteditable="true" onblur="editEvalField(${id},'consistency',this.textContent)">${ev.consistency||''}</div>
+    ${consistencyDetailBox}
     <div class="detail-sec">Rules / Notes</div><div class="detail-val" contenteditable="true" onblur="editEvalField(${id},'notes',this.innerText)">${nl(ev.notes||'')}</div>
     <div class="detail-footer">
       <button class="btn-delete" onclick="deleteEval(${id})">Delete</button>
@@ -2750,7 +3044,7 @@ function openDetailEval(id){
 
 function editEvalField(id,field,val){
   const ev=evals.find(x=>x.id===id);if(!ev)return;
-  const numFields=['accountSize','currentPnl','profitTarget','maxDD','currentDD','dailyLoss'];
+  const numFields=['accountSize','currentPnl','profitTarget','maxDD','currentDD','dailyLoss','consistency'];
   ev[field]=numFields.includes(field)?parseFloat(String(val).replace(/[^0-9.-]/g,''))||0:String(val).trim();
   sv('tj_evals',evals);renderEvals();
 }
@@ -3634,6 +3928,16 @@ document.addEventListener('click',e=>{
 
 document.getElementById('pw-input').focus();
 loadFF();
+
+/* ── PWA / SERVICE WORKER ── */
+// Registers the offline app-shell cache. Data sync itself is handled by the
+// IndexedDB outbox above, not by the service worker (Background Sync isn't
+// supported on iOS Safari, so we don't rely on it).
+if('serviceWorker'in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('/sw.js').catch(err=>console.warn('SW registration failed:',err));
+  });
+}
 </script>
 </body>
 </html>
