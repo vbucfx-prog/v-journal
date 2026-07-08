@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Trading Journal</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23080808'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='22' font-weight='700' text-anchor='middle' fill='%23FFB830'%3EV%3C/text%3E%3C/svg%3E">
 <link rel="manifest" href="/manifest.json">
@@ -42,6 +42,7 @@
   --font:'Space Grotesk',sans-serif;
   --mono:'Space Mono',monospace;
   --dock-h:76px;
+  --mobile-nav-h:64px;
   --panel-w:min(1000px,88vw);
   --panel-h:82vh;
 }
@@ -583,8 +584,10 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
 .lp-resume-note{font-family:var(--mono);font-size:8px;color:var(--gold);letter-spacing:0.06em;padding:8px 18px 0}
 #lecture-player-overlay{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);backdrop-filter:blur(10px)}
 #lecture-player-overlay.open{display:flex;animation:fadeIn 0.2s ease both}
-.lecture-player-box{width:min(900px,94vw);background:rgba(6,4,2,0.96);border:1px solid var(--glass-border-bright);border-radius:var(--radius);overflow:hidden;position:relative}
-.lecture-player-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(var(--a1),0.08)}
+.lecture-player-box{width:min(900px,94vw);max-height:92vh;background:rgba(6,4,2,0.96);border:1px solid var(--glass-border-bright);border-radius:var(--radius);overflow-y:auto;overflow-x:hidden;position:relative}
+.lecture-player-box::-webkit-scrollbar{width:4px}
+.lecture-player-box::-webkit-scrollbar-thumb{background:rgba(var(--a1),0.15);border-radius:2px}
+.lecture-player-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(var(--a1),0.08);position:sticky;top:0;z-index:3;background:rgba(6,4,2,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .lp-close-btn{position:static;background:rgba(var(--a1),0.06);border:1px solid rgba(var(--a1),0.14);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-muted);font-size:14px;transition:all 0.12s;font-family:var(--mono);flex-shrink:0}
 .lp-close-btn:hover{color:var(--gold);background:rgba(var(--a1),0.12);border-color:rgba(var(--a1),0.3)}
 .lecture-player-title{font-size:14px;font-weight:600;color:var(--text)}
@@ -707,18 +710,86 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
 .concept-tag{display:flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(var(--a1),0.06);border:1px solid rgba(var(--a1),0.12);border-radius:4px;font-family:var(--mono);font-size:8px;color:var(--text-muted);letter-spacing:0.08em}
 .concept-tag-count{font-size:9px;color:var(--gold);font-weight:700}
 
+/* ── MOBILE NAV (hidden on desktop) ── */
+#mobile-nav{display:none}
+#mobile-more-sheet{display:none}
+
 /* ── MOBILE ── */
-@media(max-width:640px){
-  :root{--panel-w:98vw;--panel-h:78vh}
-  .ov-stats{grid-template-columns:repeat(2,1fr)}
-  .entry-grid{grid-template-columns:1fr 1fr}
-  .funded-grid{grid-template-columns:1fr}
+@media(max-width:768px){
+  /* Prevent iOS auto-zoom on input focus: fields must render at >=16px */
+  input,textarea,select,.fi,.fta,.fsel,.search-input,.lock-input,.tdl-inp,.goals-inp,
+  .notes-add-inp,.tag-inline-input,.pm-inp,.idialog-inp{font-size:16px !important}
+
+  :root{--panel-w:100vw;--panel-h:calc(100vh - var(--mobile-nav-h) - env(safe-area-inset-bottom) - env(safe-area-inset-top) - 10px);--dock-h:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom))}
+
+  body{overflow:hidden}
+
+  /* Tighter, more app-like density */
+  .panel{border-radius:20px 20px 0 0;border-left:none;border-right:none;border-bottom:none}
+  #panel-wrap{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom));width:100vw}
+  .panel-header{padding:16px 18px 14px}
+  .panel-inner{padding:16px 18px}
+  .stat-val{font-size:21px}
+  .ov-stats{grid-template-columns:repeat(2,1fr);gap:9px}
+  .entry-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .funded-grid,.eval-grid,.lecture-grid,.markup-grid{grid-template-columns:1fr}
   .f2{grid-template-columns:1fr}
-  .dock-item span{display:none}
-  .dock-item{min-width:44px;padding:8px 10px}
-  #dock{padding:7px 6px}
-  #theme-btn,#theme-picker{right:10px}
+  .insight-grid{grid-template-columns:1fr 1fr}
+  .analysis-tabs{gap:5px}
+  .analysis-tab{padding:7px 12px;font-size:8px}
+  .form-modal,.detail-modal{width:100vw;height:100%;max-height:100%;border-radius:0;padding:22px 18px calc(22px + env(safe-area-inset-bottom))}
+  #form-overlay,#detail-overlay{padding:0}
+  .weekly-modal{width:100vw;border-radius:0;padding:22px 18px calc(22px + env(safe-area-inset-bottom))}
+
+  /* Hide desktop dock + reposition floating buttons for the new mobile nav (account for home-indicator zone) */
+  #dock{display:none}
+  #theme-btn,#sound-btn,#mentor-btn,#notes-btn{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 10px)}
+  #theme-picker{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 56px)}
+  #mentor-btn{top:calc(env(safe-area-inset-top) + 10px)}
+  #offline-badge{top:calc(env(safe-area-inset-top) + 10px)}
+
+  /* ── NEW MOBILE BOTTOM NAV ── */
+  /* Total height = tappable icon zone + the iPhone home-indicator safe area added ON TOP,
+     not squeezed out of it — otherwise icons get crushed on notched/Dynamic Island iPhones. */
+  #mobile-nav{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:35;
+    height:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom));
+    padding-bottom:env(safe-area-inset-bottom);
+    background:rgba(4,3,1,0.94);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+    border-top:1px solid rgba(var(--a1),0.14);
+    align-items:stretch;justify-content:space-around;
+  }
+  .mnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--text-muted);cursor:pointer;transition:color 0.15s;-webkit-tap-highlight-color:transparent}
+  .mnav-item svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6}
+  .mnav-item span{font-family:var(--mono);font-size:8px;letter-spacing:0.06em;text-transform:uppercase}
+  .mnav-item.active{color:var(--gold)}
+  .mnav-item.active svg{filter:drop-shadow(0 0 6px rgba(var(--a1),0.5))}
+
+  /* ── MORE SHEET ── */
+  #mobile-more-sheet{
+    position:fixed;inset:0;z-index:200;display:none;
+    background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  }
+  #mobile-more-sheet.open{display:block;animation:fadeIn 0.18s ease both}
+  .more-sheet-panel{
+    position:absolute;left:0;right:0;bottom:0;
+    background:rgba(6,4,2,0.98);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+    border-top:1px solid rgba(var(--a1),0.18);border-radius:22px 22px 0 0;
+    padding:20px 18px calc(env(safe-area-inset-bottom) + 20px);
+    max-height:72vh;overflow-y:auto;
+    animation:moreSheetIn 0.22s cubic-bezier(0.34,1.3,0.64,1) both;
+  }
+  @keyframes moreSheetIn{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .more-sheet-handle{width:36px;height:4px;border-radius:2px;background:rgba(var(--a1),0.25);margin:0 auto 18px}
+  .more-sheet-title{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px}
+  .more-sheet-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .more-sheet-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px 8px;background:rgba(var(--a1),0.05);border:1px solid rgba(var(--a1),0.1);border-radius:16px;cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent}
+  .more-sheet-tile:active{background:rgba(var(--a1),0.12);transform:scale(0.96)}
+  .more-sheet-tile.active{border-color:rgba(var(--a1),0.4);background:rgba(var(--a1),0.1)}
+  .more-sheet-tile svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1.5}
+  .more-sheet-tile span{font-family:var(--mono);font-size:8px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);text-align:center}
 }
+
 
 /* ── THEME SWITCHER ── */
 #theme-btn{position:fixed;bottom:calc(var(--dock-h) + 14px);right:64px;z-index:40;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:rgba(8,5,2,0.7);transition:border-color 0.2s,box-shadow 0.2s}
@@ -1217,6 +1288,80 @@ body.theme-white{
       <span>TDL</span>
     </div>
   </div>
+
+  <!-- MOBILE BOTTOM NAV (desktop dock is hidden on mobile via CSS) -->
+  <div id="mobile-nav">
+    <div class="mnav-item active" data-panel="overview" onclick="mobileGoTo('overview')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Home</span>
+    </div>
+    <div class="mnav-item" data-panel="trades" onclick="mobileGoTo('trades')">
+      <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      <span>Trades</span>
+    </div>
+    <div class="mnav-item" data-panel="analysis" onclick="mobileGoTo('analysis')">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Analysis</span>
+    </div>
+    <div class="mnav-item" data-panel="insight" onclick="mobileGoTo('insight')">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span>Insight</span>
+    </div>
+    <div class="mnav-item" id="mnav-more" onclick="toggleMobileMore()">
+      <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+      <span>More</span>
+    </div>
+  </div>
+
+  <!-- MOBILE MORE SHEET -->
+  <div id="mobile-more-sheet" onclick="if(event.target===this)closeMobileMore()">
+    <div class="more-sheet-panel">
+      <div class="more-sheet-handle"></div>
+      <div class="more-sheet-title">All Sections</div>
+      <div class="more-sheet-grid">
+        <div class="more-sheet-tile" data-panel="overview" onclick="mobileGoTo('overview')">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Overview</span>
+        </div>
+        <div class="more-sheet-tile" data-panel="trades" onclick="mobileGoTo('trades')">
+          <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          <span>Trades</span>
+        </div>
+        <div class="more-sheet-tile" data-panel="analysis" onclick="mobileGoTo('analysis')">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Analysis</span>
+        </div>
+        <div class="more-sheet-tile" data-panel="funded" onclick="mobileGoTo('funded')">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <span>Funded</span>
+        </div>
+        <div class="more-sheet-tile" data-panel="payouts" onclick="mobileGoTo('payouts')">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span>Payouts</span>
+        </div>
+        <div class="more-sheet-tile" data-panel="portfolio" onclick="mobileGoTo('portfolio')">
+          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          <span>Portfolio</span>
+        </div>
+        <div class="more-sheet-tile" data-panel="insight" onclick="mobileGoTo('insight')">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span>Insight</span>
+        </div>
+        <div class="more-sheet-tile" data-panel="eval" onclick="mobileGoTo('eval')">
+          <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span>Eval</span>
+        </div>
+        <div class="more-sheet-tile" data-panel="lectures" onclick="mobileGoTo('lectures')">
+          <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          <span>Lectures</span>
+        </div>
+        <div class="more-sheet-tile" data-panel="tdl" onclick="mobileGoTo('tdl')">
+          <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span>TDL</span>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- THEME SWITCHER -->
   <div id="theme-picker">
     <div class="theme-swatch active" id="sw-gold"   style="background:#FFB830" onclick="setTheme('gold')"   onmouseenter="previewTheme('gold')"   onmouseleave="revertThemePreview()" title="Gold"></div>
@@ -1630,7 +1775,7 @@ function togglePanel(name,el){
   const panel=document.getElementById('panel-'+name);
   const bd=document.getElementById('panel-backdrop');
   document.querySelectorAll('.dock-item').forEach(d=>d.classList.remove('active'));
-  if(activePanel===name){panel.classList.remove('active');bd.classList.remove('active');activePanel=null;playClose();return}
+  if(activePanel===name){panel.classList.remove('active');bd.classList.remove('active');activePanel=null;playClose();syncMobileNavActive(null);return}
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   panel.classList.add('active');bd.classList.add('active');
   if(el)el.classList.add('active');
@@ -1638,6 +1783,7 @@ function togglePanel(name,el){
   playOpen();
   if(name==='insight')renderInsight();
   if(name==='portfolio')renderPortfolio();
+  syncMobileNavActive(name);
 }
 function closeAllPanels(){
   // Don't close if click was on theme picker or btn
@@ -1647,6 +1793,24 @@ function closeAllPanels(){
   document.querySelectorAll('.dock-item').forEach(d=>d.classList.remove('active'));
   activePanel=null;
   if(wasOpen)playClose();
+  syncMobileNavActive(null);
+}
+
+/* ── MOBILE NAV ── */
+function syncMobileNavActive(name){
+  document.querySelectorAll('.mnav-item[data-panel]').forEach(el=>el.classList.toggle('active',el.dataset.panel===name));
+  document.querySelectorAll('.more-sheet-tile').forEach(el=>el.classList.toggle('active',el.dataset.panel===name));
+}
+function mobileGoTo(name){
+  togglePanel(name);
+  closeMobileMore();
+}
+function toggleMobileMore(){
+  document.getElementById('mobile-more-sheet').classList.toggle('open');
+  playOpen();
+}
+function closeMobileMore(){
+  document.getElementById('mobile-more-sheet').classList.remove('open');
 }
 
 /* ── RENDER ALL ── */
