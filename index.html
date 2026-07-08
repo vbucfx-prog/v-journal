@@ -727,7 +727,11 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
   /* Tighter, more app-like density */
   .panel{border-radius:20px 20px 0 0;border-left:none;border-right:none;border-bottom:none}
   #panel-wrap{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom));width:100vw}
-  .panel-header{padding:16px 18px 14px}
+  .panel-header{padding:16px 18px 14px;flex-wrap:wrap;row-gap:10px}
+  .panel-header .panel-title{flex:1 1 100%}
+  .panel-actions{flex:1 1 100%;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;scrollbar-width:none}
+  .panel-actions::-webkit-scrollbar{display:none}
+  .panel-actions .btn-add,.panel-actions .btn-add-secondary{flex-shrink:0;font-size:8px;padding:7px 12px}
   .panel-inner{padding:16px 18px}
   .stat-val{font-size:21px}
   .ov-stats{grid-template-columns:repeat(2,1fr);gap:9px}
@@ -743,7 +747,7 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
 
   /* Hide desktop dock + reposition floating buttons for the new mobile nav (account for home-indicator zone) */
   #dock{display:none}
-  #theme-btn,#sound-btn,#mentor-btn,#notes-btn{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 10px)}
+  #theme-btn,#sound-btn,#notes-btn{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 10px)}
   #theme-picker{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 56px)}
   #mentor-btn{top:calc(env(safe-area-inset-top) + 10px)}
   #offline-badge{top:calc(env(safe-area-inset-top) + 10px)}
