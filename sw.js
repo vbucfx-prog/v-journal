@@ -5,10 +5,10 @@
 // supported in Safari/iOS. Offline writes are queued and flushed by the page itself
 // the moment it detects it's back online.
 
-const CACHE_NAME = 'tj-shell-v1';
+// Bump this version any time index.html changes in a way you need to force-refresh
+// on devices that already have the old version cached.
+const CACHE_NAME = 'tj-shell-v2';
 const SHELL_FILES = [
-  '/',
-  '/index.html',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',
@@ -37,20 +37,41 @@ self.addEventListener('fetch', (event) => {
     return; // let it hit the network normally
   }
 
-  // App shell: cache-first, falling back to network, falling back to cached index.html
+  const isDocument = event.request.mode === 'navigate' ||
+    url.pathname === '/' || url.pathname.endsWith('/index.html');
+
+  if (isDocument) {
+    // NETWORK-FIRST for the app itself: always try to get the latest version.
+    // Only fall back to the cached copy if there's genuinely no connection —
+    // this is what makes "update the file → redeploy → reload" actually work,
+    // instead of the phone getting stuck on whatever was cached first.
+    event.respondWith(
+      fetch(event.request)
+        .then((res) => {
+          if (res.ok) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return res;
+        })
+        .catch(() => caches.match(event.request).then((c) => c || caches.match('/index.html')))
+    );
+    return;
+  }
+
+  // Static assets (icons, manifest): cache-first is fine, they rarely change
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
       return fetch(event.request)
         .then((res) => {
-          // Cache successful same-origin GET responses for next time offline
           if (event.request.method === 'GET' && res.ok && url.origin === self.location.origin) {
             const clone = res.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
           }
           return res;
         })
-        .catch(() => caches.match('/index.html'));
+        .catch(() => cached);
     })
   );
 });
