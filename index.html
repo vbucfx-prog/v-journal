@@ -2708,6 +2708,12 @@ async function loadFF(){
 
     filtered.sort((a,b)=>new Date(a.date)-new Date(b.date));
 
+    // DEBUG: log the raw shape of the first event once, so we can see exactly
+    // what field names the /api/ff response actually uses. Check the browser
+    // console (F12 → Console) and look for "FF raw event sample" if the
+    // currency pill is still blank — this tells us the real field name.
+    if(filtered[0])console.log('FF raw event sample:',filtered[0]);
+
     const folderColor={High:'#e74c3c',Medium:'#e67e22',Low:'#f1c40f',Holiday:'#888',['Non-Economic']:'#888',['']:'#888'};
     const folderLabel={High:'Red',Medium:'Orange',Low:'Yellow',Holiday:'Grey',['Non-Economic']:'Grey',['']:'Grey'};
 
@@ -2715,7 +2721,9 @@ async function loadFF(){
       const col=folderColor[e.impact]||'var(--text-dim)';
       const lbl=folderLabel[e.impact]||e.impact;
       const t=e.date?new Date(e.date).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'TBA';
-      const cur=(e.currency||'').toUpperCase();
+      // Try every field name Forex Factory JSON feeds commonly use for the
+      // affected currency, since APIs/scrapers vary in naming this.
+      const cur=(e.currency||e.country||e.ccy||e.currencyCode||'').toUpperCase();
       const flag=FF_FLAG[cur]||'';
       // Currency pill mirrors Forex Factory: flag + code (e.g. 🇺🇸 USD)
       const currencyPill=cur
