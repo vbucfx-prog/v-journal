@@ -2664,15 +2664,9 @@ function toggleFF(){
 }
 
 /* ── FOREX FACTORY FEED ──
-   Now shows the affected currency exactly the way Forex Factory does:
+   Shows the affected currency exactly the way Forex Factory does:
    each event lists its currency code (USD, EUR, GBP, JPY, etc.) in a
    pill next to the impact folder, matching FF's own calendar layout. */
-
-// Map any currency code FF uses to a country flag, like the FF site shows.
-const FF_FLAG={
-  USD:'🇺🇸',EUR:'🇪🇺',GBP:'🇬🇧',JPY:'🇯🇵',AUD:'🇦🇺',NZD:'🇳🇿',
-  CAD:'🇨🇦',CHF:'🇨🇭',CNY:'🇨🇳',HKD:'🇭🇰',SGD:'🇸🇬',ALL:'🌐'
-};
 
 async function loadFF(){
   const c=g('ff-events');
@@ -2724,10 +2718,9 @@ async function loadFF(){
       // Try every field name Forex Factory JSON feeds commonly use for the
       // affected currency, since APIs/scrapers vary in naming this.
       const cur=(e.currency||e.country||e.ccy||e.currencyCode||'').toUpperCase();
-      const flag=FF_FLAG[cur]||'';
-      // Currency pill mirrors Forex Factory: flag + code (e.g. 🇺🇸 USD)
+      // Currency pill: just the code (e.g. USD, NZD)
       const currencyPill=cur
-        ? `<div class="ff-event-currency" title="${cur} — affected currency">${flag?flag+' ':''}${esc(cur)}</div>`
+        ? `<div class="ff-event-currency" title="${cur} — affected currency">${esc(cur)}</div>`
         : `<div class="ff-event-currency" style="opacity:0.4">—</div>`;
       return`<div class="ff-event">
         <div class="ff-folder" title="${lbl} folder — ${cur||'n/a'} impact">
