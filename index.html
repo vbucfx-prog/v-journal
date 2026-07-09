@@ -47,8 +47,10 @@
   --panel-h:82vh;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
 html,body{height:100%;overflow:hidden}
-body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;position:relative}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;position:relative;touch-action:manipulation}
 
 /* ── BACKGROUND ── */
 #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
@@ -66,7 +68,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
 .lock-ring::before{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(var(--a1),0.08)}
 .lock-ring svg{width:24px;height:24px;stroke:var(--gold);fill:none;stroke-width:1.5}
 .lock-label{font-family:var(--mono);font-size:9px;letter-spacing:0.32em;color:var(--text-muted);text-transform:uppercase;margin-bottom:36px}
-.lock-input{width:100%;background:rgba(var(--a1),0.04);border:1px solid rgba(var(--a1),0.12);border-radius:var(--radius-sm);padding:14px 18px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;letter-spacing:0.2em;text-align:center;transition:border-color 0.2s,box-shadow 0.2s;margin-bottom:12px}
+.lock-input{width:100%;background:rgba(var(--a1),0.04);border:1px solid rgba(var(--a1),0.12);border-radius:var(--radius-sm);padding:14px 18px;font-family:var(--mono);font-size:16px;color:var(--text);outline:none;letter-spacing:0.2em;text-align:center;transition:border-color 0.2s,box-shadow 0.2s;margin-bottom:12px}
 .lock-input:focus{border-color:rgba(var(--a1),0.45);box-shadow:0 0 0 3px rgba(var(--a1),0.08)}
 .lock-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold) 0%,var(--amber) 100%);border:none;border-radius:var(--radius-sm);font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.22em;color:#0a0600;cursor:pointer;text-transform:uppercase;transition:opacity 0.15s,box-shadow 0.2s;box-shadow:0 4px 24px rgba(var(--a1),0.25)}
 .lock-btn:hover{opacity:0.9;box-shadow:0 6px 32px rgba(var(--a1),0.38)}
@@ -106,7 +108,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
 .idialog-icon.prompt svg{stroke:var(--gold)}
 .idialog-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px}
 .idialog-msg{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:24px}
-.idialog-inp{width:100%;background:rgba(var(--a1),0.05);border:1px solid rgba(var(--a1),0.18);border-radius:var(--radius-xs);padding:11px 14px;font-family:var(--font);font-size:14px;color:var(--text);outline:none;transition:border-color 0.15s;margin-bottom:20px;text-align:left}
+.idialog-inp{width:100%;background:rgba(var(--a1),0.05);border:1px solid rgba(var(--a1),0.18);border-radius:var(--radius-xs);padding:11px 14px;font-family:var(--font);font-size:16px;color:var(--text);outline:none;transition:border-color 0.15s;margin-bottom:20px;text-align:left}
 .idialog-inp:focus{border-color:rgba(var(--a1),0.4)}
 .idialog-btns{display:flex;gap:10px;justify-content:center}
 .idialog-btn{padding:9px 24px;border-radius:var(--radius-xs);font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.16em;cursor:pointer;text-transform:uppercase;transition:all 0.14s;border:none}
@@ -191,8 +193,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
 .ff-event{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--radius-xs);transition:background 0.12s}
 .ff-event:hover{background:rgba(var(--a1),0.04)}
 .ff-folder{display:flex;align-items:center;flex-shrink:0}
-.ff-event-time{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:0.06em;min-width:36px;flex-shrink:0}
-.ff-event-currency{font-family:var(--mono);font-size:8px;font-weight:700;color:var(--gold);letter-spacing:0.08em;min-width:24px;flex-shrink:0}
+.ff-event-time{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:0.06em;min-width:44px;flex-shrink:0}
+.ff-event-currency{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--text);letter-spacing:0.06em;min-width:36px;flex-shrink:0;background:rgba(var(--a1),0.09);border:1px solid rgba(var(--a1),0.16);border-radius:4px;padding:2px 5px;text-align:center;line-height:1.2}
 .ff-event-title{flex:1;font-size:11px;color:var(--text-muted);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ff-event-title.high-impact{color:var(--text)}
 .ff-loading{padding:16px;text-align:center;font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.14em;text-transform:uppercase}
@@ -714,24 +716,74 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
 #mobile-nav{display:none}
 #mobile-more-sheet{display:none}
 
-/* ── MOBILE ── */
+/* ══════════════════════════════════════════════════════════════
+   MOBILE — NATIVE APP OVERHAUL
+   Goals: never zooms, nothing under the notch/home bar, no blue
+   text-selection or tap flash, sheet-style panels, press feedback
+   instead of hover states, no rubber-band scrolling of the page.
+   ══════════════════════════════════════════════════════════════ */
 @media(max-width:768px){
-  /* Prevent iOS auto-zoom on input focus: fields must render at >=16px */
-  input,textarea,select,.fi,.fta,.fsel,.search-input,.lock-input,.tdl-inp,.goals-inp,
-  .notes-add-inp,.tag-inline-input,.pm-inp,.idialog-inp{font-size:16px !important}
 
-  :root{--panel-w:100vw;--panel-h:calc(100vh - var(--mobile-nav-h) - env(safe-area-inset-bottom) - env(safe-area-inset-top) - 10px);--dock-h:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom))}
+  /* ── 1. KILL ZOOM ──
+     iOS auto-zooms any focused field rendered below 16px. Every text-entry
+     surface (including contenteditable fields) must be >=16px on mobile. */
+  input,textarea,select,
+  .fi,.fta,.fsel,.search-input,.lock-input,.tdl-inp,.goals-inp,
+  .pm-inp,.idialog-inp,.tag-inline-input,.formatter-ta,.detail-select,
+  [contenteditable="true"],.detail-val,.goal-txt,.tdl-txt,.pm-item-txt,
+  .lp-edit-title,.lp-edit-notes,#notes-ta{font-size:16px !important}
+  .lp-edit-title{font-size:17px !important}
 
-  body{overflow:hidden}
+  /* ── 2. VIEWPORT: use dynamic viewport height so nothing hides
+     behind Safari's UI or gets cut off at the top ── */
+  :root{
+    --panel-w:100vw;
+    --panel-h:calc(100vh - var(--mobile-nav-h) - env(safe-area-inset-bottom) - env(safe-area-inset-top) - 8px);
+    --dock-h:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom));
+  }
+  @supports(height:100dvh){
+    :root{--panel-h:calc(100dvh - var(--mobile-nav-h) - env(safe-area-inset-bottom) - env(safe-area-inset-top) - 8px)}
+  }
 
-  /* Tighter, more app-like density */
-  .panel{border-radius:20px 20px 0 0;border-left:none;border-right:none;border-bottom:none}
+  /* ── 3. APP SHELL: lock the page like a native view.
+     No page scroll, no pull-to-refresh rubber band, no text selection
+     or long-press callouts on chrome — but keep selection ON inside
+     anything you actually type or read. ── */
+  html,body{height:100%;height:100dvh}
+  body{
+    overflow:hidden;position:fixed;inset:0;width:100%;
+    overscroll-behavior:none;
+    -webkit-user-select:none;user-select:none;
+    -webkit-touch-callout:none;
+  }
+  input,textarea,select,[contenteditable="true"],
+  #notes-ta,.formatter-result,.detail-val,.entry-card-preview{
+    -webkit-user-select:text;user-select:text;-webkit-touch-callout:default;
+  }
+  ::selection{background:rgba(var(--a1),0.28);color:var(--text)}
+
+  /* Scroll containers behave like native lists: momentum + contained overscroll,
+     no visible scrollbars */
+  .panel-inner,.detail-modal,.form-modal,.weekly-modal,.lecture-player-box,
+  .search-results,.formatter-result,.more-sheet-panel{
+    -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+    scrollbar-width:none;
+  }
+  .panel-inner::-webkit-scrollbar,.detail-modal::-webkit-scrollbar,
+  .form-modal::-webkit-scrollbar,.weekly-modal::-webkit-scrollbar,
+  .lecture-player-box::-webkit-scrollbar{display:none}
+
+  /* ── 4. PANELS AS NATIVE SHEETS ── */
+  .panel{border-radius:22px 22px 0 0;border-left:none;border-right:none;border-bottom:none}
+  .panel.active{animation:sheetIn 0.34s cubic-bezier(0.32,0.72,0,1) both}
+  @keyframes sheetIn{from{transform:translateY(48px);opacity:0}to{transform:none;opacity:1}}
   #panel-wrap{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom));width:100vw}
   .panel-header{padding:16px 18px 14px;flex-wrap:wrap;row-gap:10px}
-  .panel-header .panel-title{flex:1 1 100%}
+  .panel-header::before{content:'';position:absolute;top:7px;left:50%;transform:translateX(-50%);width:36px;height:4px;border-radius:2px;background:rgba(var(--a1),0.22)}
+  .panel-header .panel-title{flex:1 1 100%;margin-top:6px}
   .panel-actions{flex:1 1 100%;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;scrollbar-width:none}
   .panel-actions::-webkit-scrollbar{display:none}
-  .panel-actions .btn-add,.panel-actions .btn-add-secondary{flex-shrink:0;font-size:8px;padding:7px 12px}
+  .panel-actions .btn-add,.panel-actions .btn-add-secondary{flex-shrink:0;font-size:8px;padding:9px 14px}
   .panel-inner{padding:16px 18px}
   .stat-val{font-size:21px}
   .ov-stats{grid-template-columns:repeat(2,1fr);gap:9px}
@@ -740,21 +792,61 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
   .f2{grid-template-columns:1fr}
   .insight-grid{grid-template-columns:1fr 1fr}
   .analysis-tabs{gap:5px}
-  .analysis-tab{padding:7px 12px;font-size:8px}
-  .form-modal,.detail-modal{width:100vw;height:100%;max-height:100%;border-radius:0;padding:22px 18px calc(22px + env(safe-area-inset-bottom))}
-  #form-overlay,#detail-overlay{padding:0}
-  .weekly-modal{width:100vw;border-radius:0;padding:22px 18px calc(22px + env(safe-area-inset-bottom))}
+  .analysis-tab{padding:8px 12px;font-size:8px}
 
-  /* Hide desktop dock + reposition floating buttons for the new mobile nav (account for home-indicator zone) */
+  /* ── 5. PRESS FEEDBACK, NOT HOVER ──
+     Hover states are meaningless on touch; replace with the native
+     "press down" scale that iOS controls have. */
+  .entry-card:hover,.funded-card:hover,.markup-card:hover,.lecture-card:hover,
+  .lecture-folder-card:hover,.eval-card:hover{transform:none;box-shadow:none}
+  .entry-card:active,.funded-card:active,.markup-card:active,.eval-card:active,
+  .lecture-card:active,.lecture-folder-card:active,.search-result:active{
+    transform:scale(0.97);transition:transform 0.08s;background:rgba(var(--a1),0.06)}
+  .btn-add:active,.btn-save:active,.btn-cancel:active,.goals-add-btn:active,
+  .tdl-add-btn:active,.pm-add-btn:active,.idialog-btn:active,.filt-btn:active,
+  .analysis-tab:active,.lock-btn:active,.ff-refresh:active{transform:scale(0.94);transition:transform 0.08s}
+  .goal-chk:active,.tdl-chk:active,.pm-chk:active{transform:scale(0.85)}
+
+  /* Bigger touch targets on small hit areas */
+  .goal-del,.tdl-del,.pm-item-del{width:34px;height:34px;font-size:15px}
+  .detail-close,.form-close{width:38px;height:38px;font-size:16px;border-radius:11px}
+  .goal-chk,.tdl-chk{width:22px;height:22px}
+  .pm-chk{width:20px;height:20px}
+  .card-star{width:32px;height:32px}
+  .card-star svg{width:16px;height:16px}
+
+  /* ── 6. FULL-SCREEN MODALS with safe-area padding so the title
+     is never cut off by the notch / Dynamic Island ── */
+  #form-overlay,#detail-overlay{padding:0}
+  .form-modal,.detail-modal{
+    width:100vw;height:100%;max-height:100%;border-radius:0;
+    padding:calc(20px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom));
+  }
+  @supports(height:100dvh){.form-modal,.detail-modal{height:100dvh;max-height:100dvh}}
+  .form-close,.detail-close{top:calc(14px + env(safe-area-inset-top))}
+  .weekly-modal{
+    width:100vw;height:100%;max-height:100%;border-radius:0;
+    padding:calc(20px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom));
+  }
+  #weekly-overlay{padding:0}
+  #lb-close{top:calc(16px + env(safe-area-inset-top))}
+  .lecture-player-box{width:100vw;max-height:100%;height:100%;border-radius:0}
+  @supports(height:100dvh){.lecture-player-box{height:100dvh;max-height:100dvh}}
+  #lecture-player-overlay{padding:0}
+  .lecture-player-hd{padding-top:calc(14px + env(safe-area-inset-top))}
+  .idialog{border-radius:18px}
+
+  /* ── 7. FLOATING CHROME repositioned above the tab bar & below the notch ── */
   #dock{display:none}
-  #theme-btn,#sound-btn,#notes-btn{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 10px)}
-  #theme-picker{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 56px)}
+  #theme-btn,#sound-btn,#notes-btn{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 12px);width:42px;height:42px}
+  #theme-picker{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 62px)}
   #mentor-btn{top:calc(env(safe-area-inset-top) + 10px)}
   #offline-badge{top:calc(env(safe-area-inset-top) + 10px)}
+  #notes-widget{bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 62px);left:12px;right:12px;width:auto;max-width:none;resize:none}
 
-  /* ── NEW MOBILE BOTTOM NAV ── */
-  /* Total height = tappable icon zone + the iPhone home-indicator safe area added ON TOP,
-     not squeezed out of it — otherwise icons get crushed on notched/Dynamic Island iPhones. */
+  /* ── 8. NATIVE TAB BAR ──
+     Icon zone + the iPhone home-indicator safe area added ON TOP,
+     so icons never get crushed on notched / Dynamic Island iPhones. */
   #mobile-nav{
     display:flex;position:fixed;left:0;right:0;bottom:0;z-index:35;
     height:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom));
@@ -763,13 +855,14 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
     border-top:1px solid rgba(var(--a1),0.14);
     align-items:stretch;justify-content:space-around;
   }
-  .mnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--text-muted);cursor:pointer;transition:color 0.15s;-webkit-tap-highlight-color:transparent}
-  .mnav-item svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6}
+  .mnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--text-muted);cursor:pointer;transition:color 0.15s}
+  .mnav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;transition:transform 0.15s cubic-bezier(0.34,1.5,0.64,1)}
   .mnav-item span{font-family:var(--mono);font-size:8px;letter-spacing:0.06em;text-transform:uppercase}
+  .mnav-item:active svg{transform:scale(0.82)}
   .mnav-item.active{color:var(--gold)}
   .mnav-item.active svg{filter:drop-shadow(0 0 6px rgba(var(--a1),0.5))}
 
-  /* ── MORE SHEET ── */
+  /* ── 9. MORE SHEET ── */
   #mobile-more-sheet{
     position:fixed;inset:0;z-index:200;display:none;
     background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
@@ -781,17 +874,24 @@ body.mentor-mode .mentor-hide{opacity:0;transition:opacity 0.2s}
     border-top:1px solid rgba(var(--a1),0.18);border-radius:22px 22px 0 0;
     padding:20px 18px calc(env(safe-area-inset-bottom) + 20px);
     max-height:72vh;overflow-y:auto;
-    animation:moreSheetIn 0.22s cubic-bezier(0.34,1.3,0.64,1) both;
+    animation:moreSheetIn 0.28s cubic-bezier(0.32,0.72,0,1) both;
   }
   @keyframes moreSheetIn{from{transform:translateY(100%)}to{transform:translateY(0)}}
   .more-sheet-handle{width:36px;height:4px;border-radius:2px;background:rgba(var(--a1),0.25);margin:0 auto 18px}
   .more-sheet-title{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px}
   .more-sheet-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .more-sheet-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px 8px;background:rgba(var(--a1),0.05);border:1px solid rgba(var(--a1),0.1);border-radius:16px;cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent}
-  .more-sheet-tile:active{background:rgba(var(--a1),0.12);transform:scale(0.96)}
+  .more-sheet-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px 8px;background:rgba(var(--a1),0.05);border:1px solid rgba(var(--a1),0.1);border-radius:16px;cursor:pointer;transition:all 0.15s}
+  .more-sheet-tile:active{background:rgba(var(--a1),0.12);transform:scale(0.94)}
   .more-sheet-tile.active{border-color:rgba(var(--a1),0.4);background:rgba(var(--a1),0.1)}
   .more-sheet-tile svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1.5}
   .more-sheet-tile span{font-family:var(--mono);font-size:8px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);text-align:center}
+
+  /* ── 10. FF calendar single column, roomier rows on phone ── */
+  .ff-events{grid-template-columns:1fr}
+  .ff-event{padding:10px}
+  .ff-event-time{min-width:52px;font-size:10px}
+  .ff-event-currency{min-width:40px;font-size:10px}
+  .ff-event-title{font-size:12px}
 }
 
 
@@ -1574,10 +1674,6 @@ async function sbSet(key,val){
 }
 
 /* ── OFFLINE SYNC QUEUE ── */
-// Real offline support: if a write fails (offline or network blip), it's queued in
-// IndexedDB and automatically flushed the moment the browser detects it's back online.
-// Only the LATEST value per key is kept in the queue (keyed by the storage key itself),
-// so rapid edits while offline don't pile up redundant writes.
 let _syncDB=null;
 function _syncDbOpen(){
   return new Promise((resolve,reject)=>{
@@ -1661,18 +1757,15 @@ async function updateSyncStatusUI(){
 
 window.addEventListener('online',flushSyncQueue);
 window.addEventListener('offline',updateSyncStatusUI);
-setInterval(flushSyncQueue,30000); // safety-net retry every 30s in case the online event is missed
+setInterval(flushSyncQueue,30000);
 
 /* ── STATE ── */
 const PW='vbucks123';
 const TODAY=new Date().toISOString().split('T')[0];
 
-// localStorage fallbacks — used until Supabase loads
 function sl(k,fb){try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch{return fb}}
 function sv(k,v){
   try{localStorage.setItem(k,JSON.stringify(v))}catch{}
-  // Try to sync immediately; if offline or the request fails, queue it —
-  // the queue auto-flushes the moment the browser comes back online.
   if(!navigator.onLine){
     _queueWrite(k,v);
   }else{
@@ -1688,7 +1781,7 @@ let goals=sl('tj_goals',[]);
 let pmGroups=sl('tj_pm_groups',[]);
 let markups=sl('tj_markups',[]);
 let savedTags=sl('tj_saved_tags',[]);
-let lectures=sl('tj_lectures',[]); // metadata only — video blobs live in IndexedDB
+let lectures=sl('tj_lectures',[]);
 let pendingLectureFile=null,pendingLectureSource='file';
 let pendingPics={trade:[],post:[],premarket:[],funded:[],payout:[],markup:[]};
 let pendingTags=[];
@@ -1744,11 +1837,10 @@ async function init(){
   if(sortLbl)sortLbl.textContent=ANALYSIS_SORT_LABELS[analysisSort]||'Date Added';
   document.querySelectorAll('.sort-menu-item').forEach(el=>el.classList.toggle('active',el.dataset.sort===analysisSort));
   updateSyncStatusUI();
-  flushSyncQueue(); // catch up on anything queued from a previous offline session
+  flushSyncQueue();
 }
 
 async function loadFromSupabase(){
-  // Load all keys from Supabase, fall back to localStorage if offline
   const keys=['tj_entries','tj_funded','tj_payouts','tj_tasks','tj_goals','tj_pm_groups','tj_markups','tj_evals','tj_saved_tags','tj_weekly','tj_notepad','tj_lectures'];
   const results=await Promise.all(keys.map(k=>sbGet(k)));
   const [e,f,p,t,go,pm,mk,ev,st,wk,np,lc]=results;
@@ -1790,7 +1882,6 @@ function togglePanel(name,el){
   syncMobileNavActive(name);
 }
 function closeAllPanels(){
-  // Don't close if click was on theme picker or btn
   const wasOpen=!!activePanel;
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-backdrop').classList.remove('active');
@@ -1821,16 +1912,13 @@ function closeMobileMore(){
 function renderAll(){
   const trades=entries.filter(e=>e.type==='trade');
   document.getElementById('stat-total').textContent=entries.length;
-  // R:R
   let totalR=0;
   trades.forEach(t=>{const m=(t.rr||'').match(/([+-]?\d+(?:\.\d+)?)\s*[Rr]/);if(m)totalR+=parseFloat(m[1])});
   const rrEl=document.getElementById('stat-rr');
   rrEl.textContent=(totalR>=0?'+':'')+totalR.toFixed(1)+'R';
   rrEl.style.color=totalR>=0?'var(--gold)':'#ff6b6b';
-  // Total payouts
   const totalPay=payouts.reduce((s,p)=>s+(parseFloat(p.amount)||0),0);
   document.getElementById('stat-payouts').textContent='$'+totalPay.toLocaleString();
-  // Sort trades: starred first, then by date
   const sortedTrades=[...trades].sort((a,b)=>Number(b.starred||0)-Number(a.starred||0));
   renderGrid('dash-entries',entries.slice(0,12));
   renderGrid('trade-entries',sortedTrades);
@@ -1856,7 +1944,6 @@ function fmtDate(d){if(!d)return'';try{return new Date(d+'T00:00:00').toLocaleDa
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function nl(s){return String(s||'').replace(/\n/g,'<br>')}
 
-/* Icon SVGs for placeholder thumbnails */
 const ICONS={
   trade:`<svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`,
   post:`<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
@@ -1874,12 +1961,10 @@ function buildGridCard(e){
   if(type==='trade'){
     badge=`<span class="badge badge-trade">Trade</span>`;
     rBadge=e.result==='Win'?`<span class="badge badge-win">W</span>`:e.result==='Loss'?`<span class="badge badge-loss">L</span>`:e.result==='BE'?`<span class="badge badge-be">BE</span>`:'';
-    // Title = instrument + session, subtitle = custom title if set
     title=(e.instrument||'Trade')+(e.session?' · '+e.session:'');
     subtitle=e.customTitle||'';
     preview=e.reasoning||e.concepts||'';
     clickFn=`openDetail(${e.id})`;
-    // Prominent PnL
     if(e.rr){
       const m=(e.rr||'').match(/([+-]?\d+(?:\.\d+)?)\s*[Rr]/);
       const rVal=m?parseFloat(m[1]):null;
@@ -1889,14 +1974,12 @@ function buildGridCard(e){
   }else if(type==='post'){
     badge=`<span class="badge badge-post">Post</span>`;
     rBadge=e.rating?`<span class="badge badge-be">${e.rating}</span>`:'';
-    // Title = date, subtitle = custom title
     title=fmtDate(e.date);
     subtitle=e.customTitle||((e.session||'Post')+' Market Review');
     preview=e.macro||e.lesson||'';
     clickFn=`openDetail(${e.id})`;
   }else if(type==='premarket'){
     badge=`<span class="badge badge-premarket">Pre</span>`;
-    // Title = date, subtitle = custom title
     title=fmtDate(e.date);
     subtitle=e.customTitle||('Pre-Market'+(e.session?' · '+e.session:''));
     preview=e.notes||'';
@@ -1931,7 +2014,6 @@ function buildGridCard(e){
   </div>`;
 }
 
-/* ── ANALYSIS ── */
 /* ── ANALYSIS SORT ── */
 let analysisSort=sl('tj_analysis_sort','added');
 const ANALYSIS_SORT_LABELS={
@@ -1968,7 +2050,7 @@ function renderAnalysis(){
 
   let sorted=[...list];
   switch(analysisSort){
-    case 'added': sorted.sort((a,b)=>b.id-a.id); break; // id = Date.now() at creation, newest first
+    case 'added': sorted.sort((a,b)=>b.id-a.id); break;
     case 'added-old': sorted.sort((a,b)=>a.id-b.id); break;
     case 'chrono': sorted.sort((a,b)=>(b.date||'').localeCompare(a.date||'')); break;
     case 'chrono-old': sorted.sort((a,b)=>(a.date||'').localeCompare(b.date||'')); break;
@@ -1988,7 +2070,6 @@ function renderFunded(){
   const c=document.getElementById('funded-entries');
   if(!funded.length){c.innerHTML=emptyHtml();return}
 
-  // Sort: Funded first, Evaluation middle, Blown last, others in between
   const order={Funded:0,Evaluation:1,Active:2,Completed:3,Paused:4,Expired:5,Failed:6,Blown:7};
   const sorted=[...funded].sort((a,b)=>{
     const oa=order[a.status]??3;
@@ -2067,7 +2148,7 @@ function buildTradeReplayBar(e){
   const tp=parseFloat(e.tp);
   if(isNaN(entry)||isNaN(sl)||isNaN(tp)||entry===sl)return'';
 
-  const isLong=tp>entry; // TP above entry = long-style risk shape (works for either direction field too)
+  const isLong=tp>entry;
   const lo=Math.min(sl,tp);
   const hi=Math.max(sl,tp);
   const range=hi-lo||1;
@@ -2107,10 +2188,8 @@ function openDetail(id){
   let fields='';
   const typeBadge=e.type==='trade'?'badge-trade':e.type==='post'?'badge-post':'badge-premarket';
   const typeLabel=e.type==='trade'?'Trade':e.type==='post'?'Post Market':'Pre-Market';
-  // For analysis types: date is the main title; for trades: instrument
   const mainTitle=e.type==='trade'?(e.instrument||'Trade')+(e.session?' · '+e.session:''):fmtDate(e.date);
 
-  // Prominent PnL for trades
   let pnlBanner='';
   if(e.type==='trade'&&e.rr){
     const m=(e.rr||'').match(/([+-]?\d+(?:\.\d+)?)\s*[Rr]/);
@@ -2457,7 +2536,7 @@ function saveEntry(type){
     const ev={id:Date.now(),date:TODAY,firm:g('e-eval-firm').value,phase:g('e-eval-phase').value,accountSize:parseFloat(g('e-eval-size').value)||0,profitTarget:parseFloat(g('e-eval-target').value)||0,maxDD:parseFloat(g('e-eval-maxdd').value)||0,dailyLoss:parseFloat(g('e-eval-daily').value)||0,currentPnl:parseFloat(g('e-eval-pnl').value)||0,currentDD:parseFloat(g('e-eval-curdd').value)||0,daysLeft:g('e-eval-days').value,status:g('e-eval-status').value,consistency:parseFloat(g('e-eval-consistency').value)||0,notes:g('e-eval-notes').value};
     evals.unshift(ev);sv('tj_evals',evals);renderEvals();
   }else if(type==='lecture'){
-    saveLectureEntry(); // async, handles its own closeForm
+    saveLectureEntry();
     return;
   }
   closeForm();
@@ -2501,7 +2580,6 @@ function renderGoals(){
   if(fill)fill.style.width=pct+'%';
   if(ptxt)ptxt.textContent=done+' / '+total;
   if(!goals.length){c.innerHTML=`<div class="goals-empty">No goals yet — add one above</div>`;return}
-  // Sort: undone first, done last
   const sorted=[...goals].sort((a,b)=>Number(a.done)-Number(b.done));
   c.innerHTML=sorted.map((goal,i)=>`<div class="goal-item ${goal.done?'done-item':''}">
     <span class="goal-num">${String(i+1).padStart(2,'0')}</span>
@@ -2558,14 +2636,12 @@ function _idShow({type,title,msg,inputVal,inputPlaceholder,confirmLabel,confirmC
   });
 }
 function _idConfirm(){
-  // Return input value for prompts, true for confirms
   _idClose(_idType==='prompt'?g('idialog-inp').value:true);
 }
 function _idClose(val){
   g('idialog-overlay').classList.remove('open');
   if(_idResolve){_idResolve(val);_idResolve=null;}
 }
-// Press Enter in prompt input
 g('idialog-inp').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();_idConfirm()}});
 
 async function iconfirm(msg,onYes,danger=false){
@@ -2587,19 +2663,27 @@ function toggleFF(){
   opening?playSwipeOpen():playSwipeClose();
 }
 
-/* ── FOREX FACTORY FEED ── */
+/* ── FOREX FACTORY FEED ──
+   Now shows the affected currency exactly the way Forex Factory does:
+   each event lists its currency code (USD, EUR, GBP, JPY, etc.) in a
+   pill next to the impact folder, matching FF's own calendar layout. */
+
+// Map any currency code FF uses to a country flag, like the FF site shows.
+const FF_FLAG={
+  USD:'🇺🇸',EUR:'🇪🇺',GBP:'🇬🇧',JPY:'🇯🇵',AUD:'🇦🇺',NZD:'🇳🇿',
+  CAD:'🇨🇦',CHF:'🇨🇭',CNY:'🇨🇳',HKD:'🇭🇰',SGD:'🇸🇬',ALL:'🌐'
+};
+
 async function loadFF(){
   const c=g('ff-events');
   c.innerHTML='<div class="ff-loading">Loading...</div>';
 
-  // Update title to today's date
   const titleEl=g('ff-title');
   if(titleEl){
     const dayStr=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
     titleEl.textContent=dayStr+' · Forex Factory';
   }
 
-  // Make sure it's open when refreshing
   const body=g('ff-body');
   const chev=g('ff-chevron');
   if(body&&!body.classList.contains('open')){body.classList.add('open');if(chev)chev.classList.add('open');}
@@ -2631,13 +2715,19 @@ async function loadFF(){
       const col=folderColor[e.impact]||'var(--text-dim)';
       const lbl=folderLabel[e.impact]||e.impact;
       const t=e.date?new Date(e.date).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'TBA';
+      const cur=(e.currency||'').toUpperCase();
+      const flag=FF_FLAG[cur]||'';
+      // Currency pill mirrors Forex Factory: flag + code (e.g. 🇺🇸 USD)
+      const currencyPill=cur
+        ? `<div class="ff-event-currency" title="${cur} — affected currency">${flag?flag+' ':''}${esc(cur)}</div>`
+        : `<div class="ff-event-currency" style="opacity:0.4">—</div>`;
       return`<div class="ff-event">
-        <div class="ff-folder" title="${lbl} folder">
+        <div class="ff-folder" title="${lbl} folder — ${cur||'n/a'} impact">
           <svg viewBox="0 0 24 24" width="13" height="13" fill="${col}" stroke="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         </div>
         <div class="ff-event-time">${t}</div>
-        <div class="ff-event-currency">${esc(e.currency||'')}</div>
-        <div class="ff-event-title ${e.impact==='High'?'high-impact':''}" title="${esc(e.title||e.name||'')}">${esc(e.title||e.name||'Event')}</div>
+        ${currencyPill}
+        <div class="ff-event-title ${e.impact==='High'?'high-impact':''}" title="${esc((cur?cur+' — ':'')+(e.title||e.name||''))}">${esc(e.title||e.name||'Event')}</div>
       </div>`;
     }).join('');
   }catch(err){
@@ -2646,7 +2736,7 @@ async function loadFF(){
   }
 }
 
-/* ── PM GROUP (prompt replaced) ── */
+/* ── PM GROUP ── */
 function addPMGroup(){
   iprompt('Name this checklist group','e.g. Bias & Structure, Risk Management...',title=>{
     pmGroups.push({id:Date.now(),title,items:[]});sv('tj_pm_groups',pmGroups);renderPMGroups();
@@ -2783,7 +2873,6 @@ function renderMetrics(){
     <div class="insight-metric-val" style="color:${m.col}">${m.val}</div>
     <div class="insight-metric-sub">${m.sub}</div>
   </div>`).join('');
-  // Sessions
   const sessions=['Asia','London','New York','NY PM'];
   const sc={};sessions.forEach(s=>sc[s]=0);
   trades.forEach(t=>{if(t.session&&sc[t.session]!==undefined)sc[t.session]++});
@@ -2793,14 +2882,12 @@ function renderMetrics(){
     <div class="session-bar-track"><div class="session-bar-fill" style="width:${Math.round((sc[s]/maxS)*100)}%"></div></div>
     <div class="session-bar-val">${sc[s]}</div>
   </div>`).join('');
-  // Concepts
   const cm={};
   trades.forEach(t=>{if(!t.concepts)return;t.concepts.split(',').forEach(c=>{const k=c.trim().toUpperCase();if(k)cm[k]=(cm[k]||0)+1})});
   const sc2=Object.entries(cm).sort((a,b)=>b[1]-a[1]).slice(0,12);
   g('insight-concepts').innerHTML=sc2.length
     ?sc2.map(([k,v])=>`<div class="concept-tag"><span>${esc(k)}</span><span class="concept-tag-count">${v}</span></div>`).join('')
     :`<div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">No concepts logged yet</div>`;
-  // Best & Worst
   if(rValues.length){
     let best=null,worst=null;
     trades.forEach(t=>{const m=(t.rr||'').match(/([+-]?\d+(?:\.\d+)?)\s*[Rr]/);if(!m)return;const r=parseFloat(m[1]);if(best===null||r>best.r)best={...t,r};if(worst===null||r<worst.r)worst={...t,r}});
@@ -2819,11 +2906,8 @@ function applyThemeVisual(name){
 function setTheme(name){
   _committedTheme=name;
   applyThemeVisual(name);
-  // Update swatch active state
   THEMES.forEach(t=>{const sw=g('sw-'+t);if(sw)sw.classList.toggle('active',t===name)});
-  // Save
   sv('tj_theme',name);
-  // Close picker
   g('theme-picker').classList.remove('open');
 }
 function previewTheme(name){
@@ -2842,7 +2926,6 @@ document.addEventListener('click',e=>{
     picker.classList.remove('open');
   }
 });
-// Apply saved theme on load
 (function(){
   const saved=sl('tj_theme','gold');
   _currentTheme=saved;
@@ -2867,7 +2950,6 @@ function renderPayoutCurve(){
   const maxV=Math.max(...pts);const minV=0;
   const scaleX=i=>(pts.length===1)?W/2:pad+(i/(pts.length-1))*(W-pad*2);
   const scaleY=v=>H-pad-(((v-minV)/(maxV-minV||1))*(H-pad*2));
-  // gradient fill
   const grad=ctx.createLinearGradient(0,0,0,H);
   const rgb=getComputedStyle(document.body).getPropertyValue('--a1').trim()||'255,184,48';
   grad.addColorStop(0,`rgba(${rgb},0.22)`);
@@ -2876,11 +2958,9 @@ function renderPayoutCurve(){
   pts.forEach((v,i)=>ctx.lineTo(scaleX(i),scaleY(v)));
   ctx.lineTo(scaleX(pts.length-1),H-pad);ctx.closePath();
   ctx.fillStyle=grad;ctx.fill();
-  // line
   ctx.beginPath();ctx.moveTo(scaleX(0),scaleY(pts[0]));
   pts.forEach((v,i)=>{if(i>0)ctx.lineTo(scaleX(i),scaleY(v))});
   ctx.strokeStyle=`rgba(${rgb},0.8)`;ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
-  // dots
   pts.forEach((v,i)=>{
     ctx.beginPath();ctx.arc(scaleX(i),scaleY(v),3,0,Math.PI*2);
     ctx.fillStyle=`rgba(${rgb},0.9)`;ctx.fill();
@@ -2889,7 +2969,6 @@ function renderPayoutCurve(){
 
 /* ── PORTFOLIO ── */
 function renderPortfolio(){
-  // Metrics
   const activeStatuses=['Funded','Evaluation','Active'];
   const activeAccounts=funded.filter(a=>activeStatuses.includes(a.status));
   const totalCapital=activeAccounts.reduce((s,a)=>s+(parseFloat(a.size)||0),0);
@@ -2954,7 +3033,6 @@ function renderPortfolioContribution(){
   const c=g('portfolio-contribution');
   if(!c)return;
   if(!payouts.length){c.innerHTML=`<div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">No payouts logged yet</div>`;return}
-  // Group payouts by firm/broker name (matches funded account 'broker' or 'name' field)
   const byAccount={};
   payouts.forEach(p=>{
     const key=p.broker||'Unspecified';
@@ -3047,16 +3125,14 @@ function clearNotes(){
 
 /* ── STREAK TRACKER ── */
 function calcStreak(){
-  // Get all dates with any journal entry
   const dateset=new Set(entries.map(e=>e.date).filter(Boolean));
   if(!dateset.size)return{streak:0,best:0};
 
-  const dates=[...dateset].sort((a,b)=>b.localeCompare(a)); // newest first
+  const dates=[...dateset].sort((a,b)=>b.localeCompare(a));
   const today=TODAY;
   const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
   const yesterdayStr=yesterday.toISOString().split('T')[0];
 
-  // Streak must include today or yesterday to be alive
   if(dates[0]!==today&&dates[0]!==yesterdayStr)return{streak:0,best:calcBestStreak(dates)};
 
   let streak=1;
@@ -3120,12 +3196,6 @@ function toggleMentor(){
 /* ── EVAL TRACKER ── */
 let evals=sl('tj_evals',[]);
 
-/* ── CONSISTENCY RULE CALCULATOR ── */
-// Many prop firms cap how much of your total profit target can come from a single
-// trade/day (e.g. "no single day can be more than 50% of your total profit").
-// Given remaining profit needed and that cap %, this works out the max you're
-// allowed to make in one trade, and the minimum number of trades required to
-// reach the target without breaching the rule.
 function calcConsistency(ev){
   if(!ev.consistency||ev.consistency<=0||ev.consistency>=100)return null;
   const remaining=(ev.profitTarget||0)-(ev.currentPnl||0);
@@ -3226,12 +3296,12 @@ let weeklyReviews=sl('tj_weekly',[]);
 
 function checkSundayPrompt(){
   const now=new Date();
-  if(now.getDay()!==0)return; // 0 = Sunday
+  if(now.getDay()!==0)return;
   const lastCheck=sl('tj_weekly_last','');
   const todayStr=now.toISOString().split('T')[0];
   if(lastCheck===todayStr)return;
   sv('tj_weekly_last',todayStr);
-  setTimeout(openWeekly,1500); // slight delay after unlock
+  setTimeout(openWeekly,1500);
 }
 
 function openWeekly(){
@@ -3260,7 +3330,6 @@ function saveWeekly(){
 
 /* ── CHECKLIST LOG ── */
 function saveChecklistLog(){
-  // Called when any checklist item is toggled — saves today's completion %
   const allItems=pmGroups.flatMap(g=>g.items);
   if(!allItems.length)return;
   const checked=allItems.filter(i=>i.checked).length;
@@ -3368,7 +3437,6 @@ function runSearch(q){
   if(!q){box.classList.remove('open');box.innerHTML='';return}
 
   const results=[];
-  // Search entries (trades, post, premarket)
   entries.forEach(e=>{
     const hay=[e.instrument,e.customTitle,e.concepts,e.reasoning,e.good,e.improve,e.macro,e.setups,e.lesson,e.mistakes,e.forwardBias,e.notes,e.session,(e.tags||[]).join(' ')].filter(Boolean).join(' ').toLowerCase();
     if(hay.includes(q)){
@@ -3376,22 +3444,18 @@ function runSearch(q){
       results.push({type:e.type==='trade'?'Trade':e.type==='post'?'Post':'Pre',title,meta:fmtDate(e.date)+(e.session?' · '+e.session:''),fn:`openDetail(${e.id})`});
     }
   });
-  // Search markups
   markups.forEach(m=>{
     const hay=[m.symbol,m.notes,m.tf,(m.tags||[]).join(' ')].filter(Boolean).join(' ').toLowerCase();
     if(hay.includes(q))results.push({type:'Markup',title:(m.symbol||'Markup')+(m.tf?' · '+m.tf:''),meta:fmtDate(m.date),fn:`openDetailMarkup(${m.id})`});
   });
-  // Search funded
   funded.forEach(a=>{
     const hay=[a.name,a.broker,a.notes,a.status].filter(Boolean).join(' ').toLowerCase();
     if(hay.includes(q))results.push({type:'Funded',title:a.name||'Account',meta:a.broker||'',fn:`openDetailFunded(${a.id})`});
   });
-  // Search evals
   evals.forEach(ev=>{
     const hay=[ev.firm,ev.phase,ev.notes,ev.status].filter(Boolean).join(' ').toLowerCase();
     if(hay.includes(q))results.push({type:'Eval',title:ev.firm||'Eval',meta:ev.phase||'',fn:`openDetailEval(${ev.id})`});
   });
-  // Search lectures
   lectures.forEach(l=>{
     const hay=[l.title,l.notes,(l.tags||[]).join(' ')].filter(Boolean).join(' ').toLowerCase();
     if(hay.includes(q))results.push({type:'Lecture',title:l.title||'Lecture',meta:fmtDate(l.date),fn:`openLecturePlayer(${l.id})`});
@@ -3443,7 +3507,6 @@ function renderTagInput(){
   const chips=pendingTags.map((t,i)=>`<span class="tag-chip">${esc(t)}<span class="tag-chip-x" onclick="removePendingTag(${i})">✕</span></span>`).join('');
   wrap.innerHTML=chips+`<input class="tag-inline-input" id="tag-inline-input" placeholder="${pendingTags.length?'':'Add tags...'}" onkeydown="handleTagKey(event)">`;
   const inp=g('tag-inline-input');if(inp)inp.focus();
-  // suggestions
   const sug=g('tag-suggestions');
   if(sug){
     const avail=savedTags.filter(t=>!pendingTags.includes(t));
@@ -3528,8 +3591,6 @@ function deleteMarkup(id){
 }
 
 /* ── LECTURES ── */
-// Video files are stored in IndexedDB (holds much more than localStorage's 5MB cap).
-// Only metadata (title, tags, notes, source type, url) syncs via Supabase.
 let _lecDB=null;
 function _lecDbOpen(){
   return new Promise((resolve,reject)=>{
@@ -3584,7 +3645,6 @@ function handleLectureFile(input){
   g('lecture-file-lbl').textContent=`${file.name} (${mb} MB) — selected`;
 }
 
-/* ── LECTURE THUMBNAILS ── */
 function getLinkThumbnail(url){
   const ytMatch=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
   if(ytMatch)return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
@@ -3593,7 +3653,6 @@ function getLinkThumbnail(url){
   return null;
 }
 
-// Captures a frame ~1s into a local video file as a small JPEG thumbnail, plus duration
 function captureLocalThumbnail(file){
   return new Promise((resolve)=>{
     try{
@@ -3621,7 +3680,7 @@ function captureLocalThumbnail(file){
         }catch(e){cleanup();resolve({thumb:null,duration})}
       });
       video.addEventListener('error',()=>{cleanup();resolve({thumb:null,duration:0})});
-      setTimeout(()=>resolve({thumb:null,duration:0}),6000); // safety timeout
+      setTimeout(()=>resolve({thumb:null,duration:0}),6000);
     }catch{resolve({thumb:null,duration:0})}
   });
 }
@@ -3666,7 +3725,6 @@ async function saveLectureEntry(){
   showSync('Lecture added ✓');
 }
 
-/* ── LECTURE NAVIGATION STATE ── */
 let lectureView={mode:'root',series:null};
 let lectureTagFilter=null;
 
@@ -3722,7 +3780,6 @@ function renderLectures(){
 
   if(lectureView.mode==='root'){
     breadcrumbEl.innerHTML='';
-    // Group by series
     const seriesMap={};
     const standalone=[];
     lectures.forEach(l=>{
@@ -3731,7 +3788,6 @@ function renderLectures(){
     });
     const seriesNames=Object.keys(seriesMap).sort();
 
-    // Folders
     if(seriesNames.length){
       foldersEl.innerHTML=`<div class="lecture-section-lbl">Series</div><div class="lecture-folder-grid">${seriesNames.map(name=>`
         <div class="lecture-folder-card" onclick="openLectureSeries('${esc(name).replace(/'/g,"\\'")}')">
@@ -3743,11 +3799,9 @@ function renderLectures(){
       foldersEl.innerHTML='';
     }
 
-    // Tag filter (built from all lectures)
     const allTags=[...new Set(lectures.flatMap(l=>l.tags||[]))].sort();
     tagFiltersEl.innerHTML=allTags.length?allTags.map(t=>`<button class="lecture-tag-filter-btn ${lectureTagFilter===t?'active':''}" onclick="setLectureTagFilter('${esc(t).replace(/'/g,"\\'")}')">${esc(t)}</button>`).join(''):'';
 
-    // Standalone lectures grid (filtered by tag)
     let visible=standalone;
     if(lectureTagFilter)visible=visible.filter(l=>(l.tags||[]).includes(lectureTagFilter));
     const sorted=[...visible].sort((a,b)=>b.date.localeCompare(a.date));
@@ -3761,7 +3815,6 @@ function renderLectures(){
       grid.innerHTML=sorted.map(buildLectureCard).join('');
     }
   }else{
-    // Series view
     foldersEl.innerHTML='';
     breadcrumbEl.innerHTML=`<div class="lecture-breadcrumb">
       <button class="lecture-back-btn" onclick="backToLectureRoot()">← All Lectures</button>
@@ -3790,7 +3843,6 @@ async function openLecturePlayer(id){
   g('lp-edit-notes').innerText=l.notes||'';
   document.getElementById('lecture-player-overlay').classList.add('open');
 
-  // Mark watched (works for every source — just tracks that it was opened)
   if(!l.watched){l.watched=true;sv('tj_lectures',lectures);renderLectures();}
 
   if(l.source==='local'){
@@ -3805,7 +3857,6 @@ async function openLecturePlayer(id){
       media.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ff6b6b;font-family:var(--mono);font-size:10px">Failed to load video</div>';
     }
   }else{
-    // Embed link — support YouTube, Google Drive, or direct video links
     const url=l.url||'';
     let embedUrl=url;
     const ytMatch=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
@@ -3869,8 +3920,6 @@ function addTagsToLecture(id,val){
   renderLectures();
 }
 
-// Local videos: remember playback position so reopening resumes where you left off.
-// (Not possible for YouTube/Drive embeds — those iframes expose no position/duration API to this page.)
 function setupResumeTracking(lecture){
   const video=g('lp-video-el');
   if(!video)return;
@@ -3886,7 +3935,7 @@ function setupResumeTracking(lecture){
   });
   let lastSaved=0;
   video.addEventListener('timeupdate',()=>{
-    if(Math.abs(video.currentTime-lastSaved)<3)return; // throttle writes
+    if(Math.abs(video.currentTime-lastSaved)<3)return;
     lastSaved=video.currentTime;
     const l=lectures.find(x=>x.id===lecture.id);
     if(l){l.resumeAt=video.currentTime;sv('tj_lectures',lectures)}
@@ -3896,7 +3945,6 @@ function setupResumeTracking(lecture){
 function closeLecturePlayer(){
   document.getElementById('lecture-player-overlay').classList.remove('open');
   const media=g('lp-media');
-  // Revoke object URL and stop playback, save final resume position
   const video=media.querySelector('video');
   if(video){
     const l=lectures.find(x=>x.id===currentLectureId);
@@ -3946,7 +3994,6 @@ function renderDonut(){
       start+=ang;
     });
   }
-  // Center text
   ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--text').trim()||'#fff';
   ctx.font='700 22px Space Mono, monospace';ctx.textAlign='center';ctx.textBaseline='middle';
   const wr=total?Math.round((wins/(wins+losses||1))*100):0;
@@ -3994,11 +4041,10 @@ function _ac(){
 }
 function _rand(min,max){return min+Math.random()*(max-min)}
 
-// Simple tone with slight pitch randomization for variety
 function _tone(freq0,freq1,dur,vol,type){
   if(!_soundOn)return;
   const ctx=_ac();if(!ctx)return;
-  const jitter=_rand(0.96,1.04); // slight variance so repeated sounds don't feel robotic
+  const jitter=_rand(0.96,1.04);
   const t0=ctx.currentTime;
   const osc=ctx.createOscillator();
   const gain=ctx.createGain();
@@ -4012,7 +4058,6 @@ function _tone(freq0,freq1,dur,vol,type){
   osc.start(t0);osc.stop(t0+dur+0.02);
 }
 
-// Two-note chord/interval for richer "confirm"/"cancel" feel
 function _chord(f1,f2,dur,vol,delay){
   if(!_soundOn)return;
   const ctx=_ac();if(!ctx)return;
@@ -4030,7 +4075,6 @@ function _chord(f1,f2,dur,vol,delay){
   });
 }
 
-// Filtered noise burst — used for wind/swipe collapse sounds
 function _getNoiseBuffer(ctx){
   if(_noiseBuf)return _noiseBuf;
   const len=ctx.sampleRate*0.4;
@@ -4041,7 +4085,6 @@ function _getNoiseBuffer(ctx){
   return buf;
 }
 function _whoosh(dir){
-  // dir: 1 = opening/expanding (sweep up), -1 = closing/collapsing (sweep down)
   if(!_soundOn)return;
   const ctx=_ac();if(!ctx)return;
   const t0=ctx.currentTime;
@@ -4063,16 +4106,15 @@ function _whoosh(dir){
   src.start(t0);src.stop(t0+dur+0.05);
 }
 
-/* Distinct sound identities per action type */
 function playOpen(){_tone(420,880,0.15,0.05,'sine')}
 function playClose(){_tone(680,310,0.13,0.045,'sine')}
 function playSwipeOpen(){_whoosh(1)}
 function playSwipeClose(){_whoosh(-1)}
 function playClick(){_tone(_rand(1050,1150),_rand(1350,1450),_rand(0.04,0.05),0.032,'sine')}
-function playPop(){_chord(880,1320,0.08,0.04,0.02)}          // add/create actions — bright little pop
-function playConfirm(){_chord(660,990,0.11,0.045,0.045)}      // save — rising two-note
-function playDeny(){_tone(360,220,0.13,0.05,'triangle')}      // delete/danger — lower descending thud
-function playToggle(){_tone(_rand(900,950),_rand(1150,1250),0.035,0.03,'sine')} // checkboxes/switches — quick tick
+function playPop(){_chord(880,1320,0.08,0.04,0.02)}
+function playConfirm(){_chord(660,990,0.11,0.045,0.045)}
+function playDeny(){_tone(360,220,0.13,0.05,'triangle')}
+function playToggle(){_tone(_rand(900,950),_rand(1150,1250),0.035,0.03,'sine')}
 
 function toggleSound(){
   _soundOn=!_soundOn;
@@ -4084,7 +4126,6 @@ function toggleSound(){
   if(_soundOn)playClick();
 }
 
-// Route clicks to the right sound flavor by element type
 document.addEventListener('click',e=>{
   if(e.target.closest('.btn-delete'))return void playDeny();
   if(e.target.closest('.btn-save,.idialog-btn.primary'))return void playConfirm();
@@ -4098,9 +4139,6 @@ document.getElementById('pw-input').focus();
 loadFF();
 
 /* ── PWA / SERVICE WORKER ── */
-// Registers the offline app-shell cache. Data sync itself is handled by the
-// IndexedDB outbox above, not by the service worker (Background Sync isn't
-// supported on iOS Safari, so we don't rely on it).
 if('serviceWorker'in navigator){
   window.addEventListener('load',()=>{
     navigator.serviceWorker.register('/sw.js').catch(err=>console.warn('SW registration failed:',err));
